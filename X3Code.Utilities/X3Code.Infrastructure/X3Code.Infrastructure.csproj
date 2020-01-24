@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>X3-Code</Authors>
+    <PackageId>X3-Code.Infrastructure</PackageId>
+    <Product>X3-Code.Infrastructure</Product>
+    <Description>Contains the unit of work design pattern</Description>
+    <RepositoryType>GIT</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
