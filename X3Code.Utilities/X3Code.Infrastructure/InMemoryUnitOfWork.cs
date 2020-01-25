@@ -48,12 +48,7 @@ namespace X3Code.Infrastructure
             return typedListEntites.AsQueryable();
         }
 
-		public IQueryable<T> QueryView<T>() where T : class, new()
-        {
-	        return Query<T>();
-        }
-
-		public void Remove<TEntity>(TEntity entity) where TEntity : class, new()
+        public void Remove<TEntity>(TEntity entity) where TEntity : class, new()
         {
             this[typeof(TEntity)].Remove(entity);
         }
