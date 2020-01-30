@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace X3Code.Infrastructure
 {
-    public class GenericRepository<T> : IRepository<T> where T : class, IEntity, new()
+    public abstract class GenericRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
 		protected GenericRepository(IUnitOfWork unitOfWork)
         {
