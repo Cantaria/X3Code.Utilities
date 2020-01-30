@@ -6,45 +6,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace X3Code.Infrastructure
 {
-    public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : DbContext, new()
+    public class EfUnitOfWorkBase<TContext> : IDisposable, IUnitOfWork where TContext : DbContext, new()
 	{
 		#region Fields
 
-		private readonly string _connectionString;
-		private TContext _context;
+        private readonly DbContextOptionsBuilder _options;
+        private TContext _context;
 		private readonly object _syncContext = new object();
 
 		#endregion
 
 		#region Construction
 
-		public EFUnitOfWork(string connectionString)
+		public EfUnitOfWorkBase(DbContextOptionsBuilder options)
 		{
-			if (string.IsNullOrEmpty(connectionString))
-			{
-                throw new ArgumentException("No Connectionstring given", nameof(connectionString));
-			}
-			_connectionString = connectionString;
+            _options = options;
+        }
+
+        protected virtual TContext CreateInstance(DbContextOptionsBuilder options)
+        {
+			_context = new TContext();
+            var classType = typeof(TContext);
+            var constructor = classType.GetConstructor(new[] {typeof(DbContextOptions)});
+
+            if (constructor == null)
+            {
+				_context = new TContext();
+                return _context;
+            }
+
+            var result = (TContext)constructor.Invoke(new object[] { options });
+            return result;
 		}
 
-		private static TContext CreateInstance(string connectionString)
-		{
-			var classType = typeof(TContext);
-			var classConstructor = classType.GetConstructor(new[] { typeof(DbContextOptions) });
-			if (classConstructor == null)
-			{
-				var context = new TContext();
-				return context;
-			}
-
-			var dbContextOptionBuilder = new DbContextOptionsBuilder();
-			var builder = dbContextOptionBuilder.UseSqlServer(connectionString);
-
-			var result = (TContext)classConstructor.Invoke(new object[] { builder.Options });
-			return result;
-		}
-
-		private TContext Context
+        private TContext Context
 		{
 			get
 			{
@@ -52,7 +47,7 @@ namespace X3Code.Infrastructure
 				{
 					if (_context == null)
 					{
-						_context = CreateInstance(_connectionString);
+						_context = CreateInstance(_options);
 					}
 
 					return _context;
@@ -72,8 +67,8 @@ namespace X3Code.Infrastructure
 				{
 					_context.Dispose();
 					_context = null;
-				}
-			}
+                }
+            }
 		}
 
 		public IQueryable<T> Query<T>() where T : class, new()
@@ -187,9 +182,9 @@ namespace X3Code.Infrastructure
 			catch (Exception ex)
 			{
                 try
-				{
-					_context = CreateInstance(_connectionString);
-				}
+                {
+                    Context.SaveChanges();
+                }
 				catch(Exception innerEx)
 				{
 					throw new Exception($"SaveChange() failed: [{ex.Message}]", innerEx);
@@ -208,7 +203,7 @@ namespace X3Code.Infrastructure
 			{
                 try
 				{
-					_context = CreateInstance(_connectionString);
+                    await Context.SaveChangesAsync();
 				}
 				catch (Exception innerEx)
 				{
