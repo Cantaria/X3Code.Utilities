@@ -81,12 +81,7 @@ namespace X3Code.Infrastructure
 			return Context.Set<T>();
 		}
 
-		public IQueryable<T> QueryView<T>() where T : class, new()
-		{
-			return Context.Query<T>();
-		}
-
-		public void Remove<T>(T entity) where T : class, new()
+        public void Remove<T>(T entity) where T : class, new()
 		{
 			var entry = Context.Entry(entity);
 			if (entry != null)
@@ -171,7 +166,6 @@ namespace X3Code.Infrastructure
 			SaveChanges();
 		}
 
-		/// <inheritdoc />
 		public async Task AddAsync<T>(T entity) where T : class, IEntity, new()
 		{
 			var entityInContext = await Context.Set<T>().SingleOrDefaultAsync(x => x.EntityId == entity.EntityId);
