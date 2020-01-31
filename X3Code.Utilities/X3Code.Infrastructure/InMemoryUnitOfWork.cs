@@ -7,20 +7,20 @@ namespace X3Code.Infrastructure
 {
     public class InMemoryUnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly Dictionary<Type, HashSet<object>> _dataByType = new Dictionary<Type, HashSet<object>>();
+        private readonly Dictionary<Type, HashSet<object>> _entitiesByType = new Dictionary<Type, HashSet<object>>();
 
         protected HashSet<object> this[Type key]
         {
             get
             {
-                if (_dataByType.ContainsKey(key))
+                if (_entitiesByType.ContainsKey(key))
                 {
-                    return _dataByType[key];
+                    return _entitiesByType[key];
                 }
                 else
                 {
                     var emptyList = new HashSet<object>();
-                    _dataByType.Add(key, emptyList);
+                    _entitiesByType.Add(key, emptyList);
                     return emptyList;
                 }
             }
@@ -28,7 +28,7 @@ namespace X3Code.Infrastructure
 
 		public void Dispose()
         {
-            _dataByType.Clear();
+            _entitiesByType.Clear();
         }
 
 		public IQueryable<TEntity> Query<TEntity>() where TEntity : class, new()
