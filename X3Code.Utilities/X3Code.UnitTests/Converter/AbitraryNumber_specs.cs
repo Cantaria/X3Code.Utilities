@@ -1,7 +1,8 @@
 ﻿using X3Code.Utils.Convert;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
-namespace X3Code.UnitTests
+namespace X3Code.UnitTests.Converter
 {
     public class AbitraryNumber_specs
     {
