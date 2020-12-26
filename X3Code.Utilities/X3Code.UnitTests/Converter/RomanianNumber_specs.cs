@@ -35,5 +35,12 @@ namespace X3Code.UnitTests.Converter
             var result = RomanianConverter.ArabicToRoman(number);
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void HandleEmptyString()
+        {
+            var result = RomanianConverter.RomanToArabic(string.Empty);
+            Assert.Equal(0, result);
+        }
     }
 }
