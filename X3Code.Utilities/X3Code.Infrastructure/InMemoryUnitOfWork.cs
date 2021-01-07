@@ -55,7 +55,10 @@ namespace X3Code.Infrastructure
 
 		public async Task DeleteAsync<TEntity>(TEntity entity) where TEntity : class, new()
 		{
-			this[typeof(TEntity)].Remove(entity);
+			await Task.Run(() =>
+			{
+				this[typeof(TEntity)].Remove(entity);
+			});
 		}
 
 		public void Add<TEntity>(TEntity entity) where TEntity : class, IEntity, new()
@@ -70,12 +73,15 @@ namespace X3Code.Infrastructure
 
 		public async Task AddAsync<TEntity>(TEntity entity) where TEntity : class, IEntity, new()
 		{
-			var listOfEntities = this[typeof(TEntity)];
-			if (listOfEntities.Contains(entity))
+			await Task.Run(() =>
 			{
-				return;
-			}
-			listOfEntities.Add(entity);
+				var listOfEntities = this[typeof(TEntity)];
+				if (listOfEntities.Contains(entity))
+				{
+					return;
+				}
+				listOfEntities.Add(entity);
+			});
 		}
 
 		public void AddRange<TEntity>(IEnumerable<TEntity> listOfEntities) where TEntity : class, new()
@@ -90,12 +96,15 @@ namespace X3Code.Infrastructure
 
 		public async Task AddRangeAsync<TEntity>(IEnumerable<TEntity> listOfEntities) where TEntity : class, new()
 		{
-			var storage = this[typeof(TEntity)];
-			foreach (var entityToStore in listOfEntities)
+			await Task.Run(() =>
 			{
-				if (storage.Contains(entityToStore)) continue;
-				storage.Add(entityToStore);
-			}
+				var storage = this[typeof(TEntity)];
+				foreach (var entityToStore in listOfEntities)
+				{
+					if (storage.Contains(entityToStore)) continue;
+					storage.Add(entityToStore);
+				}
+			});
 		}
 
 		public void RemoveRange<TEntity>(IEnumerable<TEntity> listOfEntities) where TEntity : class, new()
@@ -109,11 +118,14 @@ namespace X3Code.Infrastructure
 
 		public async Task RemoveRangeAsync<TEntity>(IEnumerable<TEntity> listOfEntities) where TEntity : class, new()
 		{
-			var storage = this[typeof(TEntity)];
-			foreach (var entityToRemove in listOfEntities)
+			await Task.Run(() =>
 			{
-				storage.Remove(entityToRemove);
-			}
+				var storage = this[typeof(TEntity)];
+				foreach (var entityToRemove in listOfEntities)
+				{
+					storage.Remove(entityToRemove);
+				}
+			});
 		}
 
 		public void RemoveRange<TEntity>(Func<TEntity, bool> predicate) where TEntity : class, new()
