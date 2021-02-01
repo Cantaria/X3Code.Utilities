@@ -18,69 +18,69 @@ namespace X3Code.Utils.Web
             switch (extension.ToLowerInvariant())
             {
                 //Images
-                case ".jpg":
-                case ".jpeg":
+                case MimeTypeFileExtension.Jpg:
+                case MimeTypeFileExtension.Jpeg:
                     return MimeTypes.Jpeg;
-                case ".png": return MimeTypes.Png;
-                case ".gif": return MimeTypes.Gif;
-                case ".bmp": return MimeTypes.Bmp;
-                case ".svg": return MimeTypes.Svg;
-                case ".tiff": 
-                case ".tif": 
+                case MimeTypeFileExtension.Png: return MimeTypes.Png;
+                case MimeTypeFileExtension.Gif: return MimeTypes.Gif;
+                case MimeTypeFileExtension.Bmp: return MimeTypes.Bmp;
+                case MimeTypeFileExtension.Svg: return MimeTypes.Svg;
+                case MimeTypeFileExtension.Tiff: 
+                case MimeTypeFileExtension.Tif: 
                     return MimeTypes.Tiff;
-                case ".webp": return MimeTypes.Webp;
+                case MimeTypeFileExtension.Webp: return MimeTypes.Webp;
                 //Binary files
-                case ".pdf": return MimeTypes.Pdf;
-                case ".zip": return MimeTypes.Zip;
-                case ".7z": return MimeTypes.SevenZip;
-                case ".gz": return MimeTypes.Gz;
-                case ".bz": return MimeTypes.Bz;
-                case ".bz2": return MimeTypes.Bz2;
-                case ".rar": return MimeTypes.Rar;
-                case ".jar": return MimeTypes.Jar;
-                case ".tar": return MimeTypes.Tar;
-                case ".mpkg": return MimeTypes.Mpkg;
+                case MimeTypeFileExtension.Pdf: return MimeTypes.Pdf;
+                case MimeTypeFileExtension.Zip: return MimeTypes.Zip;
+                case MimeTypeFileExtension.SevenZip: return MimeTypes.SevenZip;
+                case MimeTypeFileExtension.Gz: return MimeTypes.Gz;
+                case MimeTypeFileExtension.Bz: return MimeTypes.Bz;
+                case MimeTypeFileExtension.Bz2: return MimeTypes.Bz2;
+                case MimeTypeFileExtension.Rar: return MimeTypes.Rar;
+                case MimeTypeFileExtension.Jar: return MimeTypes.Jar;
+                case MimeTypeFileExtension.Tar: return MimeTypes.Tar;
+                case MimeTypeFileExtension.Mpkg: return MimeTypes.Mpkg;
                 //Audio
-                case ".aac": return MimeTypes.Aac;
-                case ".oga": return MimeTypes.Oga;
-                case ".mid": return MimeTypes.Mid;
-                case ".midi": return MimeTypes.Midi;
-                case ".mp3": return MimeTypes.Mp3;
-                case ".wav": return MimeTypes.Wav;
-                case ".weba": return MimeTypes.Weba;
+                case MimeTypeFileExtension.Aac: return MimeTypes.Aac;
+                case MimeTypeFileExtension.Oga: return MimeTypes.Oga;
+                case MimeTypeFileExtension.Mid: return MimeTypes.Mid;
+                case MimeTypeFileExtension.Midi: return MimeTypes.Midi;
+                case MimeTypeFileExtension.Mp3: return MimeTypes.Mp3;
+                case MimeTypeFileExtension.Wav: return MimeTypes.Wav;
+                case MimeTypeFileExtension.Weba: return MimeTypes.Weba;
                 //Video
-                case ".avi": return MimeTypes.Avi;
-                case ".mp4": return MimeTypes.Mp4;
-                case ".ogv": return MimeTypes.Ogv;
-                case ".webm": return MimeTypes.Webm;
+                case MimeTypeFileExtension.Avi: return MimeTypes.Avi;
+                case MimeTypeFileExtension.Mp4: return MimeTypes.Mp4;
+                case MimeTypeFileExtension.Ogv: return MimeTypes.Ogv;
+                case MimeTypeFileExtension.Webm: return MimeTypes.Webm;
                 //Office
-                case ".csv": return MimeTypes.Csv;
-                case ".rtf": return MimeTypes.Rtf;
-                case ".doc":  return MimeTypes.Doc;
-                case ".xls":  return MimeTypes.Xls;
-                case ".ppt":  return MimeTypes.Ppt;
-                case ".docx": return MimeTypes.Docx;
-                case ".pptx": return MimeTypes.Pptx;
-                case ".xlsx": return MimeTypes.Xlsx;
-                case ".abi":  return MimeTypes.Abi;
-                case ".ics":  return MimeTypes.Ics;
+                case MimeTypeFileExtension.Csv: return MimeTypes.Csv;
+                case MimeTypeFileExtension.Rtf: return MimeTypes.Rtf;
+                case MimeTypeFileExtension.Doc:  return MimeTypes.Doc;
+                case MimeTypeFileExtension.Xls:  return MimeTypes.Xls;
+                case MimeTypeFileExtension.Ppt:  return MimeTypes.Ppt;
+                case MimeTypeFileExtension.Docx: return MimeTypes.Docx;
+                case MimeTypeFileExtension.Pptx: return MimeTypes.Pptx;
+                case MimeTypeFileExtension.Xlsx: return MimeTypes.Xlsx;
+                case MimeTypeFileExtension.Abi:  return MimeTypes.Abi;
+                case MimeTypeFileExtension.Ics:  return MimeTypes.Ics;
                 //Web
-                case ".css": return MimeTypes.Css;
-                case ".html": return MimeTypes.Html;
-                case ".php": return MimeTypes.Php;
-                case ".js": return MimeTypes.Js;
-                case ".json": return MimeTypes.Json;
-                case ".jsonld": return MimeTypes.Jsonld;
-                case ".ico": return MimeTypes.Ico;
-                case ".epub": return MimeTypes.Epub;
+                case MimeTypeFileExtension.Css: return MimeTypes.Css;
+                case MimeTypeFileExtension.Html: return MimeTypes.Html;
+                case MimeTypeFileExtension.Php: return MimeTypes.Php;
+                case MimeTypeFileExtension.Js: return MimeTypes.Js;
+                case MimeTypeFileExtension.Json: return MimeTypes.Json;
+                case MimeTypeFileExtension.Jsonld: return MimeTypes.Jsonld;
+                case MimeTypeFileExtension.Ico: return MimeTypes.Ico;
+                case MimeTypeFileExtension.Epub: return MimeTypes.Epub;
                 //Other
-                case ".azw": return MimeTypes.Azw;
-                case ".otf": return MimeTypes.Otf;
-                case ".ttf": return MimeTypes.Ttf;
-                case ".woff": return MimeTypes.Woff;
-                case ".woff2": return MimeTypes.Woff2;
-                case ".txt": return MimeTypes.Txt;
-                case ".xml": return MimeTypes.Xml;
+                case MimeTypeFileExtension.Azw: return MimeTypes.Azw;
+                case MimeTypeFileExtension.Otf: return MimeTypes.Otf;
+                case MimeTypeFileExtension.Ttf: return MimeTypes.Ttf;
+                case MimeTypeFileExtension.Woff: return MimeTypes.Woff;
+                case MimeTypeFileExtension.Woff2: return MimeTypes.Woff2;
+                case MimeTypeFileExtension.Txt: return MimeTypes.Txt;
+                case MimeTypeFileExtension.Xml: return MimeTypes.Xml;
                 
                 default: return MimeTypes.Default; //default for every else
             }

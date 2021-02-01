@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace X3Code.Utils.Web
+﻿namespace X3Code.Utils.Web
 {
     public static class MimeTypes
     {
