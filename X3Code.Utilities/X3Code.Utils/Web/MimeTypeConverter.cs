@@ -20,68 +20,69 @@ namespace X3Code.Utils.Web
                 //Images
                 case ".jpg":
                 case ".jpeg":
-                    return "image/jpeg";
-                case ".png": return "image/png";
-                case ".gif": return "image/gif";
-                case ".bmp": return "image/bmp";
-                case ".svg": return "image/svg+xml";
-                case ".tiff": return "image/tiff";
-                case ".tif": return "image/tiff";
-                case ".webp": return "image/webp";
+                    return MimeTypes.Jpeg;
+                case ".png": return MimeTypes.Png;
+                case ".gif": return MimeTypes.Gif;
+                case ".bmp": return MimeTypes.Bmp;
+                case ".svg": return MimeTypes.Svg;
+                case ".tiff": 
+                case ".tif": 
+                    return MimeTypes.Tiff;
+                case ".webp": return MimeTypes.Webp;
                 //Binary files
-                case ".pdf": return "application/pdf";
-                case ".zip": return "application/zip";
-                case ".7z": return "application/x-7z-compressed";
-                case ".gz": return "application/gzip";
-                case ".bz": return "application/x-bzip";
-                case ".bz2": return "application/x-bzip2";
-                case ".rar": return "application/vnd.rar";
-                case ".jar": return "application/java-archive";
-                case ".tar": return "application/x-tar";
-                case ".mpkg": return "application/vnd.apple.installer+xml";
+                case ".pdf": return MimeTypes.Pdf;
+                case ".zip": return MimeTypes.Zip;
+                case ".7z": return MimeTypes.SevenZip;
+                case ".gz": return MimeTypes.Gz;
+                case ".bz": return MimeTypes.Bz;
+                case ".bz2": return MimeTypes.Bz2;
+                case ".rar": return MimeTypes.Rar;
+                case ".jar": return MimeTypes.Jar;
+                case ".tar": return MimeTypes.Tar;
+                case ".mpkg": return MimeTypes.Mpkg;
                 //Audio
-                case ".aac": return "audio/aac";
-                case ".oga": return "audio/ogg";
-                case ".mid": return "audio/midi";
-                case ".midi": return "audio/x-midi";
-                case ".mp3": return "audio/mpeg";
-                case ".wav": return "audio/wav";
-                case ".weba": return "audio/weba";
+                case ".aac": return MimeTypes.Aac;
+                case ".oga": return MimeTypes.Oga;
+                case ".mid": return MimeTypes.Mid;
+                case ".midi": return MimeTypes.Midi;
+                case ".mp3": return MimeTypes.Mp3;
+                case ".wav": return MimeTypes.Wav;
+                case ".weba": return MimeTypes.Weba;
                 //Video
-                case ".avi": return "video/x-msvideo";
-                case ".mp4": return "video/mpeg";
-                case ".ogv": return "video/ogg";
-                case ".webm": return "video/webm";
+                case ".avi": return MimeTypes.Avi;
+                case ".mp4": return MimeTypes.Mp4;
+                case ".ogv": return MimeTypes.Ogv;
+                case ".webm": return MimeTypes.Webm;
                 //Office
-                case ".csv": return "text/csv";
-                case ".rtf": return "application/rtf";
-                case ".doc":  return "application/msword";
-                case ".xls":  return "application/vnd.ms-excel";
-                case ".ppt":  return "application/vnd.ms-powerpoint";
-                case ".docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                case ".pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                case ".xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                case ".abi":  return "application/x-abiword";
-                case ".ics":  return "text/calendar";
+                case ".csv": return MimeTypes.Csv;
+                case ".rtf": return MimeTypes.Rtf;
+                case ".doc":  return MimeTypes.Doc;
+                case ".xls":  return MimeTypes.Xls;
+                case ".ppt":  return MimeTypes.Ppt;
+                case ".docx": return MimeTypes.Docx;
+                case ".pptx": return MimeTypes.Pptx;
+                case ".xlsx": return MimeTypes.Xlsx;
+                case ".abi":  return MimeTypes.Abi;
+                case ".ics":  return MimeTypes.Ics;
                 //Web
-                case ".css": return "text/css";
-                case ".html": return "text/html";
-                case ".php": return "text/php";
-                case ".js": return "text/javascript";
-                case ".json": return "text/json";
-                case ".jsonld": return "text/ld+json";
-                case ".ico": return "image/vnd.microsoft.icon";
-                case ".epub": return "application/epub+zip";
+                case ".css": return MimeTypes.Css;
+                case ".html": return MimeTypes.Html;
+                case ".php": return MimeTypes.Php;
+                case ".js": return MimeTypes.Js;
+                case ".json": return MimeTypes.Json;
+                case ".jsonld": return MimeTypes.Jsonld;
+                case ".ico": return MimeTypes.Ico;
+                case ".epub": return MimeTypes.Epub;
                 //Other
-                case ".azw": return "application/vnd.amazon.ebook";
-                case ".otf": return "font/otf";
-                case ".ttf": return "font/ttf";
-                case ".woff": return "font/woff";
-                case ".woff2": return "font/woff2";
-                case ".txt": return "text/plain";
-                case ".xml": return "text/xml";
+                case ".azw": return MimeTypes.Azw;
+                case ".otf": return MimeTypes.Otf;
+                case ".ttf": return MimeTypes.Ttf;
+                case ".woff": return MimeTypes.Woff;
+                case ".woff2": return MimeTypes.Woff2;
+                case ".txt": return MimeTypes.Txt;
+                case ".xml": return MimeTypes.Xml;
                 
-                default: return "application/octet-stream"; //default for every else
+                default: return MimeTypes.Default; //default for every else
             }
         }
     }
