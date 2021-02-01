@@ -85,5 +85,82 @@ namespace X3Code.Utils.Web
                 default: return MimeTypes.Default; //default for every else
             }
         }
+        
+        /// <summary>
+        /// Determines for a given contenttype a fitting file extension
+        /// </summary>
+        /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
+        /// <param name="contentType">The content type</param>
+        /// <returns>The file extension is known, else string.Empty</returns>
+        public static string GetFileExtensionByContentType(string contentType)
+        {
+            if (string.IsNullOrWhiteSpace(contentType)) return string.Empty;
+
+            switch (contentType.ToLowerInvariant())
+            {
+                //Images
+                 case MimeTypes.Jpeg: return MimeTypeFileExtension.Jpeg;
+                 case MimeTypes.Png:  return MimeTypeFileExtension.Png;
+                 case MimeTypes.Gif:  return MimeTypeFileExtension.Gif;
+                 case MimeTypes.Bmp:  return MimeTypeFileExtension.Bmp;
+                 case MimeTypes.Svg:  return MimeTypeFileExtension.Svg;
+                 case MimeTypes.Tiff: return MimeTypeFileExtension.Tiff;
+                 case MimeTypes.Webp:  return MimeTypeFileExtension.Webp;
+                //Binary files
+                 case MimeTypes.Pdf:  return MimeTypeFileExtension.Pdf;
+                 case MimeTypes.Zip:  return MimeTypeFileExtension.Zip;
+                 case MimeTypes.SevenZip:  return MimeTypeFileExtension.SevenZip;
+                 case MimeTypes.Gz:  return MimeTypeFileExtension.Gz;
+                 case MimeTypes.Bz:  return MimeTypeFileExtension.Bz;
+                 case MimeTypes.Bz2:  return MimeTypeFileExtension.Bz2;
+                 case MimeTypes.Rar:  return MimeTypeFileExtension.Rar;
+                 case MimeTypes.Jar:  return MimeTypeFileExtension.Jar;
+                 case MimeTypes.Tar:  return MimeTypeFileExtension.Tar;
+                 case MimeTypes.Mpkg:  return MimeTypeFileExtension.Mpkg;
+                //Audio
+                 case MimeTypes.Aac:  return MimeTypeFileExtension.Aac;
+                 case MimeTypes.Oga:  return MimeTypeFileExtension.Oga;
+                 case MimeTypes.Mid:  return MimeTypeFileExtension.Mid;
+                 case MimeTypes.Midi:  return MimeTypeFileExtension.Midi;
+                 case MimeTypes.Mp3:  return MimeTypeFileExtension.Mp3;
+                 case MimeTypes.Wav:  return MimeTypeFileExtension.Wav;
+                 case MimeTypes.Weba:  return MimeTypeFileExtension.Weba;
+                //Video
+                 case MimeTypes.Avi:  return MimeTypeFileExtension.Avi;
+                 case MimeTypes.Mp4:  return MimeTypeFileExtension.Mp4;
+                 case MimeTypes.Ogv:  return MimeTypeFileExtension.Ogv;
+                 case MimeTypes.Webm:  return MimeTypeFileExtension.Webm;
+                //Office
+                 case MimeTypes.Csv:  return MimeTypeFileExtension.Csv;
+                 case MimeTypes.Rtf:  return MimeTypeFileExtension.Rtf;
+                 case MimeTypes.Doc:   return MimeTypeFileExtension.Doc;
+                 case MimeTypes.Xls:   return MimeTypeFileExtension.Xls;
+                 case MimeTypes.Ppt:   return MimeTypeFileExtension.Ppt;
+                 case MimeTypes.Docx:  return MimeTypeFileExtension.Docx;
+                 case MimeTypes.Pptx:  return MimeTypeFileExtension.Pptx;
+                 case MimeTypes.Xlsx:  return MimeTypeFileExtension.Xlsx;
+                 case MimeTypes.Abi:   return MimeTypeFileExtension.Abi;
+                 case MimeTypes.Ics:   return MimeTypeFileExtension.Ics;
+                //Web
+                 case MimeTypes.Css:  return MimeTypeFileExtension.Css;
+                 case MimeTypes.Html:  return MimeTypeFileExtension.Html;
+                 case MimeTypes.Php:  return MimeTypeFileExtension.Php;
+                 case MimeTypes.Js:  return MimeTypeFileExtension.Js;
+                 case MimeTypes.Json:  return MimeTypeFileExtension.Json;
+                 case MimeTypes.Jsonld:  return MimeTypeFileExtension.Jsonld;
+                 case MimeTypes.Ico:  return MimeTypeFileExtension.Ico;
+                 case MimeTypes.Epub:  return MimeTypeFileExtension.Epub;
+                //Other
+                 case MimeTypes.Azw:  return MimeTypeFileExtension.Azw;
+                 case MimeTypes.Otf:  return MimeTypeFileExtension.Otf;
+                 case MimeTypes.Ttf:  return MimeTypeFileExtension.Ttf;
+                 case MimeTypes.Woff:  return MimeTypeFileExtension.Woff;
+                 case MimeTypes.Woff2:  return MimeTypeFileExtension.Woff2;
+                 case MimeTypes.Txt:  return MimeTypeFileExtension.Txt;
+                 case MimeTypes.Xml:  return MimeTypeFileExtension.Xml;
+                
+                default: return string.Empty;
+            }
+        }
     }
 }
