@@ -21,7 +21,13 @@ namespace X3Code.Infrastructure
 
         void RemoveAll(IEnumerable<TEntity> entities);
 
+        void RemoveRange(Func<TEntity, bool> predicate);
+
+        Task RemoveRangeAsync(Func<TEntity, bool> predicate);
+
         void Update(TEntity entity);
+
+        void UpdateAll(IEnumerable<TEntity> entities);
 
 		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
 
