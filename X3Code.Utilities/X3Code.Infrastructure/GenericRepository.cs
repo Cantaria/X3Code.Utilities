@@ -128,6 +128,22 @@ namespace X3Code.Infrastructure
 			}
 		}
 
+		public void RemoveRange(Func<T, bool> predicate)
+		{
+			using (new UnitOfWorkLifeCycle(UnitOfWork))
+			{
+				UnitOfWork.RemoveRange(predicate);
+			}
+		}
+
+		public async Task RemoveRangeAsync(Func<T, bool> predicate)
+		{
+			using (new UnitOfWorkLifeCycle(UnitOfWork))
+			{
+				await UnitOfWork.RemoveRangeAsync(predicate);
+			}
+		}
+
 		public void Update(T entity)
         {
             using (new UnitOfWorkLifeCycle(UnitOfWork))
@@ -135,6 +151,17 @@ namespace X3Code.Infrastructure
                 UnitOfWork.Add(entity);
             }
         }
+		
+		public void UpdateAll(IEnumerable<T> entities)
+		{
+			using (new UnitOfWorkLifeCycle(UnitOfWork))
+			{
+				foreach (var entity in entities)
+				{
+					UnitOfWork.Add(entity);	
+				}
+			}
+		}
 
 		public async Task UpdateAsync(T entity)
 		{

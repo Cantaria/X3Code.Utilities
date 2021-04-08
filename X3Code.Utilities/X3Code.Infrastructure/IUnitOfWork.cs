@@ -17,6 +17,10 @@ namespace X3Code.Infrastructure
 
         void RemoveRange<TEntity>(IEnumerable<TEntity> listOfEntities) where TEntity : class, new();
 
+        void RemoveRange<T>(Func<T, bool> predicate)  where T : class, new();
+
+        Task RemoveRangeAsync<T>(Func<T, bool> predicate) where T : class, new();
+
 		Task DeleteAsync<TEntity>(TEntity entity) where TEntity : class, new();
 
 		Task AddAsync<TEntity>(TEntity entity) where TEntity : class, IEntity, new();
