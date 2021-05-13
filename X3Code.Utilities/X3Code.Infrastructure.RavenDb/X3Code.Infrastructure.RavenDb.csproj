@@ -2,6 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Title>Raven DB Repository and UnitOfWork pattern</Title>
+        <Description>Contains the UnitOfWork and Repository pattern for RavenDB</Description>
+        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageReleaseNotes>1.0.0: First release</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
