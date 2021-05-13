@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Raven.Client.Documents;
 
 namespace X3Code.Infrastructure.RavenDb
 {
@@ -36,15 +40,40 @@ namespace X3Code.Infrastructure.RavenDb
 
         #endregion
 
-        public T DoSomething<T>(Func<T,T,T> func)
+        public T SingleOrDefault<T>(Func <T, bool> func)
         {
             var session = Context.Get.OpenSession();
-            return session.Query<T>().Aggregate(func);
+            return session.Query<T>().SingleOrDefault(func);
+        }
+
+        public IEnumerable<T> Where<T>(Func <T, bool> func)
+        {
+            var session = Context.Get.OpenSession();
+            return session.Query<T>().Where(func);
+        }
+
+        public void Store<T>(T entity)
+        {
+            var session = Context.Get.OpenSession();
+            session.Store(entity);
+            session.SaveChanges();
+        }
+        
+        public async Task<T> SingleOrDefaultAsync<T>(Expression<Func <T, bool>> func)
+        {
+            var session = Context.Get.OpenAsyncSession();
+            return await session.Query<T>().SingleOrDefaultAsync(func, CancellationToken.None);
+        }
+
+        public async Task StoreAsync<T>(T entity)
+        {
+            var session = Context.Get.OpenAsyncSession();
+            await session.StoreAsync(entity);
+            await session.SaveChangesAsync();
         }
         
         public void Dispose()
         {
-            
             _context.Dispose();
         }
     }
