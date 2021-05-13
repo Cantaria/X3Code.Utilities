@@ -8,7 +8,7 @@ using Raven.Client.Documents;
 
 namespace X3Code.Infrastructure.RavenDb
 {
-    public class UnitOfWork : IDisposable
+    public class RavenUnitOfWork : IDisposable, IRavenUnitOfWork
     {
         private RavenDbContext _context;
         private readonly IEnumerable<string> _connectionString;
@@ -17,7 +17,7 @@ namespace X3Code.Infrastructure.RavenDb
 
         #region Construction
 
-        public UnitOfWork(IEnumerable<string> nodeUrls, string databaseName)
+        public RavenUnitOfWork(IEnumerable<string> nodeUrls, string databaseName)
         {
             _connectionString = nodeUrls;
             _databaseName = databaseName;
@@ -58,6 +58,13 @@ namespace X3Code.Infrastructure.RavenDb
             session.Store(entity);
             session.SaveChanges();
         }
+
+        public void Delete<T>(T entity)
+        {
+            var session = Context.Get.OpenSession();
+            session.Delete(entity);
+            session.SaveChanges();
+        }
         
         public async Task<T> SingleOrDefaultAsync<T>(Expression<Func <T, bool>> func)
         {
@@ -71,7 +78,12 @@ namespace X3Code.Infrastructure.RavenDb
             await session.StoreAsync(entity);
             await session.SaveChangesAsync();
         }
-        
+
+        public void Complete()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
