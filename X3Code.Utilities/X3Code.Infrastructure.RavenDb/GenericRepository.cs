@@ -16,50 +16,32 @@ namespace X3Code.Infrastructure.RavenDb
         
         public T SingleOrDefault(Func<T, bool> func)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return UnitOfWork.SingleOrDefault(func);   
-            }
+            return UnitOfWork.SingleOrDefault(func);
         }
 
         public IEnumerable<T> Where(Func <T, bool> func)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return UnitOfWork.Where(func);      
-            }
+            return UnitOfWork.Where(func);
         }
 
         public void Store(T entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.Store(entity);       
-            }
+            UnitOfWork.Store(entity);
         }
 
         public void Delete(T entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.Delete(entity);       
-            }
+            UnitOfWork.Delete(entity);
         }
         
         public async Task<T> SingleOrDefaultAsync(Expression<Func <T, bool>> func)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return await UnitOfWork.SingleOrDefaultAsync(func);      
-            }
+            return await UnitOfWork.SingleOrDefaultAsync(func);
         }
 
         public async Task StoreAsync(T entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                await UnitOfWork.StoreAsync(entity);       
-            }
+            await UnitOfWork.StoreAsync(entity);
         }
     }
 }
