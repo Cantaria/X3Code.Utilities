@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Utils", "X3Code.Util
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.UnitTests", "X3Code.UnitTests\X3Code.UnitTests.csproj", "{57672103-3B4E-4431-B7DA-CD51EFEB9FCE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Infrastructure.RavenDb", "X3Code.Infrastructure.RavenDb\X3Code.Infrastructure.RavenDb.csproj", "{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{57672103-3B4E-4431-B7DA-CD51EFEB9FCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57672103-3B4E-4431-B7DA-CD51EFEB9FCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57672103-3B4E-4431-B7DA-CD51EFEB9FCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
