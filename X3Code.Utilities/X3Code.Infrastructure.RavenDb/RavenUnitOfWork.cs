@@ -40,13 +40,13 @@ namespace X3Code.Infrastructure.RavenDb
 
         #endregion
 
-        public T SingleOrDefault<T>(Func <T, bool> func)
+        public T Get<T>(Func <T, bool> func)
         {
             using var session = Context.Get.OpenSession();
             return session.Query<T>().SingleOrDefault(func);
         }
 
-        public IEnumerable<T> Where<T>(Func <T, bool> func)
+        public IEnumerable<T> GetAll<T>(Func <T, bool> func)
         {
             using var session = Context.Get.OpenSession();
             return session.Query<T>().Where(func).ToList();
@@ -66,7 +66,7 @@ namespace X3Code.Infrastructure.RavenDb
             session.SaveChanges();
         }
         
-        public async Task<T> SingleOrDefaultAsync<T>(Expression<Func <T, bool>> func)
+        public async Task<T> GetAsync<T>(Expression<Func <T, bool>> func)
         {
             using var session = Context.Get.OpenAsyncSession();
             return await session.Query<T>().SingleOrDefaultAsync(func, CancellationToken.None);

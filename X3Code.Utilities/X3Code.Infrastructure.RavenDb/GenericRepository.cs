@@ -14,14 +14,14 @@ namespace X3Code.Infrastructure.RavenDb
             UnitOfWork = unitOfWork;
         }
         
-        public T SingleOrDefault(Func<T, bool> func)
+        public T Get(Func<T, bool> func)
         {
-            return UnitOfWork.SingleOrDefault(func);
+            return UnitOfWork.Get(func);
         }
 
-        public IEnumerable<T> Where(Func <T, bool> func)
+        public IEnumerable<T> GetAll(Func <T, bool> func)
         {
-            return UnitOfWork.Where(func);
+            return UnitOfWork.GetAll(func);
         }
 
         public void Store(T entity)
@@ -34,9 +34,9 @@ namespace X3Code.Infrastructure.RavenDb
             UnitOfWork.Delete(entity);
         }
         
-        public async Task<T> SingleOrDefaultAsync(Expression<Func <T, bool>> func)
+        public async Task<T> GetAsync(Expression<Func <T, bool>> func)
         {
-            return await UnitOfWork.SingleOrDefaultAsync(func);
+            return await UnitOfWork.GetAsync(func);
         }
 
         public async Task StoreAsync(T entity)

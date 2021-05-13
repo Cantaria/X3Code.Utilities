@@ -8,11 +8,11 @@ namespace X3Code.Infrastructure.RavenDb
     public interface IRavenUnitOfWork
     {
         void Complete();
-        T SingleOrDefault<T>(Func <T, bool> func);
+        T Get<T>(Func <T, bool> func);
         void Store<T>(T entity);
         void Delete<T>(T entity);
-        IEnumerable<T> Where<T>(Func <T, bool> func);
-        Task<T> SingleOrDefaultAsync<T>(Expression<Func <T, bool>> func);
+        IEnumerable<T> GetAll<T>(Func <T, bool> func);
+        Task<T> GetAsync<T>(Expression<Func <T, bool>> func);
         Task StoreAsync<T>(T entity);
         Task DeleteAsync<T>(T entity);
     }
