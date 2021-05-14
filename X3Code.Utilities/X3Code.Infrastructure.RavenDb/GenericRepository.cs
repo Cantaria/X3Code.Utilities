@@ -9,7 +9,7 @@ namespace X3Code.Infrastructure.RavenDb
     {
         protected IRavenUnitOfWork UnitOfWork;
 
-        protected GenericRepository(IRavenUnitOfWork unitOfWork)
+        public GenericRepository(IRavenUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }

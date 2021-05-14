@@ -7,7 +7,12 @@
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
-        <PackageReleaseNotes>1.0.0: First release</PackageReleaseNotes>
+        <PackageReleaseNotes>1.0.1: public constructor
+1.0.0: First release</PackageReleaseNotes>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.1</PackageVersion>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
+        <FileVersion>1.0.1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
