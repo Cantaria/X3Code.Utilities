@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 
 namespace X3Code.Infrastructure.RavenDb
 {
@@ -84,6 +85,16 @@ namespace X3Code.Infrastructure.RavenDb
             using var session = Context.Get.OpenAsyncSession();
             session.Delete(entity);
             await session.SaveChangesAsync();
+        }
+
+        public IDocumentSession GetSession()
+        {
+            return Context.Get.OpenSession();
+        }
+        
+        public IAsyncDocumentSession GetAsyncSession()
+        {
+            return Context.Get.OpenAsyncSession();
         }
 
         public void Complete()

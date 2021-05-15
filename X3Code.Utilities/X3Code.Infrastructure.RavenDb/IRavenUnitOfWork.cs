@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Raven.Client.Documents.Session;
 
 namespace X3Code.Infrastructure.RavenDb
 {
@@ -15,5 +16,7 @@ namespace X3Code.Infrastructure.RavenDb
         Task<T> GetAsync<T>(Expression<Func <T, bool>> func);
         Task StoreAsync<T>(T entity);
         Task DeleteAsync<T>(T entity);
+        IDocumentSession GetSession();
+        IAsyncDocumentSession GetAsyncSession();
     }
 }
