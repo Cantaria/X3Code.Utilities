@@ -19,9 +19,10 @@
     <PackageIcon>x3code_logo.png</PackageIcon>
     <PackageIconUrl />
     <PackageReleaseNotes>1.3.3: romanian number converter added
+1.5.1: MimeTypeConverter
 1.5.0: Upgrade .Net5
 1.3.1: Abitrary Number converter added</PackageReleaseNotes>
-    <PackageVersion>1.5.0</PackageVersion>
+    <PackageVersion>1.5.1</PackageVersion>
     <Title>X3-Code Utilities</Title>
   </PropertyGroup>
 
