@@ -2,11 +2,14 @@
 
 namespace X3Code.Utils.Convert
 {
+    /// <summary>
+    /// A converter for converting decimal numbers to romanian numerals and back
+    /// </summary>
     public static class RomanianConverter
     {
         #region Constant Values (Romanian numbers)
 
-        private static readonly Dictionary<char, int> CharValues = new Dictionary<char, int>
+        private static readonly Dictionary<char, int> CharValues = new()
         {
             {'I', 1},
             {'V', 5},

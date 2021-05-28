@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace X3Code.Infrastructure.RavenDb
 {
-    public interface IGenericRepository<T> where T : Entity
+    public interface IGenericRepository<T> where T : class, IEntity, new()
     {
         T Get(Func<T, bool> func);
         IEnumerable<T> GetAll(Func <T, bool> func);

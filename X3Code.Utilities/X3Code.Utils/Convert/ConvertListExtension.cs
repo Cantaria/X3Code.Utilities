@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace X3Code.Utils.Convert
 {
+    /// <summary>
+    /// Useful extension for converting a list
+    /// </summary>
     public static class ConvertListExtension
     {
         /// <summary>

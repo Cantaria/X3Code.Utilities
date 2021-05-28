@@ -13,7 +13,7 @@ namespace X3Code.UnitTests.Converter
         [InlineData("A", 36, 10)]
         public void ConvertToDecimal(string number, int numberSystemBase, long expected)
         {
-            var result = AbitraryNumberConverter.ArbitraryToDecimalSystem(number, numberSystemBase);
+            var result = ArbitraryNumberConverter.ArbitraryToDecimalSystem(number, numberSystemBase);
             Assert.Equal(expected, result);
         }
 
@@ -24,7 +24,7 @@ namespace X3Code.UnitTests.Converter
         [InlineData("A", 36, 10)]
         public void ConvertFromDecimal(string expected, int numberSystemBase, long number)
         {
-            var result = AbitraryNumberConverter.DecimalToArbitrarySystem(number, numberSystemBase);
+            var result = ArbitraryNumberConverter.DecimalToArbitrarySystem(number, numberSystemBase);
             Assert.Equal(expected, result);
         }
     }

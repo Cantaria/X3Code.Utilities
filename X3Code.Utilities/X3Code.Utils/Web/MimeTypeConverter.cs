@@ -2,6 +2,10 @@
 
 namespace X3Code.Utils.Web
 {
+    /// <summary>
+    /// Mime Type Converter, helps converting file extension to their specific mime-type
+    /// </summary>
+    /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
     public static class MimeTypeConverter
     {
         /// <summary>

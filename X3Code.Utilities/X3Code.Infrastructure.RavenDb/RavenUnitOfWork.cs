@@ -41,46 +41,46 @@ namespace X3Code.Infrastructure.RavenDb
 
         #endregion
 
-        public T Get<T>(Func <T, bool> func)
+        public T Get<T>(Func <T, bool> func) where T : class, new()
         {
             using var session = Context.Get.OpenSession();
             return session.Query<T>().SingleOrDefault(func);
         }
 
-        public IEnumerable<T> GetAll<T>(Func <T, bool> func)
+        public IEnumerable<T> GetAll<T>(Func <T, bool> func) where T : class, new()
         {
             using var session = Context.Get.OpenSession();
             return session.Query<T>().Where(func).ToList();
         }
 
-        public void Store<T>(T entity)
+        public void Store<T>(T entity) where T : class, new()
         {
             using var session = Context.Get.OpenSession();
             session.Store(entity);
             session.SaveChanges();
         }
 
-        public void Delete<T>(T entity)
+        public void Delete<T>(T entity) where T : class, new()
         {
             using var session = Context.Get.OpenSession();
             session.Delete(entity);
             session.SaveChanges();
         }
         
-        public async Task<T> GetAsync<T>(Expression<Func <T, bool>> func)
+        public async Task<T> GetAsync<T>(Expression<Func <T, bool>> func) where T : class, new()
         {
             using var session = Context.Get.OpenAsyncSession();
             return await session.Query<T>().SingleOrDefaultAsync(func, CancellationToken.None);
         }
 
-        public async Task StoreAsync<T>(T entity)
+        public async Task StoreAsync<T>(T entity) where T : class, new()
         {
             using var session = Context.Get.OpenAsyncSession();
             await session.StoreAsync(entity);
             await session.SaveChangesAsync();
         }
         
-        public async Task DeleteAsync<T>(T entity)
+        public async Task DeleteAsync<T>(T entity) where T : class, new()
         {
             using var session = Context.Get.OpenAsyncSession();
             session.Delete(entity);

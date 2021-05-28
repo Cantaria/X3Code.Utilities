@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace X3Code.Infrastructure.RavenDb
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : Entity
+    public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity, new()
     {
         protected IRavenUnitOfWork UnitOfWork;
 

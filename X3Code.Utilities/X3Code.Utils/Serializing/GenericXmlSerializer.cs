@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace X3Code.Utils.Serializing
 {
     /// <summary>
-    /// Generic capsulation of .Net XML serializer
+    /// Generic encapsulation of .Net XML serializer
     /// </summary>
     public static class GenericXmlSerializer
     {

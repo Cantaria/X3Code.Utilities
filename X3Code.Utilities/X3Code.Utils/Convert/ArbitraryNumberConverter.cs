@@ -2,7 +2,10 @@
 
 namespace X3Code.Utils.Convert
 {
-    public static class AbitraryNumberConverter
+    /// <summary>
+    /// A converter which converts the decimal system into any (up to base 36) number system and back
+    /// </summary>
+    public static class ArbitraryNumberConverter
     {
         /// <summary>
         /// Converts the given number from the numeral system with the specified
