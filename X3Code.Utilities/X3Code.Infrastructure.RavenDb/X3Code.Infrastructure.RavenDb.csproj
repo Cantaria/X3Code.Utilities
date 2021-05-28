@@ -7,14 +7,15 @@
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
-        <PackageReleaseNotes>1.0.2: UnitOfWork reaches out Session
+        <PackageReleaseNotes>1.5.4: improvements UnitOfWork
+1.0.2: UnitOfWork reaches out Session
 1.0.2: improvements
 1.0.1: public constructor
 1.0.0: First release</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.3</PackageVersion>
-        <AssemblyVersion>1.0.3</AssemblyVersion>
-        <FileVersion>1.0.3</FileVersion>
+        <PackageVersion>1.5.4</PackageVersion>
+        <AssemblyVersion>1.5.4.0</AssemblyVersion>
+        <FileVersion>1.5.4.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
