@@ -1,47 +1,87 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using X3Code.Utils.Extensions;
+using Xunit;
 
 namespace X3Code.UnitTests.Extensions
 {
     // ReSharper disable once InconsistentNaming
     public class DataRowExtension_specs
     {
-        private const string DateColumName = "Date";
-        private const string StringColumName = "String";
-        private const string IntegerColumName = "Integer";
-        private const string DecimalColumName = "Decimal";
-        private const string FloatColumName = "Float";
-        private const string DoubleColumName = "Double";
-        private const string BooleanColumName = "Boolean";
-        private const string CharColumName = "Character";
+        #region Const Values
 
-        private static DateTime _testDate = new DateTime(2020, 05, 06, 13, 12, 30);
-        private static string _testString = "Hello World.";
-        private static int _testInt = 24;
-        private static decimal _testDecimal = 24.12M;
-        private static float _testFloat = 5.4F;
-        private static double _testDouble = 7.1;
-        private static bool _testBoolean = true;
-        private static char _testChar = 'a';
-        
-        private static DataTable GetTestTable()
+        private const string DateColumnName = "Date";
+        private const string StringColumnName = "String";
+        private const string IntegerColumnName = "Integer";
+        private const string DecimalColumnName = "Decimal";
+        private const string FloatColumnName = "Float";
+        private const string DoubleColumnName = "Double";
+        private const string BooleanColumnName = "Boolean";
+        private const string CharColumnName = "Character";
+
+        private static readonly DateTime TestDate = new DateTime(2020, 05, 06, 13, 12, 30);
+        private const string TestString = "Hello World.";
+        private const int TestInt = 24;
+        private const decimal TestDecimal = 24.12M;
+        private const float TestFloat = 5.4F;
+        private const double TestDouble = 7.1;
+        private const bool TestBoolean = true;
+        private const char TestChar = 'a';
+
+        #endregion
+
+        #region Test Helpers
+
+        private static DataTable CreateTestTable()
         {
             var result = new DataTable();
-            result.Columns.Add(DateColumName, typeof(DateTime));
-            result.Columns.Add(StringColumName, typeof(string));
-            result.Columns.Add(IntegerColumName, typeof(int));
-            result.Columns.Add(DecimalColumName, typeof(decimal));
-            result.Columns.Add(FloatColumName, typeof(float));
-            result.Columns.Add(DoubleColumName, typeof(double));
-            result.Columns.Add(BooleanColumName, typeof(bool));
-            result.Columns.Add(CharColumName, typeof(char));
+            result.Columns.Add(DateColumnName, typeof(string));
+            result.Columns.Add(StringColumnName, typeof(string));
+            result.Columns.Add(IntegerColumnName, typeof(string));
+            result.Columns.Add(DecimalColumnName, typeof(string));
+            result.Columns.Add(FloatColumnName, typeof(string));
+            result.Columns.Add(DoubleColumnName, typeof(string));
+            result.Columns.Add(BooleanColumnName, typeof(string));
+            result.Columns.Add(CharColumnName, typeof(string));
 
             var row = result.NewRow();
-            row[DateColumName] = _testDate;
-            row[StringColumName] = _testString;
+            row[DateColumnName] = TestDate.ToString("dd.MM.yyyy HH:mm:ss");
+            row[StringColumnName] = TestString;
+            row[IntegerColumnName] = TestInt;
+            row[DecimalColumnName] = TestDecimal;
+            row[FloatColumnName] = TestFloat;
+            row[DoubleColumnName] = TestDouble;
+            row[BooleanColumnName] = TestBoolean;
+            row[CharColumnName] = TestChar;
+            result.Rows.Add(row);
 
             return result;
+        }
+
+        #endregion
+
+        [Fact]
+        public void CanConvertString()
+        {
+            var testTable = CreateTestTable();
+            var row = testTable.Rows[0];
+            Assert.NotNull(row);
+
+            var stringResult = row.ToStringOrNull(StringColumnName);
+            Assert.Equal(TestString, stringResult);
+        }
+        
+        [Fact]
+        public void CanConvertDate()
+        {
+            var testTable = CreateTestTable();
+            var row = testTable.Rows[0];
+            Assert.NotNull(row);
+
+            var dateResult = row.ToDate(DateColumnName, "dd.MM.yyyy HH:mm:ss");
+            Assert.True(dateResult.HasValue);
+            Assert.Equal(TestDate, dateResult.Value);
         }
     }
 }
