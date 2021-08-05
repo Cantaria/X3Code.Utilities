@@ -79,7 +79,7 @@ namespace X3Code.UnitTests.Extensions
             var row = testTable.Rows[0];
             Assert.NotNull(row);
 
-            var dateResult = row.ToDate(DateColumnName, "dd.MM.yyyy HH:mm:ss");
+            var dateResult = row.ToDateTime(DateColumnName, "dd.MM.yyyy HH:mm:ss");
             Assert.True(dateResult.HasValue);
             Assert.Equal(TestDate, dateResult.Value);
         }

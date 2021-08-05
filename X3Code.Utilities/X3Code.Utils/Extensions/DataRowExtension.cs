@@ -25,11 +25,11 @@ namespace X3Code.Utils.Extensions
         /// <summary>
         /// Tries to convert a date string from the row and returns a nullable DateTime object
         /// </summary>
-        /// <param name="source">Thw whole DataRow</param>
+        /// <param name="source">The whole DataRow</param>
         /// <param name="columnName">The name of the column</param>
         /// <param name="datePattern">The pattern for the date format. Like: dd.MM.yyyy or MM/dd/yyyy ...</param>
         /// <returns>The DateTime on success, otherwise null</returns>
-        public static DateTime? ToDate(this DataRow source, string columnName, string datePattern)
+        public static DateTime? ToDateTime(this DataRow source, string columnName, string datePattern)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
             if (string.IsNullOrWhiteSpace(datePattern)) throw new ArgumentNullException(nameof(datePattern));
@@ -43,6 +43,73 @@ namespace X3Code.Utils.Extensions
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Tries to convert the string to a decimal.
+        /// </summary>
+        /// <param name="source">The whole DataRow</param>
+        /// <param name="columnName">The name of the column</param>
+        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
+        /// <returns>The Decimal on success, otherwise '0'</returns>
+        public static decimal ToDecimal(this DataRow source, string columnName, IFormatProvider culture = null)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            if (culture == null) culture = new CultureInfo("EN");
+            if (source[columnName] == DBNull.Value) return 0;
+            
+            var content = source.ToStringOrNull(columnName);
+            if (string.IsNullOrWhiteSpace(content)) return 0;
+            
+            if (decimal.TryParse(content, NumberStyles.Any, culture, out var result))
+            {
+                return result;
+            }
+            return 0;
+        }
+        
+        /// <summary>
+        /// Tries to convert a string to boolean.
+        /// </summary>
+        /// <param name="source">The whole DataRow</param>
+        /// <param name="columnName">The name of the column</param>
+        /// <returns>The Boolean on success, otherwise false</returns>
+        public static bool ToBoolean(this DataRow source, string columnName)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            if (source[columnName] == DBNull.Value) return false;
+            
+            var content = source.ToStringOrNull(columnName);
+            if (string.IsNullOrWhiteSpace(content)) return false;
+
+            var normalizedContent = content.Trim().ToLowerInvariant();
+            switch (normalizedContent)
+            {
+                case "1":
+                case "yes":
+                case "true": 
+                    return true;
+
+                default: return false;
+            }
+        }
+        
+        /// <summary>
+        /// Returns the value as int.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public static int ToInteger(this DataRow source, string columnName)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            var content = source.ToStringOrNull(columnName);
+
+            if (int.TryParse(content, out var result))
+            {
+                return result;
+            }
+            return 0;
         }
     }
 }
