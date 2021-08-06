@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using X3Code.Utils.Extensions;
 using Xunit;
 
@@ -11,6 +12,8 @@ namespace X3Code.UnitTests.Extensions
     {
         #region Const Values
 
+        private const string DateTimePattern = "dd.MM.yyyy HH:mm:ss";
+        
         private const string DateColumnName = "Date";
         private const string StringColumnName = "String";
         private const string IntegerColumnName = "Integer";
@@ -20,7 +23,9 @@ namespace X3Code.UnitTests.Extensions
         private const string BooleanColumnName = "Boolean";
         private const string Boolean2ColumnName = "Boolean2";
         private const string Boolean3ColumnName = "Boolean3";
+        private const string Boolean4ColumnName = "Boolean4";
         private const string CharColumnName = "Character";
+        private const string NullColumnName = "NullColumn";
 
         private static readonly DateTime TestDate = new DateTime(2020, 05, 06, 13, 12, 30);
         private const string TestString = "Hello World.";
@@ -31,6 +36,7 @@ namespace X3Code.UnitTests.Extensions
         private const bool TestBoolean = true;
         private const int TestBoolean2 = 1;
         private const string TestBoolean3 = "true";
+        private const string TestBoolean4 = "false";
         private const char TestChar = 'a';
 
         #endregion
@@ -49,22 +55,32 @@ namespace X3Code.UnitTests.Extensions
             result.Columns.Add(BooleanColumnName, typeof(string));
             result.Columns.Add(Boolean2ColumnName, typeof(string));
             result.Columns.Add(Boolean3ColumnName, typeof(string));
+            result.Columns.Add(Boolean4ColumnName, typeof(string));
             result.Columns.Add(CharColumnName, typeof(string));
+            result.Columns.Add(NullColumnName, typeof(string));
 
             var row = result.NewRow();
-            row[DateColumnName] = TestDate.ToString("dd.MM.yyyy HH:mm:ss");
+            row[DateColumnName] = TestDate.ToString(DateTimePattern);
             row[StringColumnName] = TestString;
             row[IntegerColumnName] = TestInt;
-            row[DecimalColumnName] = TestDecimal;
-            row[FloatColumnName] = TestFloat;
-            row[DoubleColumnName] = TestDouble;
+            row[DecimalColumnName] = TestDecimal.ToString(new CultureInfo("en"));
+            row[FloatColumnName] = TestFloat.ToString(new CultureInfo("en"));
+            row[DoubleColumnName] = TestDouble.ToString(new CultureInfo("en"));
             row[BooleanColumnName] = TestBoolean;
             row[Boolean2ColumnName] = TestBoolean2;
             row[Boolean3ColumnName] = TestBoolean3;
+            row[Boolean4ColumnName] = TestBoolean4;
             row[CharColumnName] = TestChar;
+            row[NullColumnName] = DBNull.Value;
             result.Rows.Add(row);
 
             return result;
+        }
+
+        private static DataRow GetTestRow()
+        {
+            var testTable = CreateTestTable();
+            return testTable.Rows[0];
         }
 
         #endregion
@@ -72,8 +88,7 @@ namespace X3Code.UnitTests.Extensions
         [Fact]
         public void CanConvertString()
         {
-            var testTable = CreateTestTable();
-            var row = testTable.Rows[0];
+            var row = GetTestRow();
             Assert.NotNull(row);
 
             var stringResult = row.ToStringOrNull(StringColumnName);
@@ -83,11 +98,10 @@ namespace X3Code.UnitTests.Extensions
         [Fact]
         public void CanConvertDate()
         {
-            var testTable = CreateTestTable();
-            var row = testTable.Rows[0];
+            var row = GetTestRow();
             Assert.NotNull(row);
 
-            var dateResult = row.ToDateTime(DateColumnName, "dd.MM.yyyy HH:mm:ss");
+            var dateResult = row.ToDateTime(DateColumnName, DateTimePattern);
             Assert.True(dateResult.HasValue);
             Assert.Equal(TestDate, dateResult.Value);
         }
@@ -95,16 +109,84 @@ namespace X3Code.UnitTests.Extensions
         [Fact]
         public void CanConvertBool()
         {
-            var testTable = CreateTestTable();
-            var row = testTable.Rows[0];
+            var row = GetTestRow();
             Assert.NotNull(row);
 
             var boolResult = row.ToBoolean(BooleanColumnName);
             var bool2Result = row.ToBoolean(Boolean2ColumnName);
             var bool3Result = row.ToBoolean(Boolean3ColumnName);
+            var bool4Result = row.ToBoolean(Boolean4ColumnName);
             Assert.True(boolResult);
             Assert.True(bool2Result);
             Assert.True(bool3Result);
+            Assert.False(bool4Result);
         }
+        
+        [Fact]
+        public void CanConvertInt()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            var intResult = row.ToInteger(IntegerColumnName);
+            Assert.Equal(TestInt, intResult);
+        }
+        
+        [Fact]
+        public void CanConvertDecimal()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            var decimalResult = row.ToDecimal(DecimalColumnName);
+            Assert.Equal(TestDecimal, decimalResult);
+        }
+        
+        [Fact]
+        public void CanConvertFloat()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            var floatResult = row.ToFloat(FloatColumnName);
+            Assert.Equal(TestFloat, floatResult);
+        }
+        
+        [Fact]
+        public void CanConvertDouble()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            var doubleResult = row.ToDouble(DoubleColumnName);
+            Assert.Equal(TestDouble, doubleResult);
+        }
+                
+        [Fact]
+        public void CanConvertChar()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            var charResult = row.ToChar(CharColumnName);
+            Assert.Equal(TestChar, charResult);
+        }
+
+        [Fact]
+        public void CanThrowArgumentNull()
+        {
+            var row = GetTestRow();
+            Assert.NotNull(row);
+
+            Assert.Throws<ArgumentNullException>(() => row.ToStringOrNull(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToDateTime(string.Empty, DateTimePattern));
+            Assert.Throws<ArgumentNullException>(() => row.ToInteger(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToDecimal(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToFloat(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToDouble(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToBoolean(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => row.ToChar(string.Empty));
+        }
+        
     }
 }

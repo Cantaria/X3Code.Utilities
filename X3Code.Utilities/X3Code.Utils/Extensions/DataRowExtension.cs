@@ -1,27 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 
 namespace X3Code.Utils.Extensions
 {
     public static class DataRowExtension
     {
-        /// <summary>
-        /// Tries to convert the column content to a string
-        /// </summary>
-        /// <param name="row">The whole DataRow</param>
-        /// <param name="columnName">The column name within the row</param>
-        /// <returns></returns>
-        public static string ToStringOrNull(this DataRow row, string columnName)
-        {
-            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
-            
-            if (row[columnName] == DBNull.Value) return null;
-            var result = (string)row[columnName];
-
-            return result.Trim();
-        }
-
         /// <summary>
         /// Tries to convert a date string from the row and returns a nullable DateTime object
         /// </summary>
@@ -46,6 +31,40 @@ namespace X3Code.Utils.Extensions
         }
 
         /// <summary>
+        /// Tries to convert the column content to a string
+        /// </summary>
+        /// <param name="row">The whole DataRow</param>
+        /// <param name="columnName">The column name within the row</param>
+        /// <returns></returns>
+        public static string ToStringOrNull(this DataRow row, string columnName)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            
+            if (row[columnName] == DBNull.Value) return null;
+            var result = (string)row[columnName];
+
+            return result.Trim();
+        }
+
+        /// <summary>
+        /// Returns the value as int.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public static int ToInteger(this DataRow source, string columnName)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            var content = source.ToStringOrNull(columnName);
+
+            if (int.TryParse(content, out var result))
+            {
+                return result;
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Tries to convert the string to a decimal.
         /// </summary>
         /// <param name="source">The whole DataRow</param>
@@ -67,13 +86,59 @@ namespace X3Code.Utils.Extensions
             }
             return 0;
         }
-        
+
+        /// <summary>
+        /// Tries to convert the string to a float.
+        /// </summary>
+        /// <param name="source">The whole DataRow</param>
+        /// <param name="columnName">The name of the column</param>
+        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
+        /// <returns>The float on success, otherwise '0'</returns>
+        public static float ToFloat(this DataRow source, string columnName, IFormatProvider culture = null)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            if (culture == null) culture = new CultureInfo("EN");
+            if (source[columnName] == DBNull.Value) return 0;
+            
+            var content = source.ToStringOrNull(columnName);
+            if (string.IsNullOrWhiteSpace(content)) return 0;
+            
+            if (float.TryParse(content, NumberStyles.Any, culture, out var result))
+            {
+                return result;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Tries to convert the string to a double.
+        /// </summary>
+        /// <param name="source">The whole DataRow</param>
+        /// <param name="columnName">The name of the column</param>
+        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
+        /// <returns>The double on success, otherwise '0'</returns>
+        public static double ToDouble(this DataRow source, string columnName, IFormatProvider culture = null)
+        {
+            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+            if (culture == null) culture = new CultureInfo("EN");
+            if (source[columnName] == DBNull.Value) return 0;
+            
+            var content = source.ToStringOrNull(columnName);
+            if (string.IsNullOrWhiteSpace(content)) return 0;
+            
+            if (double.TryParse(content, NumberStyles.Any, culture, out var result))
+            {
+                return result;
+            }
+            return 0;
+        }
+
         /// <summary>
         /// Tries to convert a string to boolean.
         /// </summary>
         /// <param name="source">The whole DataRow</param>
         /// <param name="columnName">The name of the column</param>
-        /// <returns>The Boolean on success, otherwise false</returns>
+        /// <returns>The boolean on success, otherwise false</returns>
         public static bool ToBoolean(this DataRow source, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -95,21 +160,20 @@ namespace X3Code.Utils.Extensions
         }
         
         /// <summary>
-        /// Returns the value as int.
+        /// Tries to convert the column content to a char
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="columnName"></param>
-        /// <returns></returns>
-        public static int ToInteger(this DataRow source, string columnName)
+        /// <param name="row">The whole DataRow</param>
+        /// <param name="columnName">The column name within the row</param>
+        /// <returns>The character on success, otherwise '\0'</returns>
+        public static char ToChar(this DataRow row, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
-            var content = source.ToStringOrNull(columnName);
+            
+            if (row[columnName] == DBNull.Value) return '\0';
+            var result = row.ToStringOrNull(columnName);
+            if (result.Length > 1) throw new Exception("String contains more than one character");
 
-            if (int.TryParse(content, out var result))
-            {
-                return result;
-            }
-            return 0;
+            return result.First();
         }
     }
 }
