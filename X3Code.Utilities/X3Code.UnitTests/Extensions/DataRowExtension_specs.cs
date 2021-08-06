@@ -16,6 +16,7 @@ namespace X3Code.UnitTests.Extensions
         
         private const string DateColumnName = "Date";
         private const string StringColumnName = "String";
+        private const string EmptyColumnName = "Empty";
         private const string IntegerColumnName = "Integer";
         private const string DecimalColumnName = "Decimal";
         private const string FloatColumnName = "Float";
@@ -48,6 +49,7 @@ namespace X3Code.UnitTests.Extensions
             var result = new DataTable();
             result.Columns.Add(DateColumnName, typeof(string));
             result.Columns.Add(StringColumnName, typeof(string));
+            result.Columns.Add(EmptyColumnName, typeof(string));
             result.Columns.Add(IntegerColumnName, typeof(string));
             result.Columns.Add(DecimalColumnName, typeof(string));
             result.Columns.Add(FloatColumnName, typeof(string));
@@ -72,6 +74,7 @@ namespace X3Code.UnitTests.Extensions
             row[Boolean4ColumnName] = TestBoolean4;
             row[CharColumnName] = TestChar;
             row[NullColumnName] = DBNull.Value;
+            row[EmptyColumnName] = string.Empty;
             result.Rows.Add(row);
 
             return result;
@@ -93,6 +96,9 @@ namespace X3Code.UnitTests.Extensions
 
             var stringResult = row.ToStringOrNull(StringColumnName);
             Assert.Equal(TestString, stringResult);
+
+            var nullValue = row.ToStringOrNull(NullColumnName);
+            Assert.Null(nullValue);
         }
         
         [Fact]
@@ -120,6 +126,12 @@ namespace X3Code.UnitTests.Extensions
             Assert.True(bool2Result);
             Assert.True(bool3Result);
             Assert.False(bool4Result);
+            
+            var nullValue = row.ToBoolean(NullColumnName);
+            Assert.False(nullValue);
+            
+            var emptyValue = row.ToBoolean(EmptyColumnName);
+            Assert.False(emptyValue);
         }
         
         [Fact]
@@ -130,6 +142,9 @@ namespace X3Code.UnitTests.Extensions
 
             var intResult = row.ToInteger(IntegerColumnName);
             Assert.Equal(TestInt, intResult);
+            
+            var nullValue = row.ToInteger(NullColumnName);
+            Assert.Equal(0, nullValue);
         }
         
         [Fact]
@@ -140,6 +155,15 @@ namespace X3Code.UnitTests.Extensions
 
             var decimalResult = row.ToDecimal(DecimalColumnName);
             Assert.Equal(TestDecimal, decimalResult);
+            
+            var nullValue = row.ToDecimal(NullColumnName);
+            Assert.Equal(0, nullValue);
+            
+            var emptyValue = row.ToDecimal(EmptyColumnName);
+            Assert.Equal(0, emptyValue);
+            
+            var wrongFormat = row.ToDecimal(DecimalColumnName, new CultureInfo("de"));
+            Assert.Equal(0, wrongFormat);
         }
         
         [Fact]

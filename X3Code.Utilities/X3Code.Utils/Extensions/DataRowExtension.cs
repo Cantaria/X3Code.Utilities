@@ -79,7 +79,7 @@ namespace X3Code.Utils.Extensions
             
             var content = source.ToStringOrNull(columnName);
             if (string.IsNullOrWhiteSpace(content)) return 0;
-            
+            //TODO: not strict enough!
             if (decimal.TryParse(content, NumberStyles.Any, culture, out var result))
             {
                 return result;
