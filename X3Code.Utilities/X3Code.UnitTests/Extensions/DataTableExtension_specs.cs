@@ -223,6 +223,16 @@ namespace X3Code.UnitTests.Extensions
 
             Assert.True(contains);
         }
+        
+        [Fact]
+        public void CanConvertWithTableName()
+        {
+            const string Name = "MyDataTable";
+            var referenceData = GenerateDeathStars().ToList();
+            var asDataTable = referenceData.ToDataTable(Name);
+
+            Assert.Equal(Name, asDataTable.TableName);
+        }
 
         [Theory]
         [InlineData("Name", typeof(string))]
