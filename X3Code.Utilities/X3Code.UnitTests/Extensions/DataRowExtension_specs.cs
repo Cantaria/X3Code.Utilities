@@ -19,6 +19,7 @@ namespace X3Code.UnitTests.Extensions
         private const string EmptyColumnName = "Empty";
         private const string IntegerColumnName = "Integer";
         private const string DecimalColumnName = "Decimal";
+        private const string DecimalDeColumnName = "DecimalDe";
         private const string FloatColumnName = "Float";
         private const string DoubleColumnName = "Double";
         private const string BooleanColumnName = "Boolean";
@@ -52,6 +53,7 @@ namespace X3Code.UnitTests.Extensions
             result.Columns.Add(EmptyColumnName, typeof(string));
             result.Columns.Add(IntegerColumnName, typeof(string));
             result.Columns.Add(DecimalColumnName, typeof(string));
+            result.Columns.Add(DecimalDeColumnName, typeof(string));
             result.Columns.Add(FloatColumnName, typeof(string));
             result.Columns.Add(DoubleColumnName, typeof(string));
             result.Columns.Add(BooleanColumnName, typeof(string));
@@ -66,6 +68,7 @@ namespace X3Code.UnitTests.Extensions
             row[StringColumnName] = TestString;
             row[IntegerColumnName] = TestInt;
             row[DecimalColumnName] = TestDecimal.ToString(new CultureInfo("en"));
+            row[DecimalDeColumnName] = TestDecimal.ToString(new CultureInfo("de"));
             row[FloatColumnName] = TestFloat.ToString(new CultureInfo("en"));
             row[DoubleColumnName] = TestDouble.ToString(new CultureInfo("en"));
             row[BooleanColumnName] = TestBoolean;
@@ -110,6 +113,12 @@ namespace X3Code.UnitTests.Extensions
             var dateResult = row.ToDateTime(DateColumnName, DateTimePattern);
             Assert.True(dateResult.HasValue);
             Assert.Equal(TestDate, dateResult.Value);
+
+            var nullResult = row.ToDateTime(NullColumnName, DateTimePattern);
+            Assert.Null(nullResult);
+            
+            var parseFailed = row.ToDateTime(DateColumnName, "hh-mm-dd");
+            Assert.Null(parseFailed);
         }
         
         [Fact]
@@ -162,8 +171,11 @@ namespace X3Code.UnitTests.Extensions
             var emptyValue = row.ToDecimal(EmptyColumnName);
             Assert.Equal(0, emptyValue);
             
-            var wrongFormat = row.ToDecimal(DecimalColumnName, new CultureInfo("de"));
-            Assert.Equal(0, wrongFormat);
+            var wrongFormat = row.ToDecimal(DecimalDeColumnName, new CultureInfo("de"));
+            Assert.Equal(TestDecimal, wrongFormat);
+            
+            var nodecimal = row.ToDecimal(StringColumnName);
+            Assert.Equal(0, nodecimal);
         }
         
         [Fact]
@@ -174,6 +186,15 @@ namespace X3Code.UnitTests.Extensions
 
             var floatResult = row.ToFloat(FloatColumnName);
             Assert.Equal(TestFloat, floatResult);
+            
+            var nullValue = row.ToFloat(NullColumnName);
+            Assert.Equal(0, nullValue);
+            
+            var emptyValue = row.ToFloat(EmptyColumnName);
+            Assert.Equal(0, emptyValue);
+            
+            var nodecimal = row.ToFloat(StringColumnName);
+            Assert.Equal(0, nodecimal);
         }
         
         [Fact]
@@ -184,6 +205,15 @@ namespace X3Code.UnitTests.Extensions
 
             var doubleResult = row.ToDouble(DoubleColumnName);
             Assert.Equal(TestDouble, doubleResult);
+            
+            var nullValue = row.ToDouble(NullColumnName);
+            Assert.Equal(0, nullValue);
+            
+            var emptyValue = row.ToDouble(EmptyColumnName);
+            Assert.Equal(0, emptyValue);
+            
+            var nodecimal = row.ToDouble(StringColumnName);
+            Assert.Equal(0, nodecimal);
         }
                 
         [Fact]
@@ -194,6 +224,11 @@ namespace X3Code.UnitTests.Extensions
 
             var charResult = row.ToChar(CharColumnName);
             Assert.Equal(TestChar, charResult);
+            
+            var nullValue = row.ToChar(NullColumnName);
+            Assert.Equal(0, nullValue);
+            
+            Assert.Throws<Exception>(() => row.ToChar(StringColumnName));
         }
 
         [Fact]
@@ -204,6 +239,7 @@ namespace X3Code.UnitTests.Extensions
 
             Assert.Throws<ArgumentNullException>(() => row.ToStringOrNull(string.Empty));
             Assert.Throws<ArgumentNullException>(() => row.ToDateTime(string.Empty, DateTimePattern));
+            Assert.Throws<ArgumentNullException>(() => row.ToDateTime(DateColumnName, string.Empty));
             Assert.Throws<ArgumentNullException>(() => row.ToInteger(string.Empty));
             Assert.Throws<ArgumentNullException>(() => row.ToDecimal(string.Empty));
             Assert.Throws<ArgumentNullException>(() => row.ToFloat(string.Empty));
