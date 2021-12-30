@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.UnitTests", "X3Code.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Infrastructure.RavenDb", "X3Code.Infrastructure.RavenDb\X3Code.Infrastructure.RavenDb.csproj", "{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Infrastructure.Mobile", "X3Code.Infrastructure.Mobile\X3Code.Infrastructure.Mobile.csproj", "{4B99617F-0D1B-4D13-92EE-533483B88BDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{216BCB04-6F17-4655-8DF5-B9EBD9E8BA66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B99617F-0D1B-4D13-92EE-533483B88BDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B99617F-0D1B-4D13-92EE-533483B88BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B99617F-0D1B-4D13-92EE-533483B88BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B99617F-0D1B-4D13-92EE-533483B88BDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
