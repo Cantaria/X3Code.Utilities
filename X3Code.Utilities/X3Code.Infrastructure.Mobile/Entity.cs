@@ -6,6 +6,6 @@ namespace X3Code.Infrastructure.Mobile
 	public abstract class Entity : IEntity
 	{
 		[Key]
-		public abstract Guid EntityId { get; set; }
+		public abstract string EntityId { get; set; }
 	}
 }
