@@ -2,6 +2,18 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.5.4.0</PackageVersion>
+        <Title>X3Code Infrastructure for Mobile</Title>
+        <Authors>X3-Code</Authors>
+        <AssemblyVersion>1.5.4.0</AssemblyVersion>
+        <FileVersion>1.5.4.0</FileVersion>
+        <Copyright>MIT</Copyright>
+        <Company>X3-Code</Company>
+        <Description>Contains the unit of work repository pattern for mobile</Description>
+        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
