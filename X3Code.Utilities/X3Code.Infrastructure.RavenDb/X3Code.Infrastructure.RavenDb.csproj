@@ -13,9 +13,9 @@
 1.0.1: public constructor
 1.0.0: First release</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.5.4</PackageVersion>
-        <AssemblyVersion>1.5.4.0</AssemblyVersion>
-        <FileVersion>1.5.4.0</FileVersion>
+        <PackageVersion>1.5.5.0</PackageVersion>
+        <AssemblyVersion>1.5.5.0</AssemblyVersion>
+        <FileVersion>1.5.5.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
