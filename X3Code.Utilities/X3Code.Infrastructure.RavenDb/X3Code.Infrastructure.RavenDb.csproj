@@ -16,10 +16,19 @@
         <PackageVersion>1.5.4</PackageVersion>
         <AssemblyVersion>1.5.4.0</AssemblyVersion>
         <FileVersion>1.5.4.0</FileVersion>
+        <PackageIcon>x3code_logo.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="RavenDB.Client" Version="5.1.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\x3code_logo.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>x3code_logo.png</Link>
+      </None>
     </ItemGroup>
 
 </Project>

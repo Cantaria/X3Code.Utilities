@@ -2,8 +2,27 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.5.0</PackageVersion>
+        <Title>X3-Code Azure Utilities</Title>
+        <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
+        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
+        <PackageIcon>x3code_logo.png</PackageIcon>
+        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageReleaseNotes>1.5.0: Initial creation</PackageReleaseNotes>
+        <AssemblyVersion>1.5.0</AssemblyVersion>
+        <FileVersion>1.5.0</FileVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\x3code_logo.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>x3code_logo.png</Link>
+      </None>
+    </ItemGroup>
 
 </Project>
