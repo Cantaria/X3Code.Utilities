@@ -20,7 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\X3Code.Azure.Utils\X3Code.Azure.Utils.csproj" />
     <ProjectReference Include="..\X3Code.Utils\X3Code.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Azure\testfile.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
