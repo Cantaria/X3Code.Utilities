@@ -7,10 +7,14 @@ using Azure.Storage.Blobs.Models;
 
 namespace X3Code.Azure.Utils.Storage
 {
+    /// <summary>
+    /// Provides an encapsulation of the basic azure blob storage operations.
+    /// </summary>
     public class AzureBlobStorage : StorageBase
     {
         private readonly BlobContainerClient _containerClient;
 
+        /// <inheritdoc/>>
         public AzureBlobStorage(string connectionString, string containerName) : base(connectionString, containerName)
         {
             _containerClient = new BlobContainerClient(connectionString, containerName);
@@ -47,7 +51,7 @@ namespace X3Code.Azure.Utils.Storage
         }
 
         /// <summary>
-        /// Deletes the given file from the storage
+        /// Deletes the given file from the blob storage
         /// </summary>
         /// <param name="path"></param>
         public override async Task Delete(string path)
@@ -57,7 +61,7 @@ namespace X3Code.Azure.Utils.Storage
         }
 
         /// <summary>
-        /// Downloads a specific file from blob
+        /// Downloads a specific blob
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -87,6 +91,8 @@ namespace X3Code.Azure.Utils.Storage
             await destinationBlob.UploadAsync(stream);
         }
 
+        #region Private Helpers
+
         private BlobClient GetBlob(string path)
         {
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
@@ -98,5 +104,7 @@ namespace X3Code.Azure.Utils.Storage
         {
             return await blob.ExistsAsync();
         }
+
+        #endregion
     }
 }
