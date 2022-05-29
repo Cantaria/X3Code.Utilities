@@ -12,8 +12,11 @@ namespace X3Code.Utils
         /// <summary>
         /// Checks via reges if the given email string is a valid email.
         /// <see cref="https://docs.microsoft.com/de-de/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format"/>
+        /// <remarks>
+        /// RegexMatchTimeoutException and ArgumentException will be eaten. Instead of throwing, this method will return false!
+        /// </remarks>
         /// </summary>
-        /// <param name="email">The email that schould be validated</param>
+        /// <param name="email">The email that should be validated</param>
         /// <returns></returns>
         public static bool IsValidEmail(string email)
         {
@@ -37,11 +40,11 @@ namespace X3Code.Utils
                     return match.Groups[1].Value + domainName;
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException )
             {
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException )
             {
                 return false;
             }

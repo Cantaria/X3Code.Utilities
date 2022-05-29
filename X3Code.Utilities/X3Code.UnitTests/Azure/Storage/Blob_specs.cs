@@ -11,9 +11,16 @@ namespace X3Code.UnitTests.Azure.Storage
 {
     public class Blob_specs
     {
+        //Because this test can only run with sensitive data, it will be disabled by default.
+        //To run this tests, set up connection string and container of your blob-storage
+        //  and never(!) commit these two secrets ;)
+        private bool _testDisabled = true;
+        
         [Fact]
         public void CanUploadFile()
         {
+            if (_testDisabled) return;
+            
             var storageFilePath = "folder/testfile.txt";
             var localFile = "Azure/testfile.txt";
             

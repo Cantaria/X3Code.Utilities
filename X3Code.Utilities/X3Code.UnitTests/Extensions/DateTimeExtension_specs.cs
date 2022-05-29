@@ -7,27 +7,9 @@ namespace X3Code.UnitTests.Extensions
     // ReSharper disable once InconsistentNaming
     public class DateTimeExtension_specs
     {
-        private readonly DateTime _referenceDate = new DateTime(2010, 11, 15, 12, 43, 0);
-        private readonly DateTime _referenceZeroClock = new DateTime(2010, 11, 15, 0, 0, 0);
-        private readonly DateTime _referenceMidnightClock = new DateTime(2010, 11, 15, 23, 59, 59);
-
-        [Fact]
-        public void IfAFullDateStringIsNeeded()
-        {
-            var result = _referenceDate.ToFullShortDateString();
-            var referenceString = "15.11.2010 12:43";
-
-            Assert.Equal(referenceString, result);
-        }
-
-        [Fact]
-        public void IfaFullLongDateStringIsNeeded()
-        {
-            var result = _referenceDate.ToFullLongDateString();
-            var referenzString = "Montag, 15. November 2010 12:43:00";
-
-            Assert.Equal(referenzString, result);
-        }
+        private readonly DateTime _referenceDate = new (2010, 11, 15, 12, 43, 0);
+        private readonly DateTime _referenceZeroClock = new (2010, 11, 15, 0, 0, 0);
+        private readonly DateTime _referenceMidnightClock = new (2010, 11, 15, 23, 59, 59);
 
         [Fact]
         public void TheDateShotNotBeLowerThanSqlMin()
