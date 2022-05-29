@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.5.5</PackageVersion>
+        <PackageVersion>1.5.6</PackageVersion>
         <Authors>X3-Code</Authors>
         <Description>Contains the unit of work repository pattern in .Net Standard for use with Xamarin</Description>
         <Copyright>MIT</Copyright>
@@ -11,10 +11,10 @@
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
         <Company>X3-Code</Company>
-        <AssemblyVersion>1.5.5</AssemblyVersion>
-        <FileVersion>1.5.5</FileVersion>
+        <AssemblyVersion>1.5.6</AssemblyVersion>
+        <FileVersion>1.5.6</FileVersion>
         <PackageIcon>x3code_logo.png</PackageIcon>
-        <PackageReleaseNotes>1.5.5: NuGet Dependencies Updated</PackageReleaseNotes>
+        <PackageReleaseNotes>1.5.6: NuGet Dependencies Updated</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
