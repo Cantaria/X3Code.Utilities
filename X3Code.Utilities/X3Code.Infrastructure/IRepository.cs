@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -9,9 +10,9 @@ namespace X3Code.Infrastructure
     {
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
 
-        IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll();
 
-        IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);
 
@@ -21,19 +22,15 @@ namespace X3Code.Infrastructure
 
         void RemoveAll(IEnumerable<TEntity> entities);
 
-        void RemoveRange(Func<TEntity, bool> predicate);
-
-        Task RemoveRangeAsync(Func<TEntity, bool> predicate);
-
         void Update(TEntity entity);
 
         void UpdateAll(IEnumerable<TEntity> entities);
 
 		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
 
-		Task<IEnumerable<TEntity>> GetAllAsync();
+		Task<IQueryable<TEntity>> GetAllAsync();
 
-		Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
+		Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
 
 		Task AddAsync(TEntity entity);
 
@@ -44,5 +41,7 @@ namespace X3Code.Infrastructure
 		Task RemoveAllAsync(IEnumerable<TEntity> entities);
 
 		Task UpdateAsync(TEntity entity);
+		
+		Task UpdateAllAsync(IEnumerable<TEntity> entities);
 	}
 }

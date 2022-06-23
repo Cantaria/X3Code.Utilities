@@ -7,168 +7,110 @@ using Microsoft.EntityFrameworkCore;
 
 namespace X3Code.Infrastructure
 {
-    public abstract class GenericRepository<T> : IRepository<T> where T : class, IEntity, new()
+    public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity> where TEntity : class, IEntity, new() where TContext : DbContext
     {
-		protected GenericRepository(IUnitOfWork unitOfWork)
+		protected GenericRepository(TContext context)
         {
-            UnitOfWork = unitOfWork;
+            DataBase = context;
+            Entities = context.Set<TEntity>();
         }
 
-        protected IUnitOfWork UnitOfWork { get; }
-
-        public T Get(Expression<Func<T, bool>> predicate)
+        protected TContext DataBase { get; }
+        protected DbSet<TEntity> Entities { get; }
+        
+        public TEntity Get(Expression<Func<TEntity, bool>> predicate)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return UnitOfWork.Query<T>().SingleOrDefault(predicate);
-            }
+            return Entities.SingleOrDefault(predicate);
         }
 
-		public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return await UnitOfWork.Query<T>().SingleOrDefaultAsync(predicate);
-            }
-		}
-
-		public IEnumerable<T> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return UnitOfWork.Query<T>().ToList();
-            }
+            return Entities.AsNoTracking();
         }
 
-		public async Task<IEnumerable<T>> GetAllAsync()
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				return await UnitOfWork.Query<T>().ToListAsync();
-			}
-		}
-
-		public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
+        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return UnitOfWork.Query<T>().Where(predicate).ToList();
-            }
+            return Entities.AsNoTracking().Where(predicate);
         }
 
-		public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				return await UnitOfWork.Query<T>().Where(predicate).ToListAsync();
-			}
-		}
-
-		public void Add(T entity)
+        public void Add(TEntity entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.Add(entity);
-            }
+            Entities.Add(entity);
+            DataBase.SaveChanges();
         }
 
-		public async Task AddAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddAsync(entity);
-			}
-		}
-
-		public void AddAll(IEnumerable<T> entities)
+        public void AddAll(IEnumerable<TEntity> entities)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.AddRange(entities);
-            }
+            Entities.AddRange(entities);
+            DataBase.SaveChanges();
         }
 
-		public async Task AddAllAsync(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddRangeAsync(entities);
-			}
-		}
-
-		public void Remove(T entity)
+        public void Remove(TEntity entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.Remove(entity);
-            }
+            Entities.Remove(entity);
+            DataBase.SaveChanges();
         }
 
-		public async Task RemoveAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.DeleteAsync(entity);
-			}
-		}
-
-		public void RemoveAll(IEnumerable<T> entities)
+        public void RemoveAll(IEnumerable<TEntity> entities)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.RemoveRange(entities);
-            }
+            Entities.RemoveRange(entities);
+            DataBase.SaveChanges();
         }
 
-		public async Task RemoveAllAsync(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.RemoveRangeAsync(entities);
-			}
-		}
-
-		public void RemoveRange(Func<T, bool> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				UnitOfWork.RemoveRange(predicate);
-			}
-		}
-
-		public async Task RemoveRangeAsync(Func<T, bool> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.RemoveRangeAsync(predicate);
-			}
-		}
-
-		public void Update(T entity)
+        public void Update(TEntity entity)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                UnitOfWork.Add(entity);
-            }
+            Entities.Update(entity);
+            DataBase.SaveChanges();
         }
-		
-		public void UpdateAll(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				foreach (var entity in entities)
-				{
-					UnitOfWork.Add(entity);	
-				}
-			}
-		}
 
-		public async Task UpdateAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddAsync(entity);
-			}
-		}
-	}
+        public void UpdateAll(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<TEntity>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddAllAsync(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task RemoveAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task RemoveAllAsync(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAllAsync(IEnumerable<TEntity> entities)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
