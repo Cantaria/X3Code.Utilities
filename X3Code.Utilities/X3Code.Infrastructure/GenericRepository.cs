@@ -25,10 +25,20 @@ namespace X3Code.Infrastructure
 
         public IQueryable<TEntity> GetAll()
         {
-            return Entities.AsNoTracking();
+            return Entities.AsQueryable();
         }
 
         public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
+        {
+            return Entities.Where(predicate);
+        }
+        
+        public IQueryable<TEntity> GetAllAsNoTracking()
+        {
+            return Entities.AsNoTracking();
+        }
+
+        public IQueryable<TEntity> GetAllAsNoTracking(Expression<Func<TEntity, bool>> predicate)
         {
             return Entities.AsNoTracking().Where(predicate);
         }
@@ -65,52 +75,53 @@ namespace X3Code.Infrastructure
 
         public void UpdateAll(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            Entities.UpdateRange(entities);
+            DataBase.SaveChanges();
         }
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await Entities.FindAsync(predicate);
         }
 
         public async Task<IQueryable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => Entities.AsNoTracking());
         }
 
         public async Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => Entities.AsNoTracking().Where(predicate));
         }
 
         public async Task AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await Entities.AddAsync(entity);
         }
 
         public async Task AddAllAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await Entities.AddRangeAsync(entities);
         }
 
         public async Task RemoveAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Entities.Remove(entity));
         }
 
         public async Task RemoveAllAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Entities.RemoveRange(entities));
         }
 
         public async Task UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Entities.Update(entity));
         }
 
         public async Task UpdateAllAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Entities.UpdateRange(entities));
         }
     }
 }

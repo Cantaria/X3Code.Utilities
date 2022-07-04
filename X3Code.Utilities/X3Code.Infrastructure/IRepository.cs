@@ -12,7 +12,11 @@ namespace X3Code.Infrastructure
 
         IQueryable<TEntity> GetAll();
 
+        IQueryable<TEntity> GetAllAsNoTracking();
+
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
+
+        IQueryable<TEntity> GetAllAsNoTracking(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);
 
