@@ -61,7 +61,7 @@ namespace X3Code.Infrastructure
 
             if (asNoTracking)
             {
-                DataBase.Entry(entity).State = EntityState.Detached;   
+                RemoveFromTracking(entity);  
             }
         }
 
@@ -73,17 +73,19 @@ namespace X3Code.Infrastructure
 
             if (asNoTracking)
             {
-                foreach (var entity in asList)
-                {
-                    DataBase.Entry(entity).State = EntityState.Detached;
-                }
+                RemoveFromTracking(asList);
             }
         }
 
-        public void Remove(TEntity entity)
+        public void Remove(TEntity entity, bool asNoTracking = false)
         {
             Entities.Remove(entity);
             DataBase.SaveChanges();
+
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
         }
 
         public void RemoveAll(IEnumerable<TEntity> entities)
@@ -150,6 +152,19 @@ namespace X3Code.Infrastructure
         public async Task UpdateAllAsync(IEnumerable<TEntity> entities)
         {
             await Task.Run(() => Entities.UpdateRange(entities));
+        }
+
+        private void RemoveFromTracking(TEntity entity)
+        {
+            DataBase.Entry(entity).State = EntityState.Detached;
+        }
+
+        private void RemoveFromTracking(List<TEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                DataBase.Entry(entity).State = EntityState.Detached;
+            }
         }
     }
 }

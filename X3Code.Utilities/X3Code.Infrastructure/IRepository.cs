@@ -20,7 +20,7 @@ namespace X3Code.Infrastructure
 
         void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
-        void Remove(TEntity entity);
+        void Remove(TEntity entity, bool asNoTracking = false);
 
         void RemoveAll(IEnumerable<TEntity> entities);
 
