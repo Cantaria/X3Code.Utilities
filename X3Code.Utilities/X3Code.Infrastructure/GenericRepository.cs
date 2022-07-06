@@ -54,16 +54,30 @@ namespace X3Code.Infrastructure
             return Entities.Where(predicate);
         }
 
-        public void Add(TEntity entity)
+        public void Add(TEntity entity, bool asNoTracking = false)
         {
             Entities.Add(entity);
             DataBase.SaveChanges();
+
+            if (asNoTracking)
+            {
+                DataBase.Entry(entity).State = EntityState.Detached;   
+            }
         }
 
-        public void AddAll(IEnumerable<TEntity> entities)
+        public void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            Entities.AddRange(entities);
+            var asList = entities.ToList();
+            Entities.AddRange(asList);
             DataBase.SaveChanges();
+
+            if (asNoTracking)
+            {
+                foreach (var entity in asList)
+                {
+                    DataBase.Entry(entity).State = EntityState.Detached;
+                }
+            }
         }
 
         public void Remove(TEntity entity)

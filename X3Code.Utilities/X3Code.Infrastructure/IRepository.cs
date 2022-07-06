@@ -16,9 +16,9 @@ namespace X3Code.Infrastructure
 
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
-        void Add(TEntity entity);
+        void Add(TEntity entity, bool asNoTracking = false);
 
-        void AddAll(IEnumerable<TEntity> entities);
+        void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
         void Remove(TEntity entity);
 
