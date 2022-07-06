@@ -8,15 +8,13 @@ namespace X3Code.Infrastructure
 {
     public interface IRepository<TEntity> where TEntity : IEntity
     {
-        TEntity Get(Expression<Func<TEntity, bool>> predicate);
+        TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
-        IQueryable<TEntity> GetAll();
+        IEnumerable<TEntity> GetAll(bool asNoTracking = false);
 
-        IQueryable<TEntity> GetAllAsNoTracking();
+        IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
-        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
-
-        IQueryable<TEntity> GetAllAsNoTracking(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
         void Add(TEntity entity);
 
@@ -30,11 +28,9 @@ namespace X3Code.Infrastructure
 
         void UpdateAll(IEnumerable<TEntity> entities);
 
-		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
+		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
-		Task<IQueryable<TEntity>> GetAllAsync();
-
-		Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
+		Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false);
 
 		Task AddAsync(TEntity entity);
 

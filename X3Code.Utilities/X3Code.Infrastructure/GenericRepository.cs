@@ -18,29 +18,40 @@ namespace X3Code.Infrastructure
         protected TContext DataBase { get; }
         protected DbSet<TEntity> Entities { get; }
         
-        public TEntity Get(Expression<Func<TEntity, bool>> predicate)
+        public TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().SingleOrDefault(predicate);
+            }
             return Entities.SingleOrDefault(predicate);
         }
 
-        public IQueryable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll(bool asNoTracking = false)
         {
-            return Entities.AsQueryable();
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().AsQueryable().ToList();   
+            }
+            return Entities.AsQueryable().ToList();
         }
 
-        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().Where(predicate).ToList();    
+            }
+            return Entities.Where(predicate).ToList();
+        }
+
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().Where(predicate);
+            }
             return Entities.Where(predicate);
-        }
-        
-        public IQueryable<TEntity> GetAllAsNoTracking()
-        {
-            return Entities.AsNoTracking();
-        }
-
-        public IQueryable<TEntity> GetAllAsNoTracking(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Entities.AsNoTracking().Where(predicate);
         }
 
         public void Add(TEntity entity)
@@ -79,19 +90,22 @@ namespace X3Code.Infrastructure
             DataBase.SaveChanges();
         }
 
-        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
-            return await Entities.FindAsync(predicate);
+            if (asNoTracking)
+            {
+                return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate);
+            }
+            return await Entities.SingleOrDefaultAsync(predicate);
         }
 
-        public async Task<IQueryable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false)
         {
-            return await Task.Run(() => Entities.AsNoTracking());
-        }
-
-        public async Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await Task.Run(() => Entities.AsNoTracking().Where(predicate));
+            if (asNoTracking)
+            {
+                return await Entities.AsNoTracking().ToListAsync();
+            }
+            return await Entities.ToListAsync();
         }
 
         public async Task AddAsync(TEntity entity)
