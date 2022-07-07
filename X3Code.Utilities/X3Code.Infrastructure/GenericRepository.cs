@@ -20,7 +20,14 @@ namespace X3Code.Infrastructure
             Entities = context.Set<TEntity>();
         }
 
+        /// <summary>
+        /// Direct access on the context
+        /// </summary>
         protected TContext DataBase { get; }
+        
+        /// <summary>
+        /// Direct access to the context TEntity
+        /// </summary>
         protected DbSet<TEntity> Entities { get; }
         
         /// <summary>
@@ -38,6 +45,11 @@ namespace X3Code.Infrastructure
             return Entities.SingleOrDefault(predicate);
         }
 
+        /// <summary>
+        /// Returns all entities for TEntity
+        /// </summary>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
         public IEnumerable<TEntity> GetAll(bool asNoTracking = false)
         {
             if (asNoTracking)
@@ -46,7 +58,7 @@ namespace X3Code.Infrastructure
             }
             return Entities.AsQueryable().ToList();
         }
-
+        
         public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
             if (asNoTracking)
