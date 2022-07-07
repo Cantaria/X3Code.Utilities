@@ -7,9 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace X3Code.Infrastructure
 {
+    /// <summary>
+    /// Provides basic database operations and capsulates the DbContext
+    /// </summary>
+    /// <typeparam name="TEntity">The Entitytype this repository is used</typeparam>
+    /// <typeparam name="TContext">The underlying DbContext, which can be used for the TEntity</typeparam>
     public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity> where TEntity : class, IEntity, new() where TContext : DbContext
     {
-		protected GenericRepository(TContext context)
+        protected GenericRepository(TContext context)
         {
             DataBase = context;
             Entities = context.Set<TEntity>();
@@ -18,6 +23,12 @@ namespace X3Code.Infrastructure
         protected TContext DataBase { get; }
         protected DbSet<TEntity> Entities { get; }
         
+        /// <summary>
+        /// Search an return the entity
+        /// </summary>
+        /// <param name="predicate">The expression which should be used to search for an entity</param>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
         public TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
             if (asNoTracking)
@@ -126,6 +137,12 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Search an return the entity
+        /// </summary>
+        /// <param name="predicate">The expression which should be used to search for an entity</param>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
             if (asNoTracking)
@@ -135,6 +152,11 @@ namespace X3Code.Infrastructure
             return await Entities.SingleOrDefaultAsync(predicate);
         }
 
+        /// <summary>
+        /// Returns all entities for TEntity
+        /// </summary>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false)
         {
             if (asNoTracking)
