@@ -88,22 +88,37 @@ namespace X3Code.Infrastructure
             }
         }
 
-        public void RemoveAll(IEnumerable<TEntity> entities)
+        public void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             Entities.RemoveRange(entities);
             DataBase.SaveChanges();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entities.ToList());
+            }
         }
 
-        public void Update(TEntity entity)
+        public void Update(TEntity entity, bool asNoTracking = false)
         {
             Entities.Update(entity);
             DataBase.SaveChanges();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
         }
 
-        public void UpdateAll(IEnumerable<TEntity> entities)
+        public void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             Entities.UpdateRange(entities);
             DataBase.SaveChanges();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entities.ToList());
+            }
         }
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
@@ -124,34 +139,70 @@ namespace X3Code.Infrastructure
             return await Entities.ToListAsync();
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity, bool asNoTracking = false)
         {
             await Entities.AddAsync(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
         }
 
-        public async Task AddAllAsync(IEnumerable<TEntity> entities)
+        public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             await Entities.AddRangeAsync(entities);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entities.ToList());
+            }
         }
 
-        public async Task RemoveAsync(TEntity entity)
+        public async Task RemoveAsync(TEntity entity, bool asNoTracking = false)
         {
-            await Task.Run(() => Entities.Remove(entity));
+            Entities.Remove(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
         }
 
-        public async Task RemoveAllAsync(IEnumerable<TEntity> entities)
+        public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            await Task.Run(() => Entities.RemoveRange(entities));
+            Entities.RemoveRange(entities);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entities.ToList());
+            }
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task UpdateAsync(TEntity entity, bool asNoTracking = false)
         {
-            await Task.Run(() => Entities.Update(entity));
+            Entities.Update(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
         }
 
-        public async Task UpdateAllAsync(IEnumerable<TEntity> entities)
+        public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            await Task.Run(() => Entities.UpdateRange(entities));
+            Entities.UpdateRange(entities);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entities.ToList());
+            }
         }
 
         private void RemoveFromTracking(TEntity entity)

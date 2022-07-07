@@ -22,26 +22,26 @@ namespace X3Code.Infrastructure
 
         void Remove(TEntity entity, bool asNoTracking = false);
 
-        void RemoveAll(IEnumerable<TEntity> entities);
+        void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
-        void Update(TEntity entity);
+        void Update(TEntity entity, bool asNoTracking = false);
 
-        void UpdateAll(IEnumerable<TEntity> entities);
+        void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
 		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 		Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false);
 
-		Task AddAsync(TEntity entity);
+		Task AddAsync(TEntity entity, bool asNoTracking = false);
 
-		Task AddAllAsync(IEnumerable<TEntity> entities);
+		Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
-		Task RemoveAsync(TEntity entity);
+		Task RemoveAsync(TEntity entity, bool asNoTracking = false);
 
-		Task RemoveAllAsync(IEnumerable<TEntity> entities);
+		Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
-		Task UpdateAsync(TEntity entity);
+		Task UpdateAsync(TEntity entity, bool asNoTracking = false);
 		
-		Task UpdateAllAsync(IEnumerable<TEntity> entities);
+		Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
 	}
 }
