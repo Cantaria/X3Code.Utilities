@@ -68,6 +68,7 @@ namespace X3Code.Infrastructure
         public void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
+            
             Entities.AddRange(asList);
             DataBase.SaveChanges();
 
@@ -90,12 +91,14 @@ namespace X3Code.Infrastructure
 
         public void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            Entities.RemoveRange(entities);
+            var asList = entities.ToList();
+            
+            Entities.RemoveRange(asList);
             DataBase.SaveChanges();
             
             if (asNoTracking)
             {
-                RemoveFromTracking(entities.ToList());
+                RemoveFromTracking(asList.ToList());
             }
         }
 
@@ -112,12 +115,14 @@ namespace X3Code.Infrastructure
 
         public void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            Entities.UpdateRange(entities);
+            var asList = entities.ToList();
+            
+            Entities.UpdateRange(asList);
             DataBase.SaveChanges();
             
             if (asNoTracking)
             {
-                RemoveFromTracking(entities.ToList());
+                RemoveFromTracking(asList.ToList());
             }
         }
 
@@ -152,12 +157,14 @@ namespace X3Code.Infrastructure
 
         public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            await Entities.AddRangeAsync(entities);
+            var asList = entities.ToList();
+            
+            await Entities.AddRangeAsync(asList);
             await DataBase.SaveChangesAsync();
             
             if (asNoTracking)
             {
-                RemoveFromTracking(entities.ToList());
+                RemoveFromTracking(asList);
             }
         }
 
@@ -174,12 +181,14 @@ namespace X3Code.Infrastructure
 
         public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            Entities.RemoveRange(entities);
+            var asList = entities.ToList();
+            
+            Entities.RemoveRange(asList);
             await DataBase.SaveChangesAsync();
             
             if (asNoTracking)
             {
-                RemoveFromTracking(entities.ToList());
+                RemoveFromTracking(asList);
             }
         }
 
@@ -196,12 +205,14 @@ namespace X3Code.Infrastructure
 
         public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            Entities.UpdateRange(entities);
+            var asList = entities.ToList();
+            
+            Entities.UpdateRange(asList);
             await DataBase.SaveChangesAsync();
             
             if (asNoTracking)
             {
-                RemoveFromTracking(entities.ToList());
+                RemoveFromTracking(asList.ToList());
             }
         }
 
