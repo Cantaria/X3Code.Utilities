@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 namespace X3Code.Infrastructure
 {
     /// <summary>
-    /// Provides basic database operations and capsulates the DbContext
+    /// Provides basic database operations and encapsulates the DbContext
     /// </summary>
-    /// <typeparam name="TEntity">The Entitytype this repository is used</typeparam>
+    /// <typeparam name="TEntity">The Entity type this repository is used</typeparam>
     /// <typeparam name="TContext">The underlying DbContext, which can be used for the TEntity</typeparam>
     public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity> where TEntity : class, IEntity, new() where TContext : DbContext
     {
