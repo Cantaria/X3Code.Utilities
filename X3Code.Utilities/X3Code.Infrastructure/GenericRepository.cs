@@ -235,6 +235,11 @@ namespace X3Code.Infrastructure
             return await Entities.Where(predicate).ToListAsync();
         }
 
+        /// <summary>
+        /// Adds the entity to the database
+        /// </summary>
+        /// <param name="entity">The entity that should be saved in database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task AddAsync(TEntity entity, bool asNoTracking = false)
         {
             await Entities.AddAsync(entity);
@@ -246,6 +251,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Adds all entities to the database
+        /// </summary>
+        /// <param name="entities">Entities that should be saved into database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
@@ -259,6 +269,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Removes the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task RemoveAsync(TEntity entity, bool asNoTracking = false)
         {
             Entities.Remove(entity);
@@ -270,6 +285,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Removes all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
@@ -283,6 +303,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Updates the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task UpdateAsync(TEntity entity, bool asNoTracking = false)
         {
             Entities.Update(entity);
@@ -294,6 +319,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Updates all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
