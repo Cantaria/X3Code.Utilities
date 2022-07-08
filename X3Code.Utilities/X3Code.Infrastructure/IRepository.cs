@@ -31,6 +31,8 @@ namespace X3Code.Infrastructure
 		Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 		Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false);
+		
+		Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 		Task AddAsync(TEntity entity, bool asNoTracking = false);
 

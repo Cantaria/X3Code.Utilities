@@ -59,6 +59,12 @@ namespace X3Code.Infrastructure
             return Entities.AsQueryable().ToList();
         }
         
+        /// <summary>
+        /// Returns all entities matching the given predicate as IEnumerable
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
         public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
             if (asNoTracking)
@@ -68,6 +74,12 @@ namespace X3Code.Infrastructure
             return Entities.Where(predicate).ToList();
         }
 
+        /// <summary>
+        /// Searches for the corresponding entities that match the predicate
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
             if (asNoTracking)
@@ -77,6 +89,11 @@ namespace X3Code.Infrastructure
             return Entities.Where(predicate);
         }
 
+        /// <summary>
+        /// Adds the entity to the database
+        /// </summary>
+        /// <param name="entity">The entity that should be saved in database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void Add(TEntity entity, bool asNoTracking = false)
         {
             Entities.Add(entity);
@@ -88,6 +105,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Adds all entities to the database
+        /// </summary>
+        /// <param name="entities">Entities that should be saved into database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
@@ -101,6 +123,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Removes the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void Remove(TEntity entity, bool asNoTracking = false)
         {
             Entities.Remove(entity);
@@ -112,6 +139,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Removes all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
@@ -125,6 +157,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Updates the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void Update(TEntity entity, bool asNoTracking = false)
         {
             Entities.Update(entity);
@@ -136,6 +173,11 @@ namespace X3Code.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Updates all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
         public void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
             var asList = entities.ToList();
@@ -176,6 +218,21 @@ namespace X3Code.Infrastructure
                 return await Entities.AsNoTracking().ToListAsync();
             }
             return await Entities.ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns all entities matching the given predicate as IEnumerable
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return await Entities.AsNoTracking().Where(predicate).ToListAsync();
+            }
+            return await Entities.Where(predicate).ToListAsync();
         }
 
         public async Task AddAsync(TEntity entity, bool asNoTracking = false)
