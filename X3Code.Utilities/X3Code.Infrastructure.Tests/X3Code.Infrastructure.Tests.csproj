@@ -6,6 +6,18 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <AssemblyName>X3Code.Infrastructure.Tests</AssemblyName>
+
+        <RootNamespace>X3Code.Infrastructure.Tests</RootNamespace>
+
+        <PackageId>X3Code.Infrastructure.Tests</PackageId>
+
+        <Authors>X3Code.Infrastructure.Tests</Authors>
+
+        <Company>X3Code.Infrastructure.Tests</Company>
+
+        <Product>X3Code.Infrastructure.Tests</Product>
     </PropertyGroup>
 
     <ItemGroup>

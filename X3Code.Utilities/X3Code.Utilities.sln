@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{FC0E4416
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{91B723E7-5D5A-430C-A034-CE09797876C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Infastructure.Tests", "X3Code.Infastructure.Tests\X3Code.Infastructure.Tests.csproj", "{11B09AE8-0848-4598-9D93-0C744D2FC72C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Infrastructure.Tests", "X3Code.Infrastructure.Tests\X3Code.Infrastructure.Tests.csproj", "{11B09AE8-0848-4598-9D93-0C744D2FC72C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{CFA62420-82FE-4E6D-97A7-6F24D8FF19FD}"
 EndProject
