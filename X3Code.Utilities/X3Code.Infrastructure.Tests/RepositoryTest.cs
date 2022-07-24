@@ -10,7 +10,7 @@ using Xunit;
 
 namespace X3Code.Infrastructure.Tests
 {
-    public class RepositoryTest
+    public class RepositoryTest : IDisposable
     {
         private readonly IServiceProvider _service;
         private readonly DatabaseConnector _database;
@@ -49,8 +49,6 @@ namespace X3Code.Infrastructure.Tests
             Assert.Equal(reference.Surname, dbPerson.Surname);
             Assert.Equal(reference.Birthday, dbPerson.Birthday);
             Assert.Equal(reference.EntityId, dbPerson.EntityId);
-            
-            _database.CleanDataBase();
         }
         
         [Fact]
@@ -77,7 +75,10 @@ namespace X3Code.Infrastructure.Tests
                 Assert.Equal(referencePerson.Birthday, personFromDb.Birthday);
                 Assert.Equal(referencePerson.EntityId, personFromDb.EntityId);
             }
+        }
 
+        public void Dispose()
+        {
             _database.CleanDataBase();
         }
     }
