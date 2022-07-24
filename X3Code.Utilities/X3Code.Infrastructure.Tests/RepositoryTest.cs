@@ -34,13 +34,20 @@ namespace X3Code.Infrastructure.Tests
         [Fact]
         public void AddToDatabase()
         {
-            var person = new Person("First", "Second", DateTime.Today);
+            var reference = new Person("First", "Second", DateTime.Today);
             var repo = _service.GetRequiredService<IPersonRepository>();
             
-            repo.Add(person);
+            repo.Add(reference);
 
-            var fromDb = _database.GetFromDb($"{BaseQuery} WHERE Name = 'First';");
-            Assert.Equal(1, fromDb.Rows.Count);
+            var result = _database.GetFromDb($"{BaseQuery} WHERE Name = 'First';");
+            Assert.Equal(1, result.Rows.Count);
+
+            var dbPerson = result.Rows[0].ToPerson(); 
+            Assert.Equal(reference.Name, dbPerson.Name);
+            Assert.Equal(reference.Surname, dbPerson.Surname);
+            Assert.Equal(reference.Birthday, dbPerson.Birthday);
+            
+            _database.CleanDataBase();
         }
     }
 }
