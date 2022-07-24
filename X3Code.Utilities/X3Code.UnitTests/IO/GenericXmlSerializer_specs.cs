@@ -14,7 +14,7 @@ namespace X3Code.UnitTests.IO
         public List<string> ListField { get; set; }
     }
 
-    internal class TestclassHelper
+    internal static class TestClassHelper
     {
         internal static bool AreBothTheSame(TestClass control, TestClass toCheck)
         {
@@ -42,9 +42,9 @@ namespace X3Code.UnitTests.IO
         private readonly string _savePath = Path.Combine(Environment.CurrentDirectory, "Xml_specs.xml");
 
         [Fact]
-        public void Falls_der_Xml_Worker_eine_Datei_speichert_und_Lädt()
+        public void CanSaveAndLoadAnXmlFile()
         {
-            var referenzDaten = new TestClass
+            var referenceData = new TestClass
             {
                 IntField = 25,
                 ListField = new List<string> { "Hello", "World" },
@@ -52,19 +52,19 @@ namespace X3Code.UnitTests.IO
             };
 
             //Should not throw an Exception
-            GenericXmlSerializer.SaveXml(_savePath, referenzDaten);
+            GenericXmlSerializer.SaveXml(_savePath, referenceData);
             _testDaten = GenericXmlSerializer.LoadXml<TestClass>(_savePath);
 
-            Assert.Equal(_testDaten.IntField, referenzDaten.IntField);
-            Assert.Equal(_testDaten.ListField, referenzDaten.ListField);
-            Assert.Equal(_testDaten.StringField, referenzDaten.StringField);
-            Assert.True(TestclassHelper.AreBothTheSame(_testDaten, referenzDaten));
+            Assert.Equal(_testDaten.IntField, referenceData.IntField);
+            Assert.Equal(_testDaten.ListField, referenceData.ListField);
+            Assert.Equal(_testDaten.StringField, referenceData.StringField);
+            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
         }
 
         [Fact]
-        public void Falls_ein_Objekt_in_einen_Xml_String_serialisiert_wird()
+        public void CanDeserialize()
         {
-            var referenzDaten = new TestClass
+            var referenceData = new TestClass
             {
                 IntField = 25,
                 ListField = new List<string> { "Hello", "World" },
@@ -72,19 +72,19 @@ namespace X3Code.UnitTests.IO
             };
 
             //Should not throw an Exception
-            var testString = GenericXmlSerializer.SerializeObjectToXmlString(referenzDaten);
+            var testString = GenericXmlSerializer.SerializeObjectToXmlString(referenceData);
             _testDaten = GenericXmlSerializer.DeserializeXmlStringTo<TestClass>(testString);
 
-            Assert.Equal(_testDaten.IntField, referenzDaten.IntField);
-            Assert.Equal(_testDaten.ListField, referenzDaten.ListField);
-            Assert.Equal(_testDaten.StringField, referenzDaten.StringField);
-            Assert.True(TestclassHelper.AreBothTheSame(_testDaten, referenzDaten));
+            Assert.Equal(_testDaten.IntField, referenceData.IntField);
+            Assert.Equal(_testDaten.ListField, referenceData.ListField);
+            Assert.Equal(_testDaten.StringField, referenceData.StringField);
+            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
         }
 
         [Fact]
-        public void Falls_ein_Objekt_in_Xml_InMemory_serialisiert_wird()
+        public void CanSerialize()
         {
-            var referenzDaten = new TestClass
+            var referenceData = new TestClass
             {
                 IntField = 25,
                 ListField = new List<string> { "Hello", "World" },
@@ -92,13 +92,13 @@ namespace X3Code.UnitTests.IO
             };
 
             //Should not throw an Exception
-            var testString = GenericXmlSerializer.SerializeToXmlInMemory(referenzDaten);
+            var testString = GenericXmlSerializer.SerializeToXmlInMemory(referenceData);
             _testDaten = GenericXmlSerializer.DeserializeXmlMemoryStreamTo<TestClass>(testString);
 
-            Assert.Equal(_testDaten.IntField, referenzDaten.IntField);
-            Assert.Equal(_testDaten.ListField, referenzDaten.ListField);
-            Assert.Equal(_testDaten.StringField, referenzDaten.StringField);
-            Assert.True(TestclassHelper.AreBothTheSame(_testDaten, referenzDaten));
+            Assert.Equal(_testDaten.IntField, referenceData.IntField);
+            Assert.Equal(_testDaten.ListField, referenceData.ListField);
+            Assert.Equal(_testDaten.StringField, referenceData.StringField);
+            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
 
         }
     }

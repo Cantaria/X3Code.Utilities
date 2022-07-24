@@ -9,30 +9,6 @@ namespace X3Code.Utils.Extensions
     public static class DateTimeExtension
     {
         /// <summary>
-        /// Get's the Date and Time as full short string dd.MM.YYYY hh:mm
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string ToFullShortDateString(this DateTime source)
-        {
-            var datum = source.ToShortDateString();
-            var time = source.ToShortTimeString();
-            return $"{datum} {time}";
-        }
-
-        /// <summary>
-        /// Get's the Date and Time as full long string
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string ToFullLongDateString(this DateTime source)
-        {
-            var datum = source.ToLongDateString();
-            var time = source.ToLongTimeString();
-            return $"{datum} {time}";
-        }
-
-        /// <summary>
         /// Get's the SQM Min Date
         /// </summary>
         public static DateTime SqlMinDate => SqlDateTime.MinValue.Value;

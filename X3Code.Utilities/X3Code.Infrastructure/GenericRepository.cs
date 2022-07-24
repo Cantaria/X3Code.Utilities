@@ -7,168 +7,347 @@ using Microsoft.EntityFrameworkCore;
 
 namespace X3Code.Infrastructure
 {
-    public abstract class GenericRepository<T> : IRepository<T> where T : class, IEntity, new()
+    /// <summary>
+    /// Provides basic database operations and encapsulates the DbContext
+    /// </summary>
+    /// <typeparam name="TEntity">The Entity type this repository is used</typeparam>
+    /// <typeparam name="TContext">The underlying DbContext, which can be used for the TEntity</typeparam>
+    public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity> where TEntity : class, IEntity, new() where TContext : DbContext
     {
-		protected GenericRepository(IUnitOfWork unitOfWork)
+        protected GenericRepository(TContext context)
         {
-            UnitOfWork = unitOfWork;
+            DataBase = context;
+            Entities = context.Set<TEntity>();
         }
 
-        protected IUnitOfWork UnitOfWork { get; }
-
-        public T Get(Expression<Func<T, bool>> predicate)
+        /// <summary>
+        /// Direct access on the context
+        /// </summary>
+        protected TContext DataBase { get; }
+        
+        /// <summary>
+        /// Direct access to the context TEntity
+        /// </summary>
+        protected DbSet<TEntity> Entities { get; }
+        
+        /// <summary>
+        /// Search an return the entity
+        /// </summary>
+        /// <param name="predicate">The expression which should be used to search for an entity</param>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
+        public TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            if (asNoTracking)
             {
-                return UnitOfWork.Query<T>().SingleOrDefault(predicate);
+                return Entities.AsNoTracking().SingleOrDefault(predicate);
+            }
+            return Entities.SingleOrDefault(predicate);
+        }
+
+        /// <summary>
+        /// Returns all entities for TEntity
+        /// </summary>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
+        public IEnumerable<TEntity> GetAll(bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().AsQueryable().ToList();   
+            }
+            return Entities.AsQueryable().ToList();
+        }
+        
+        /// <summary>
+        /// Returns all entities matching the given predicate as IEnumerable
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
+        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().Where(predicate).ToList();    
+            }
+            return Entities.Where(predicate).ToList();
+        }
+
+        /// <summary>
+        /// Searches for the corresponding entities that match the predicate
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().Where(predicate);
+            }
+            return Entities.Where(predicate);
+        }
+
+        /// <summary>
+        /// Adds the entity to the database
+        /// </summary>
+        /// <param name="entity">The entity that should be saved in database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void Add(TEntity entity, bool asNoTracking = false)
+        {
+            Entities.Add(entity);
+            DataBase.SaveChanges();
+
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);  
             }
         }
 
-		public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-            {
-                return await UnitOfWork.Query<T>().SingleOrDefaultAsync(predicate);
-            }
-		}
-
-		public IEnumerable<T> GetAll()
+        /// <summary>
+        /// Adds all entities to the database
+        /// </summary>
+        /// <param name="entities">Entities that should be saved into database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            var asList = entities.ToList();
+            
+            Entities.AddRange(asList);
+            DataBase.SaveChanges();
+
+            if (asNoTracking)
             {
-                return UnitOfWork.Query<T>().ToList();
+                RemoveFromTracking(asList);
             }
         }
 
-		public async Task<IEnumerable<T>> GetAllAsync()
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				return await UnitOfWork.Query<T>().ToListAsync();
-			}
-		}
-
-		public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
+        /// <summary>
+        /// Removes the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void Remove(TEntity entity, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            Entities.Remove(entity);
+            DataBase.SaveChanges();
+
+            if (asNoTracking)
             {
-                return UnitOfWork.Query<T>().Where(predicate).ToList();
+                RemoveFromTracking(entity);
             }
         }
 
-		public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				return await UnitOfWork.Query<T>().Where(predicate).ToListAsync();
-			}
-		}
-
-		public void Add(T entity)
+        /// <summary>
+        /// Removes all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            var asList = entities.ToList();
+            
+            Entities.RemoveRange(asList);
+            DataBase.SaveChanges();
+            
+            if (asNoTracking)
             {
-                UnitOfWork.Add(entity);
+                RemoveFromTracking(asList.ToList());
             }
         }
 
-		public async Task AddAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddAsync(entity);
-			}
-		}
-
-		public void AddAll(IEnumerable<T> entities)
+        /// <summary>
+        /// Updates the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void Update(TEntity entity, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            Entities.Update(entity);
+            DataBase.SaveChanges();
+            
+            if (asNoTracking)
             {
-                UnitOfWork.AddRange(entities);
+                RemoveFromTracking(entity);
             }
         }
 
-		public async Task AddAllAsync(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddRangeAsync(entities);
-			}
-		}
-
-		public void Remove(T entity)
+        /// <summary>
+        /// Updates all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            var asList = entities.ToList();
+            
+            Entities.UpdateRange(asList);
+            DataBase.SaveChanges();
+            
+            if (asNoTracking)
             {
-                UnitOfWork.Remove(entity);
+                RemoveFromTracking(asList.ToList());
             }
         }
 
-		public async Task RemoveAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.DeleteAsync(entity);
-			}
-		}
-
-		public void RemoveAll(IEnumerable<T> entities)
+        /// <summary>
+        /// Search an return the entity
+        /// </summary>
+        /// <param name="predicate">The expression which should be used to search for an entity</param>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            if (asNoTracking)
             {
-                UnitOfWork.RemoveRange(entities);
+                return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate);
+            }
+            return await Entities.SingleOrDefaultAsync(predicate);
+        }
+
+        /// <summary>
+        /// Returns all entities for TEntity
+        /// </summary>
+        /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
+        /// <returns>The searched Entity, if found</returns>
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return await Entities.AsNoTracking().ToListAsync();
+            }
+            return await Entities.ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns all entities matching the given predicate as IEnumerable
+        /// </summary>
+        /// <param name="predicate">The predicate for selecting entities</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return await Entities.AsNoTracking().Where(predicate).ToListAsync();
+            }
+            return await Entities.Where(predicate).ToListAsync();
+        }
+
+        /// <summary>
+        /// Adds the entity to the database
+        /// </summary>
+        /// <param name="entity">The entity that should be saved in database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task AddAsync(TEntity entity, bool asNoTracking = false)
+        {
+            await Entities.AddAsync(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
             }
         }
 
-		public async Task RemoveAllAsync(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.RemoveRangeAsync(entities);
-			}
-		}
-
-		public void RemoveRange(Func<T, bool> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				UnitOfWork.RemoveRange(predicate);
-			}
-		}
-
-		public async Task RemoveRangeAsync(Func<T, bool> predicate)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.RemoveRangeAsync(predicate);
-			}
-		}
-
-		public void Update(T entity)
+        /// <summary>
+        /// Adds all entities to the database
+        /// </summary>
+        /// <param name="entities">Entities that should be saved into database</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
         {
-            using (new UnitOfWorkLifeCycle(UnitOfWork))
+            var asList = entities.ToList();
+            
+            await Entities.AddRangeAsync(asList);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
             {
-                UnitOfWork.Add(entity);
+                RemoveFromTracking(asList);
             }
         }
-		
-		public void UpdateAll(IEnumerable<T> entities)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				foreach (var entity in entities)
-				{
-					UnitOfWork.Add(entity);	
-				}
-			}
-		}
 
-		public async Task UpdateAsync(T entity)
-		{
-			using (new UnitOfWorkLifeCycle(UnitOfWork))
-			{
-				await UnitOfWork.AddAsync(entity);
-			}
-		}
-	}
+        /// <summary>
+        /// Removes the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task RemoveAsync(TEntity entity, bool asNoTracking = false)
+        {
+            Entities.Remove(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
+        }
+
+        /// <summary>
+        /// Removes all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
+        {
+            var asList = entities.ToList();
+            
+            Entities.RemoveRange(asList);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(asList);
+            }
+        }
+
+        /// <summary>
+        /// Updates the given entity from database
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task UpdateAsync(TEntity entity, bool asNoTracking = false)
+        {
+            Entities.Update(entity);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(entity);
+            }
+        }
+
+        /// <summary>
+        /// Updates all given entities from database
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
+        {
+            var asList = entities.ToList();
+            
+            Entities.UpdateRange(asList);
+            await DataBase.SaveChangesAsync();
+            
+            if (asNoTracking)
+            {
+                RemoveFromTracking(asList.ToList());
+            }
+        }
+
+        private void RemoveFromTracking(TEntity entity)
+        {
+            DataBase.Entry(entity).State = EntityState.Detached;
+        }
+
+        private void RemoveFromTracking(List<TEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                DataBase.Entry(entity).State = EntityState.Detached;
+            }
+        }
+    }
 }
