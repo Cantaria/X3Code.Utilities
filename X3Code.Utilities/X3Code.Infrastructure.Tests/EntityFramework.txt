@@ -1,0 +1,17 @@
+Falls dotnet nicht funktioniert.
+dotnet tool install --global dotnet-ef --version <Versionsnr des NuGet Paketes>
+
+===================================================================================
+how to migrate:
+
+change "X3_Environment" to needed environment (Local, LocalMichael, Dev, Int, Prod)
+user commands below...
+
+===================================================================================
+cd X3Code.Infrastructure.Tests
+
+dotnet ef migrations add S001
+
+dotnet ef migrations remove
+
+dotnet ef database update
