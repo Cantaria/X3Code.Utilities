@@ -5,7 +5,7 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.5.6</PackageVersion>
+        <PackageVersion>1.6.0</PackageVersion>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
@@ -14,8 +14,8 @@
         <RepositoryType>GIT</RepositoryType>
         <PackageReleaseNotes>1.5.6: NuGet Dependencies Updated
 1.5.0: Initial creation</PackageReleaseNotes>
-        <AssemblyVersion>1.5.6</AssemblyVersion>
-        <FileVersion>1.5.6</FileVersion>
+        <AssemblyVersion>1.6.0</AssemblyVersion>
+        <FileVersion>1.6.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
