@@ -76,6 +76,25 @@ namespace X3Code.Infrastructure.Tests
                 Assert.Equal(referencePerson.EntityId, personFromDb.EntityId);
             }
         }
+        
+        [Fact]
+        public void QueryWithRepository()
+        {
+            var reference = PersonMockupFactory.CreateNPersons(100);
+            var repo = _service.GetRequiredService<IPersonRepository>();
+            
+            repo.AddAll(reference);
+
+            var fromDatabase = repo.Query(x => x.Name != null && x.Name.Contains("25")).ToList();
+            Assert.Single(fromDatabase);
+
+            var dbPerson = fromDatabase.First();
+            //Quick and dirty.... but it's working.
+            Assert.Equal(reference[25].Name, dbPerson.Name);
+            Assert.Equal(reference[25].Surname, dbPerson.Surname);
+            Assert.Equal(reference[25].Birthday, dbPerson.Birthday);
+            Assert.Equal(reference[25].EntityId, dbPerson.EntityId);
+        }
 
         public void Dispose()
         {
