@@ -2,11 +2,34 @@
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace X3Code.Utils.Extensions
 {
     public static class DataRowExtension
     {
+        /// <summary>
+        /// If a DataRow represents an entity by 1:1, this extension tries to convert this row to the given Entity.
+        /// DataTypes and column names must equal the original entity T
+        /// </summary>
+        /// <param name="source">The DataRow which needs to be converted</param>
+        /// <typeparam name="T">The type, this row should be converted to</typeparam>
+        /// <returns></returns>
+        public static T ToDataType<T>(this DataRow source) where T : class, new()
+        {
+            var result = new T();
+            var genericType = typeof(T);
+
+            foreach (var property in genericType.GetProperties())
+            {
+                var propertyType = property;
+                var valueFromRow = System.Convert.ChangeType(source[property.Name], propertyType.PropertyType);
+                genericType.GetProperty(property.Name)?.SetValue(result, valueFromRow);
+            }
+            
+            return result;
+        }
+        
         /// <summary>
         /// Tries to convert a date string from the row and returns a nullable DateTime object
         /// </summary>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
+using System.IO.Pipes;
 using X3Code.Utils.Extensions;
 using Xunit;
 
@@ -247,6 +249,48 @@ namespace X3Code.UnitTests.Extensions
             Assert.Throws<ArgumentNullException>(() => row.ToBoolean(string.Empty));
             Assert.Throws<ArgumentNullException>(() => row.ToChar(string.Empty));
         }
+
+        [Fact]
+        public void CanConvertRowToEntity()
+        {
+            var reference = new Person
+            {
+                Name = "Darth Vader",
+                Age = 99,
+                Birthday = new DateTime(1990, 5, 4),
+                CheckMark = 'D',
+                IsEvil = true,
+                SomeDecimal = 25.6M,
+                SomeDouble = 17.3,
+                SomeFloat = 19.2F
+            };
+            var asList = new List<Person> {reference};
+            var dataTable = asList.ToDataTable();
+            var row = dataTable.Rows[0];
+
+            var test = row.ToDataType<Person>();
+            Assert.NotNull(test);
+            Assert.Equal(reference.Name, test.Name);
+            Assert.Equal(reference.Age, test.Age);
+            Assert.Equal(reference.Birthday, test.Birthday);
+            Assert.Equal(reference.IsEvil, test.IsEvil);
+            Assert.Equal(reference.CheckMark, test.CheckMark);
+            Assert.Equal(reference.SomeDecimal, test.SomeDecimal);
+            Assert.Equal(reference.SomeFloat, test.SomeFloat);
+            Assert.Equal(reference.SomeDouble, test.SomeDouble);
+        }
         
+    }
+
+    internal class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public DateTime Birthday { get; set; }
+        public bool IsEvil { get; set; }
+        public char CheckMark { get; set; }
+        public decimal SomeDecimal { get; set; }
+        public float SomeFloat { get; set; }
+        public double SomeDouble { get; set; }
     }
 }

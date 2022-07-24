@@ -30,7 +30,7 @@ namespace X3Code.UnitTests.Extensions
             return result;
         }
 
-        public IEnumerable<Deathstar> GenerateDeathStars()
+        public static IEnumerable<Deathstar> GenerateDeathStars()
         {
             var result = new List<Deathstar>();
 
@@ -43,7 +43,7 @@ namespace X3Code.UnitTests.Extensions
             return result;
         }
 
-        private Deathstar CreateDeathStar(int i)
+        private static Deathstar CreateDeathStar(int i)
         {
             DateTime? date;
             if (i % 2 == 0)
