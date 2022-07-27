@@ -84,9 +84,23 @@ namespace X3Code.Infrastructure
         {
             if (asNoTracking)
             {
-                return Entities.AsNoTracking().Where(predicate);
+                return Entities.AsNoTracking().Where(predicate).AsQueryable();
             }
-            return Entities.Where(predicate);
+            return Entities.Where(predicate).AsQueryable();
+        }
+        
+        /// <summary>
+        /// Searches for the corresponding entities that match the predicate
+        /// </summary>
+        /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
+        /// <returns></returns>
+        public IQueryable<TEntity> Query(bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                return Entities.AsNoTracking().AsQueryable();
+            }
+            return Entities.AsQueryable();
         }
 
         /// <summary>
