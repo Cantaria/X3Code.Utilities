@@ -56,4 +56,25 @@ public class EntityPropertyExtensionTest
         Assert.Equal("024,00", formatFloatResult);
         Assert.Equal("012,00", formatDoubleResult);
     }
+    
+    [Fact]
+    public void CanReadData()
+    {
+        var tester = new PropertyUnitTest();
+        var stringResult = tester.TryReadProperty<string, PropertyUnitTest>(StringPropertyName);
+        var intResult = tester.TryReadProperty<int, PropertyUnitTest>(IntegerPropertyName);
+        var dateTimeResult = tester.TryReadProperty<DateTime, PropertyUnitTest>(DateTimePropertyName);
+        var decimalResult = tester.TryReadProperty<decimal, PropertyUnitTest>(DecimalPropertyName);
+        var floatResult = tester.TryReadProperty<float, PropertyUnitTest>(FloatPropertyName);
+        var doubleResult = tester.TryReadProperty<double, PropertyUnitTest>(DoublePropertyName);
+        var boolResult = tester.TryReadProperty<bool, PropertyUnitTest>(BoolPropertyName);
+        
+        Assert.Equal("Unit-Test", stringResult);
+        Assert.Equal(42, intResult);
+        Assert.Equal(new DateTime(2015, 5, 21, 0, 0, 0), dateTimeResult);
+        Assert.Equal(42.42M, decimalResult);
+        Assert.Equal(24F, floatResult);
+        Assert.Equal(12F, doubleResult);
+        Assert.True(boolResult);
+    }
 }
