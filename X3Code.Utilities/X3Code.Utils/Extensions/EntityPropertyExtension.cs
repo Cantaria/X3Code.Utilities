@@ -20,9 +20,16 @@ public static class EntityPropertyExtension
         var property = typeof(TEntity).GetProperty(propertyName);
         if (property == null) return string.Empty;
 
-        if (property.PropertyType == typeof(decimal) || property.PropertyType == typeof(float) || property.PropertyType == typeof(double))
+        if (!string.IsNullOrWhiteSpace(numberFormat))
         {
-            
+            if (property.PropertyType == typeof(decimal))
+                return source.TryReadProperty<decimal, TEntity>(propertyName).ToString(numberFormat);
+
+            if (property.PropertyType == typeof(float))
+                return source.TryReadProperty<float, TEntity>(propertyName).ToString(numberFormat);
+        
+            if (property.PropertyType == typeof(double))
+                return source.TryReadProperty<double, TEntity>(propertyName).ToString(numberFormat);
         }
 
         if (property.PropertyType == typeof(DateTime))
