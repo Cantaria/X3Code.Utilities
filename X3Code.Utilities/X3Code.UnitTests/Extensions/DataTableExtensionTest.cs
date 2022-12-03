@@ -7,8 +7,7 @@ using Xunit;
 
 namespace X3Code.UnitTests.Extensions
 {
-    // ReSharper disable once InconsistentNaming
-    public class DataTableExtension_specs
+    public class DataTableExtensionTest
     {
         public IEnumerable<Spaceship> GenerateMixedTestData()
         {

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using System.IO.Pipes;
 using X3Code.Utils.Extensions;
 using Xunit;
 
 namespace X3Code.UnitTests.Extensions
 {
-    // ReSharper disable once InconsistentNaming
-    public class DataRowExtension_specs
+    public class DataRowExtensionTest
     {
         #region Const Values
 

@@ -4,8 +4,7 @@ using Xunit;
 
 namespace X3Code.UnitTests.Extensions
 {
-    // ReSharper disable once InconsistentNaming
-    public class DateTimeExtension_specs
+    public class DateTimeExtensionTest
     {
         private readonly DateTime _referenceDate = new (2010, 11, 15, 12, 43, 0);
         private readonly DateTime _referenceZeroClock = new (2010, 11, 15, 0, 0, 0);
