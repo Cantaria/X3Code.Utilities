@@ -7,13 +7,13 @@ namespace X3Code.UnitTests.Extensions;
 
 public class EntityPropertyExtensionTest
 {
-    public const string StringPropertyName = "StringProperty";
-    public const string IntegerPropertyName = "IntegerProperty";
-    public const string DateTimePropertyName = "DateTimeProperty";
-    public const string DecimalPropertyName = "DecimalProperty";
-    public const string FloatPropertyName = "FloatProperty";
-    public const string DoublePropertyName = "DoubleProperty";
-    public const string BoolPropertyName = "BoolProperty";
+    private const string StringPropertyName = "StringProperty";
+    private const string IntegerPropertyName = "IntegerProperty";
+    private const string DateTimePropertyName = "DateTimeProperty";
+    private const string DecimalPropertyName = "DecimalProperty";
+    private const string FloatPropertyName = "FloatProperty";
+    private const string DoublePropertyName = "DoubleProperty";
+    private const string BoolPropertyName = "BoolProperty";
 
     private class PropertyUnitTest
     {
@@ -27,7 +27,7 @@ public class EntityPropertyExtensionTest
     }
 
     [Fact]
-    public void CanReadDataAsString()
+    public void CanReadDataAsStringNonGeneric()
     {
         var tester = new PropertyUnitTest();
         var stringResult = tester.TryReadPropertyAsString(StringPropertyName);
@@ -55,10 +55,29 @@ public class EntityPropertyExtensionTest
         Assert.Equal("042,42", formatDecimalResult);
         Assert.Equal("024,00", formatFloatResult);
         Assert.Equal("012,00", formatDoubleResult);
+        
+        //Special case: if a number format is given, but no number is wanted
+        var numberFormatForString = tester.TryReadPropertyAsString(BoolPropertyName, numberFormat: "000.00");
+        Assert.Equal("True", numberFormatForString);
+    }
+    
+    [Fact]
+    public void CanHandleNullsNonGeneric()
+    {
+        PropertyUnitTest tester = null;
+        var inputNullResult = tester.TryReadPropertyAsString(DecimalPropertyName);
+        Assert.Equal("", inputNullResult);
+
+        var propertyNullResult = tester.TryReadPropertyAsString(string.Empty);
+        Assert.Equal("", propertyNullResult);
+
+        var secondTester = new PropertyUnitTest();
+        var nonExistProperty = secondTester.TryReadPropertyAsString("DontExist");
+        Assert.Equal("", nonExistProperty);
     }
 
     [Fact]
-    public void CanReadData()
+    public void CanReadDataGeneric()
     {
         var tester = new PropertyUnitTest();
         var stringResult = tester.TryReadProperty<string, PropertyUnitTest>(StringPropertyName);
@@ -79,20 +98,23 @@ public class EntityPropertyExtensionTest
     }
 
     [Fact]
-    public void CanHandleNulls()
+    public void CanHandleNullsGeneric()
     {
         PropertyUnitTest tester = null;
-
         var inputNullResult = tester.TryReadProperty<decimal, PropertyUnitTest>(DecimalPropertyName);
         Assert.Equal(new decimal(), inputNullResult);
 
         var propertyNullResult = tester.TryReadProperty<decimal, PropertyUnitTest>(string.Empty);
         Assert.Equal(new decimal(), propertyNullResult);
+
+        var secondTester = new PropertyUnitTest();
+        var nonExistProperty = secondTester.TryReadProperty<decimal, PropertyUnitTest>("DontExist");
+        Assert.Equal(new decimal(), nonExistProperty);
     }
     
     
     [Fact]
-    public void CanHandleTypeMissMatch()
+    public void CanHandleTypeMissMatchGenric()
     {
         var tester = new PropertyUnitTest();
 
