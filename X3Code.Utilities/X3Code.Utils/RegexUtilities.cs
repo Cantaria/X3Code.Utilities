@@ -83,6 +83,20 @@ public static class RegexUtilities
 
         return result;
     }
+    
+    /// <summary>
+    /// Tries to replace the placeholder in the input string with data from the entity. Same as FillPlaceholderFromEntity
+    /// </summary>
+    /// <param name="dataEntity">Source entity which contains the data for the placeholder</param>
+    /// <param name="input">Input string with containing placeholder. Valid placeholder is: %property% </param>
+    /// <param name="numberFormat">If the property is a number (decimal, float, double), it's possible to provide a format string</param>
+    /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static string FillPlaceholderStringFromEntity<T>(this string input, T dataEntity, string numberFormat = null, string dateTimeFormat = null) where T : class
+    {
+        return dataEntity.FillPlaceholderFromEntity(input, numberFormat, dateTimeFormat);
+    }
         
     private static readonly Regex PlaceholderRegex = new ("%(?<name>.+?)%");
 }

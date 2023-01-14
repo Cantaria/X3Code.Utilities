@@ -41,6 +41,8 @@ public class RegesUtilitiesTest
         var expectedString = $"The customer ordered the color {tester.Color} for a value of {tester.Value} at {tester.AvailableAt:yyyyMMdd HH:mm}";
 
         var result = tester.FillPlaceholderFromEntity(placeholderString, dateTimeFormat: "yyyyMMdd HH:mm");
+        var result2 = placeholderString.FillPlaceholderStringFromEntity(tester, dateTimeFormat: "yyyyMMdd HH:mm");
         Assert.Equal(expectedString, result);
+        Assert.Equal(expectedString, result2);
     }
 }
