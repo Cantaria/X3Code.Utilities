@@ -68,7 +68,7 @@ public static class RegexUtilities
     /// Tries to replace the placeholder in the input string with data from the entity
     /// </summary>
     /// <param name="dataEntity">Source entity which contains the data for the placeholder</param>
-    /// <param name="input">Input string with containing placeholder. Valid placeholder are: %property% (property) ?property? </param>
+    /// <param name="input">Input string with containing placeholder. Valid placeholder is: %property% </param>
     /// <param name="numberFormat">If the property is a number (decimal, float, double), it's possible to provide a format string</param>
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
