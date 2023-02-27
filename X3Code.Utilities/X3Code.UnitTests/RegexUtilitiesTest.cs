@@ -4,7 +4,7 @@ using Xunit;
 
 namespace X3Code.UnitTests;
 
-public class RegesUtilitiesTest
+public class RegexUtilitiesTest
 {
     [Theory]
     [InlineData("david.jones@proseware.com", true)]
@@ -44,5 +44,14 @@ public class RegesUtilitiesTest
         var result2 = placeholderString.FillPlaceholderStringFromEntity(tester, dateTimeFormat: "yyyyMMdd HH:mm");
         Assert.Equal(expectedString, result);
         Assert.Equal(expectedString, result2);
+    }
+    
+    [Fact]
+    public void CanHandleNullOrEmptyValues()
+    {
+        var tester = new PlaceHolderTester();
+        string placeholderString = null;
+        
+        //TODO
     }
 }
