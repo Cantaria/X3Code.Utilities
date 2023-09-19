@@ -1,9 +1,8 @@
 
 // ReSharper disable InconsistentNaming
 
-using System;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 using X3Code.Azure.Utils.Storage;
 using Xunit;
 
@@ -17,7 +16,7 @@ namespace X3Code.UnitTests.Azure.Storage
         private bool _testDisabled = true;
         
         [Fact]
-        public void CanUploadFile()
+        public async Task CanUploadFile()
         {
             if (_testDisabled) return;
             
@@ -31,18 +30,18 @@ namespace X3Code.UnitTests.Azure.Storage
             var container = "";
 
             var storage = new AzureBlobStorage(connectionString, container);
-            storage.UploadFile(stream, storageFilePath).GetAwaiter().GetResult();
-            var exist = storage.Exists(storageFilePath).GetAwaiter().GetResult();
+            await storage.UploadFile(stream, storageFilePath);
+            var exist = await storage.Exists(storageFilePath);
             Assert.True(exist);
             
-            var downloadFile = storage.DownloadFile(storageFilePath).GetAwaiter().GetResult();
+            var downloadFile = await storage.DownloadFile(storageFilePath);
             Assert.True(downloadFile.Length > 0);
 
-            var files = storage.ListFiles().GetAwaiter().GetResult();
+            var files = await storage.ListFiles();
             Assert.Single(files);
             
-            storage.Delete(storageFilePath).GetAwaiter().GetResult();
-            var doesNotExist = storage.Exists(storageFilePath).GetAwaiter().GetResult();
+            storage.Delete(storageFilePath);
+            var doesNotExist = await storage.Exists(storageFilePath);
             Assert.False(doesNotExist);
         }
     }
