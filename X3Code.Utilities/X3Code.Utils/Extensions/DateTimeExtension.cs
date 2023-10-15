@@ -4,7 +4,7 @@ using System.Data.SqlTypes;
 namespace X3Code.Utils.Extensions
 {
     /// <summary>
-    /// DateTime calculation and usefull stuff to work with
+    /// DateTime calculation and useful stuff to work with
     /// </summary>
     public static class DateTimeExtension
     {

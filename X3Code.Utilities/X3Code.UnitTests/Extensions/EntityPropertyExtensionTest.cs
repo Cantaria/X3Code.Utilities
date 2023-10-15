@@ -37,11 +37,11 @@ public class EntityPropertyExtensionTest
         var floatResult = tester.TryReadPropertyAsString(FloatPropertyName);
         var doubleResult = tester.TryReadPropertyAsString(DoublePropertyName);
         var boolResult = tester.TryReadPropertyAsString(BoolPropertyName);
-
+        
         Assert.Equal("Unit-Test", stringResult);
         Assert.Equal("42", intResult);
         Assert.Equal("2015.05.21 00:00", dateTimeResult);
-        Assert.Equal("42,42", decimalResult);
+        Assert.Equal("42.42", decimalResult);
         Assert.Equal("24", floatResult);
         Assert.Equal("12", doubleResult);
         Assert.Equal("True", boolResult);
@@ -52,9 +52,9 @@ public class EntityPropertyExtensionTest
         var formatDoubleResult = tester.TryReadPropertyAsString(DoublePropertyName, "000.00");
 
         Assert.Equal("21.05.2015", formatDateResult);
-        Assert.Equal("042,42", formatDecimalResult);
-        Assert.Equal("024,00", formatFloatResult);
-        Assert.Equal("012,00", formatDoubleResult);
+        Assert.Equal("042.42", formatDecimalResult);
+        Assert.Equal("024.00", formatFloatResult);
+        Assert.Equal("012.00", formatDoubleResult);
         
         //Special case: if a number format is given, but no number is wanted
         var numberFormatForString = tester.TryReadPropertyAsString(BoolPropertyName, numberFormat: "000.00");
