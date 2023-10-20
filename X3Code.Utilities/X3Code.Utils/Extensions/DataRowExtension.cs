@@ -9,12 +9,12 @@ namespace X3Code.Utils.Extensions
     public static class DataRowExtension
     {
         /// <summary>
-        /// If a DataRow represents an entity by 1:1, this extension tries to convert this row to the given Entity.
-        /// DataTypes and column names must equal the original entity T
+        /// Converts a DataRow to a specified data type.
         /// </summary>
-        /// <param name="source">The DataRow which needs to be converted</param>
-        /// <typeparam name="T">The type, this row should be converted to</typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">The type of object to which the DataRow should be converted. The type should be a class and have a parameterless constructor.</typeparam>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <returns>An object of type T populated with the DataRow's values.</returns>
+        /// <exception cref="InvalidCastException">Thrown when unable to cast the data row's value to the property's type.</exception>
         public static T ToDataType<T>(this DataRow source) where T : class, new()
         {
             var result = new T();
@@ -31,12 +31,13 @@ namespace X3Code.Utils.Extensions
         }
         
         /// <summary>
-        /// Tries to convert a date string from the row and returns a nullable DateTime object
+        /// Converts a specific column of a DataRow to a DateTime type, using the provided date pattern for parsing.
         /// </summary>
-        /// <param name="source">The whole DataRow</param>
-        /// <param name="columnName">The name of the column</param>
-        /// <param name="datePattern">The pattern for the date format. Like: dd.MM.yyyy or MM/dd/yyyy ...</param>
-        /// <returns>The DateTime on success, otherwise null</returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the date string.</param>
+        /// <param name="datePattern">The pattern used for date parsing.</param>
+        /// <returns>A Nullable DateTime populated with the date value from the DataRow's specific column. If the conversion fails or the value is null or empty, returns null.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName or datePattern is null, empty or consists only of white-space characters.</exception>
         public static DateTime? ToDateTime(this DataRow source, string columnName, string datePattern)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -54,11 +55,12 @@ namespace X3Code.Utils.Extensions
         }
 
         /// <summary>
-        /// Tries to convert the column content to a string
+        /// Converts a specific column of a DataRow to a trimmed string type.
         /// </summary>
-        /// <param name="row">The whole DataRow</param>
-        /// <param name="columnName">The column name within the row</param>
-        /// <returns></returns>
+        /// <param name="row">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the string.</param>
+        /// <returns>A string populated with the value from the DataRow's specific column. If the conversion fails or the value is null or empty, returns null.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static string ToStringOrNull(this DataRow row, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -70,11 +72,12 @@ namespace X3Code.Utils.Extensions
         }
 
         /// <summary>
-        /// Returns the value as int.
+        /// Converts a specific column of a DataRow to an integer.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="columnName"></param>
-        /// <returns></returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the integer value.</param>
+        /// <returns>An integer representation of the data in the specified DataRow column. If the conversion fails, returns 0.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static int ToInteger(this DataRow source, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -84,39 +87,43 @@ namespace X3Code.Utils.Extensions
             {
                 return result;
             }
+
             return 0;
         }
 
         /// <summary>
-        /// Tries to convert the string to a decimal.
+        /// Converts a specific column of a DataRow to a decimal.
         /// </summary>
-        /// <param name="source">The whole DataRow</param>
-        /// <param name="columnName">The name of the column</param>
-        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
-        /// <returns>The Decimal on success, otherwise '0'</returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the decimal value.</param>
+        /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
+        /// <returns>A decimal representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static decimal ToDecimal(this DataRow source, string columnName, IFormatProvider culture = null)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
             if (culture == null) culture = new CultureInfo("EN");
             if (source[columnName] == DBNull.Value) return 0;
-            
+
             var content = source.ToStringOrNull(columnName);
             if (string.IsNullOrWhiteSpace(content)) return 0;
-            
+
             if (decimal.TryParse(content, NumberStyles.Any, culture, out var result))
             {
                 return result;
             }
+
             return 0;
         }
 
         /// <summary>
-        /// Tries to convert the string to a float.
+        /// Converts a specific column of a DataRow to a float.
         /// </summary>
-        /// <param name="source">The whole DataRow</param>
-        /// <param name="columnName">The name of the column</param>
-        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
-        /// <returns>The float on success, otherwise '0'</returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the float value.</param>
+        /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
+        /// <returns>A float representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static float ToFloat(this DataRow source, string columnName, IFormatProvider culture = null)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -134,12 +141,13 @@ namespace X3Code.Utils.Extensions
         }
 
         /// <summary>
-        /// Tries to convert the string to a double.
+        /// Converts a specific column of a DataRow to a double.
         /// </summary>
-        /// <param name="source">The whole DataRow</param>
-        /// <param name="columnName">The name of the column</param>
-        /// <param name="culture">The culture information for the value to parse. If none is given, culture EN will be choosen</param>
-        /// <returns>The double on success, otherwise '0'</returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the double value.</param>
+        /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
+        /// <returns>A double representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static double ToDouble(this DataRow source, string columnName, IFormatProvider culture = null)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -157,11 +165,12 @@ namespace X3Code.Utils.Extensions
         }
 
         /// <summary>
-        /// Tries to convert a string to boolean.
+        /// Converts a specific column of a DataRow to a boolean.
         /// </summary>
-        /// <param name="source">The whole DataRow</param>
-        /// <param name="columnName">The name of the column</param>
-        /// <returns>The boolean on success, otherwise false</returns>
+        /// <param name="source">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the boolean value.</param>
+        /// <returns>A boolean representation of the DataRow's specific column's value. If the value is "1", "yes", or "true" (case-insensitive), returns true. Otherwise, returns false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
         public static bool ToBoolean(this DataRow source, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -183,11 +192,13 @@ namespace X3Code.Utils.Extensions
         }
         
         /// <summary>
-        /// Tries to convert the column content to a char
+        /// Converts a specific column of a DataRow to a char.
         /// </summary>
-        /// <param name="row">The whole DataRow</param>
-        /// <param name="columnName">The column name within the row</param>
-        /// <returns>The character on success, otherwise '\0'</returns>
+        /// <param name="row">The DataRow that contains the data.</param>
+        /// <param name="columnName">The name of the column that contains the character value.</param>
+        /// <returns>A char representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns '\0'</returns>
+        /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+        /// <exception cref="Exception">Thrown when the string contains more than one character.</exception>
         public static char ToChar(this DataRow row, string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
