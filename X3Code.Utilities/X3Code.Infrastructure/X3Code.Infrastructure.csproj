@@ -37,5 +37,10 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\X3Code.Utils\Extensions\DataTableExtension.cs">
+      <Link>Extensions\DataTableExtension.cs</Link>
+    </Compile>
+  </ItemGroup>
 
 </Project>

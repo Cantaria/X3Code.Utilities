@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using X3Code.Utils.Extensions;
 
 namespace X3Code.Infrastructure
 {
@@ -19,6 +21,51 @@ namespace X3Code.Infrastructure
             DataBase = context;
             Entities = context.Set<TEntity>();
         }
+        
+        #region Bulk Writing
+
+        /// <summary>
+        /// Performs a bulk write operation for the provided entities into the specified table.
+        /// </summary>
+        /// <param name="entity">Collection of entities to be written in the database table.</param>
+        /// <param name="tableName">Name of the database table where the entities should be written.</param>
+        /// <returns>Returns the number of rows copied.</returns>
+        protected async Task<int> BulkWrite(IEnumerable<TEntity> entity, string tableName)
+        {
+            var asDataTable = entity.ToDataTable(tableName);
+            var mappings = GetMapping(typeof(TEntity));
+            var bulkWriter = new SqlBulkCopy(DataBase.Database.GetConnectionString());
+
+            bulkWriter.DestinationTableName = tableName;
+            foreach (var mapping in mappings)
+            {
+                bulkWriter.ColumnMappings.Add(mapping);
+            }
+
+            await bulkWriter.WriteToServerAsync(asDataTable);
+            
+            return bulkWriter.RowsCopied;
+        }
+
+        /// <summary>
+        /// Generates a list of columns mappings between the source data and the target table based on the properties of the provided object type.
+        /// </summary>
+        /// <param name="objectType">The type of the objects to generate mappings for.</param>
+        /// <returns>Returns an IEnumerable of column mappings.</returns>
+        private IEnumerable<SqlBulkCopyColumnMapping> GetMapping(Type objectType)
+        {
+            var result = new List<SqlBulkCopyColumnMapping>();
+            
+            var properties = objectType.GetProperties();
+            foreach (var property in properties)
+            {
+                if (!property.CanWrite) continue;
+                result.Add(new SqlBulkCopyColumnMapping(property.Name, property.Name));
+            }
+            return result;
+        }
+        
+        #endregion
 
         /// <summary>
         /// Direct access on the context
