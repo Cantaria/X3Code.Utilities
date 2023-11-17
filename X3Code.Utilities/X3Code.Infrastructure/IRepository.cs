@@ -47,4 +47,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	Task UpdateAsync(TEntity entity, bool asNoTracking = false);
 		
 	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
+
+	Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds);
 }

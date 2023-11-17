@@ -16,6 +16,7 @@ public static class PersonMockupFactory
             var day = i % 28 + 1;
             var person = new Person
             {
+                EntityId = Guid.NewGuid(),
                 Birthday = new DateTime(1990, month, day),
                 Name = $"Name-{i}",
                 Surname = $"Surname-{i}"

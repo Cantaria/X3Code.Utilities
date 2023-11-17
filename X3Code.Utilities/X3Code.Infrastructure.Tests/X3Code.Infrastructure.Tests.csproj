@@ -42,6 +42,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\X3Code.Infrastructure\X3Code.Infrastructure.csproj" />
+      <ProjectReference Include="..\X3Code.Utils\X3Code.Utils.csproj" />
     </ItemGroup>
 
 </Project>

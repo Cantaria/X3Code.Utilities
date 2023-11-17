@@ -1,47 +1,23 @@
 using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using X3Code.Infrastructure.Tests.ConstValues;
 using X3Code.Infrastructure.Tests.Data;
-using X3Code.Infrastructure.Tests.Helper;
 using X3Code.Infrastructure.Tests.Mockups;
 using Xunit;
 
-namespace X3Code.Infrastructure.Tests;
+namespace X3Code.Infrastructure.Tests.Tests;
 
-public class RepositoryTest : IDisposable
+public class RepositoryTest : RepositoryBaseTest
 {
-    private readonly IServiceProvider _service;
-    private readonly DatabaseConnector _database;
-    private const string BaseQuery = "SELECT * FROM Person ";
-
-    public RepositoryTest()
-    {
-        _service = BuildServiceProvider();
-        _database = new DatabaseConnector(DbConnectionStrings.GetConnectionString());
-    }
-
-    private IServiceProvider BuildServiceProvider()
-    {
-        var services = new ServiceCollection();
-
-        var connectionString = DbConnectionStrings.GetConnectionString();
-        services.AddDbContext<UnitTestContext>(options => { options.UseSqlServer(connectionString); });
-        services.AddTransient<IPersonRepository, PersonRepository>();
-
-        return services.BuildServiceProvider();
-    }
-
     [Fact]
     public void AddToDatabase()
     {
         var reference = new Person("First", "Second", DateTime.Today);
-        var repo = _service.GetRequiredService<IPersonRepository>();
+        var repo = Services.GetRequiredService<IPersonRepository>();
             
         repo.Add(reference);
 
-        var result = _database.GetFromDb($"{BaseQuery} WHERE Name = 'First';");
+        var result = DataBaseConnector.GetFromDb($"{PersonBaseQuery} WHERE Name = 'First';");
         Assert.Equal(1, result.Rows.Count);
 
         var dbPerson = result.Rows[0].ToPerson(); 
@@ -55,11 +31,11 @@ public class RepositoryTest : IDisposable
     public void MassAddToDatabase()
     {
         var reference = PersonMockupFactory.CreateNPersons(10000);
-        var repo = _service.GetRequiredService<IPersonRepository>();
+        var repo = Services.GetRequiredService<IPersonRepository>();
             
         repo.AddAll(reference);
 
-        var dataTable = _database.GetFromDb($"{BaseQuery}");
+        var dataTable = DataBaseConnector.GetFromDb($"{PersonBaseQuery}");
         Assert.Equal(10000, dataTable.Rows.Count);
 
         var personsFromDb = dataTable.ToPerson();
@@ -69,7 +45,6 @@ public class RepositoryTest : IDisposable
             var personFromDb = personsFromDb.SingleOrDefault(x => x.EntityId == referencePerson.EntityId);
                 
             Assert.NotNull(personFromDb);
-            if (personFromDb == null) return;
             Assert.Equal(referencePerson.Name, personFromDb.Name);
             Assert.Equal(referencePerson.Surname, personFromDb.Surname);
             Assert.Equal(referencePerson.Birthday, personFromDb.Birthday);
@@ -81,7 +56,7 @@ public class RepositoryTest : IDisposable
     public void QueryWithRepository()
     {
         var reference = PersonMockupFactory.CreateNPersons(100);
-        var repo = _service.GetRequiredService<IPersonRepository>();
+        var repo = Services.GetRequiredService<IPersonRepository>();
             
         repo.AddAll(reference);
 
@@ -94,10 +69,5 @@ public class RepositoryTest : IDisposable
         Assert.Equal(reference[25].Surname, dbPerson.Surname);
         Assert.Equal(reference[25].Birthday, dbPerson.Birthday);
         Assert.Equal(reference[25].EntityId, dbPerson.EntityId);
-    }
-
-    public void Dispose()
-    {
-        _database.CleanDataBase();
     }
 }

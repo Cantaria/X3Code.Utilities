@@ -374,8 +374,9 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// </summary>
     /// <param name="entities">Collection of entities to be written in the database table.</param>
     /// <param name="tableName">Name of the database table where the entities should be written.</param>
+    /// <param name="timeOutInSeconds">Optional: Number of seconds for the operations to complete. If not set, default is used.</param>
     /// <returns>Returns the number of rows copied.</returns>
-    protected async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName)
+    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds = 0)
     {
         var asList = entities.ToList();
         if (asList.Count == 0)
@@ -388,6 +389,10 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
         
         using var bulkWriter = new SqlBulkCopy(DataBase.Database.GetConnectionString());
 
+        if (timeOutInSeconds > 0)
+        {
+            bulkWriter.BulkCopyTimeout = timeOutInSeconds;   
+        }
         bulkWriter.DestinationTableName = tableName;
         foreach (var mapping in mappings)
         {
