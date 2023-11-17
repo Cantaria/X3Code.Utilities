@@ -17,6 +17,12 @@ namespace X3Code.Infrastructure;
 public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity>
     where TEntity : class, IEntity, new() where TContext : DbContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenericRepository{TContext}"/> class.
+    /// </summary>
+    /// <param name="context">The context used to access the database.</param>
+    /// <typeparam name="TContext">The type of the database context.</typeparam>
+    /// <typeparam name="TEntity">The type of the entities in the repository.</typeparam>
     protected GenericRepository(TContext context)
     {
         DataBase = context;
