@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace X3Code.Infrastructure
+namespace X3Code.Infrastructure;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        Guid EntityId { get; set; }
-    }
+    Guid EntityId { get; set; }
 }

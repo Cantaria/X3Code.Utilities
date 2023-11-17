@@ -8,97 +8,96 @@ using X3Code.Infrastructure.Tests.Helper;
 using X3Code.Infrastructure.Tests.Mockups;
 using Xunit;
 
-namespace X3Code.Infrastructure.Tests
+namespace X3Code.Infrastructure.Tests;
+
+public class RepositoryTest : IDisposable
 {
-    public class RepositoryTest : IDisposable
+    private readonly IServiceProvider _service;
+    private readonly DatabaseConnector _database;
+    private const string BaseQuery = "SELECT * FROM Person ";
+
+    public RepositoryTest()
     {
-        private readonly IServiceProvider _service;
-        private readonly DatabaseConnector _database;
-        private const string BaseQuery = "SELECT * FROM Person ";
+        _service = BuildServiceProvider();
+        _database = new DatabaseConnector(DbConnectionStrings.GetConnectionString());
+    }
 
-        public RepositoryTest()
-        {
-            _service = BuildServiceProvider();
-            _database = new DatabaseConnector(DbConnectionStrings.GetConnectionString());
-        }
+    private IServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
 
-        private IServiceProvider BuildServiceProvider()
-        {
-            var services = new ServiceCollection();
+        var connectionString = DbConnectionStrings.GetConnectionString();
+        services.AddDbContext<UnitTestContext>(options => { options.UseSqlServer(connectionString); });
+        services.AddTransient<IPersonRepository, PersonRepository>();
 
-            var connectionString = DbConnectionStrings.GetConnectionString();
-            services.AddDbContext<UnitTestContext>(options => { options.UseSqlServer(connectionString); });
-            services.AddTransient<IPersonRepository, PersonRepository>();
+        return services.BuildServiceProvider();
+    }
 
-            return services.BuildServiceProvider();
-        }
-
-        [Fact]
-        public void AddToDatabase()
-        {
-            var reference = new Person("First", "Second", DateTime.Today);
-            var repo = _service.GetRequiredService<IPersonRepository>();
+    [Fact]
+    public void AddToDatabase()
+    {
+        var reference = new Person("First", "Second", DateTime.Today);
+        var repo = _service.GetRequiredService<IPersonRepository>();
             
-            repo.Add(reference);
+        repo.Add(reference);
 
-            var result = _database.GetFromDb($"{BaseQuery} WHERE Name = 'First';");
-            Assert.Equal(1, result.Rows.Count);
+        var result = _database.GetFromDb($"{BaseQuery} WHERE Name = 'First';");
+        Assert.Equal(1, result.Rows.Count);
 
-            var dbPerson = result.Rows[0].ToPerson(); 
-            Assert.Equal(reference.Name, dbPerson.Name);
-            Assert.Equal(reference.Surname, dbPerson.Surname);
-            Assert.Equal(reference.Birthday, dbPerson.Birthday);
-            Assert.Equal(reference.EntityId, dbPerson.EntityId);
-        }
+        var dbPerson = result.Rows[0].ToPerson(); 
+        Assert.Equal(reference.Name, dbPerson.Name);
+        Assert.Equal(reference.Surname, dbPerson.Surname);
+        Assert.Equal(reference.Birthday, dbPerson.Birthday);
+        Assert.Equal(reference.EntityId, dbPerson.EntityId);
+    }
         
-        [Fact]
-        public void MassAddToDatabase()
-        {
-            var reference = PersonMockupFactory.CreateNPersons(10000);
-            var repo = _service.GetRequiredService<IPersonRepository>();
+    [Fact]
+    public void MassAddToDatabase()
+    {
+        var reference = PersonMockupFactory.CreateNPersons(10000);
+        var repo = _service.GetRequiredService<IPersonRepository>();
             
-            repo.AddAll(reference);
+        repo.AddAll(reference);
 
-            var dataTable = _database.GetFromDb($"{BaseQuery}");
-            Assert.Equal(10000, dataTable.Rows.Count);
+        var dataTable = _database.GetFromDb($"{BaseQuery}");
+        Assert.Equal(10000, dataTable.Rows.Count);
 
-            var personsFromDb = dataTable.ToPerson();
+        var personsFromDb = dataTable.ToPerson();
 
-            foreach (var referencePerson in reference)
-            {
-                var personFromDb = personsFromDb.SingleOrDefault(x => x.EntityId == referencePerson.EntityId);
+        foreach (var referencePerson in reference)
+        {
+            var personFromDb = personsFromDb.SingleOrDefault(x => x.EntityId == referencePerson.EntityId);
                 
-                Assert.NotNull(personFromDb);
-                if (personFromDb == null) return;
-                Assert.Equal(referencePerson.Name, personFromDb.Name);
-                Assert.Equal(referencePerson.Surname, personFromDb.Surname);
-                Assert.Equal(referencePerson.Birthday, personFromDb.Birthday);
-                Assert.Equal(referencePerson.EntityId, personFromDb.EntityId);
-            }
+            Assert.NotNull(personFromDb);
+            if (personFromDb == null) return;
+            Assert.Equal(referencePerson.Name, personFromDb.Name);
+            Assert.Equal(referencePerson.Surname, personFromDb.Surname);
+            Assert.Equal(referencePerson.Birthday, personFromDb.Birthday);
+            Assert.Equal(referencePerson.EntityId, personFromDb.EntityId);
         }
+    }
         
-        [Fact]
-        public void QueryWithRepository()
-        {
-            var reference = PersonMockupFactory.CreateNPersons(100);
-            var repo = _service.GetRequiredService<IPersonRepository>();
+    [Fact]
+    public void QueryWithRepository()
+    {
+        var reference = PersonMockupFactory.CreateNPersons(100);
+        var repo = _service.GetRequiredService<IPersonRepository>();
             
-            repo.AddAll(reference);
+        repo.AddAll(reference);
 
-            var fromDatabase = repo.Query(x => x.Name != null && x.Name.Contains("25")).ToList();
-            Assert.Single(fromDatabase);
+        var fromDatabase = repo.Query(x => x.Name != null && x.Name.Contains("25")).ToList();
+        Assert.Single(fromDatabase);
 
-            var dbPerson = fromDatabase.First();
-            //Quick and dirty.... but it's working.
-            Assert.Equal(reference[25].Name, dbPerson.Name);
-            Assert.Equal(reference[25].Surname, dbPerson.Surname);
-            Assert.Equal(reference[25].Birthday, dbPerson.Birthday);
-            Assert.Equal(reference[25].EntityId, dbPerson.EntityId);
-        }
+        var dbPerson = fromDatabase.First();
+        //Quick and dirty.... but it's working.
+        Assert.Equal(reference[25].Name, dbPerson.Name);
+        Assert.Equal(reference[25].Surname, dbPerson.Surname);
+        Assert.Equal(reference[25].Birthday, dbPerson.Birthday);
+        Assert.Equal(reference[25].EntityId, dbPerson.EntityId);
+    }
 
-        public void Dispose()
-        {
-            _database.CleanDataBase();
-        }
+    public void Dispose()
+    {
+        _database.CleanDataBase();
     }
 }

@@ -4,102 +4,101 @@ using System.IO;
 using X3Code.Utils.Serializing;
 using Xunit;
 
-namespace X3Code.UnitTests.IO
+namespace X3Code.UnitTests.IO;
+
+[Serializable]
+public class TestClass
 {
-    [Serializable]
-    public class TestClass
+    public string StringField { get; set; }
+    public int IntField { get; set; }
+    public List<string> ListField { get; set; }
+}
+
+internal static class TestClassHelper
+{
+    internal static bool AreBothTheSame(TestClass control, TestClass toCheck)
     {
-        public string StringField { get; set; }
-        public int IntField { get; set; }
-        public List<string> ListField { get; set; }
+        if (control.IntField != toCheck.IntField) return false;
+        if (control.StringField != toCheck.StringField) return false;
+
+        var controlList = control.ListField.ToArray();
+        var checkList = toCheck.ListField.ToArray();
+
+        if (controlList.Length != checkList.Length) return false;
+
+        for (var i = 0; i < control.ListField.Count; i++)
+        {
+            if (controlList[i] != checkList[i]) return false;
+        }
+
+        return true;
+    }
+}
+
+// ReSharper disable once InconsistentNaming
+public class XmlSerializer_specs
+{
+    private TestClass _testDaten;
+    private readonly string _savePath = Path.Combine(Environment.CurrentDirectory, "Xml_specs.xml");
+
+    [Fact]
+    public void CanSaveAndLoadAnXmlFile()
+    {
+        var referenceData = new TestClass
+        {
+            IntField = 25,
+            ListField = new List<string> { "Hello", "World" },
+            StringField = "Kuckuck"
+        };
+
+        //Should not throw an Exception
+        GenericXmlSerializer.SaveXml(_savePath, referenceData);
+        _testDaten = GenericXmlSerializer.LoadXml<TestClass>(_savePath);
+
+        Assert.Equal(_testDaten.IntField, referenceData.IntField);
+        Assert.Equal(_testDaten.ListField, referenceData.ListField);
+        Assert.Equal(_testDaten.StringField, referenceData.StringField);
+        Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
     }
 
-    internal static class TestClassHelper
+    [Fact]
+    public void CanDeserialize()
     {
-        internal static bool AreBothTheSame(TestClass control, TestClass toCheck)
+        var referenceData = new TestClass
         {
-            if (control.IntField != toCheck.IntField) return false;
-            if (control.StringField != toCheck.StringField) return false;
+            IntField = 25,
+            ListField = new List<string> { "Hello", "World" },
+            StringField = "Kuckuck"
+        };
 
-            var controlList = control.ListField.ToArray();
-            var checkList = toCheck.ListField.ToArray();
+        //Should not throw an Exception
+        var testString = GenericXmlSerializer.SerializeObjectToXmlString(referenceData);
+        _testDaten = GenericXmlSerializer.DeserializeXmlStringTo<TestClass>(testString);
 
-            if (controlList.Length != checkList.Length) return false;
-
-            for (var i = 0; i < control.ListField.Count; i++)
-            {
-                if (controlList[i] != checkList[i]) return false;
-            }
-
-            return true;
-        }
+        Assert.Equal(_testDaten.IntField, referenceData.IntField);
+        Assert.Equal(_testDaten.ListField, referenceData.ListField);
+        Assert.Equal(_testDaten.StringField, referenceData.StringField);
+        Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
     }
 
-    // ReSharper disable once InconsistentNaming
-    public class XmlSerializer_specs
+    [Fact]
+    public void CanSerialize()
     {
-        private TestClass _testDaten;
-        private readonly string _savePath = Path.Combine(Environment.CurrentDirectory, "Xml_specs.xml");
-
-        [Fact]
-        public void CanSaveAndLoadAnXmlFile()
+        var referenceData = new TestClass
         {
-            var referenceData = new TestClass
-            {
-                IntField = 25,
-                ListField = new List<string> { "Hello", "World" },
-                StringField = "Kuckuck"
-            };
+            IntField = 25,
+            ListField = new List<string> { "Hello", "World" },
+            StringField = "Kuckuck"
+        };
 
-            //Should not throw an Exception
-            GenericXmlSerializer.SaveXml(_savePath, referenceData);
-            _testDaten = GenericXmlSerializer.LoadXml<TestClass>(_savePath);
+        //Should not throw an Exception
+        var testString = GenericXmlSerializer.SerializeToXmlInMemory(referenceData);
+        _testDaten = GenericXmlSerializer.DeserializeXmlMemoryStreamTo<TestClass>(testString);
 
-            Assert.Equal(_testDaten.IntField, referenceData.IntField);
-            Assert.Equal(_testDaten.ListField, referenceData.ListField);
-            Assert.Equal(_testDaten.StringField, referenceData.StringField);
-            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
-        }
+        Assert.Equal(_testDaten.IntField, referenceData.IntField);
+        Assert.Equal(_testDaten.ListField, referenceData.ListField);
+        Assert.Equal(_testDaten.StringField, referenceData.StringField);
+        Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
 
-        [Fact]
-        public void CanDeserialize()
-        {
-            var referenceData = new TestClass
-            {
-                IntField = 25,
-                ListField = new List<string> { "Hello", "World" },
-                StringField = "Kuckuck"
-            };
-
-            //Should not throw an Exception
-            var testString = GenericXmlSerializer.SerializeObjectToXmlString(referenceData);
-            _testDaten = GenericXmlSerializer.DeserializeXmlStringTo<TestClass>(testString);
-
-            Assert.Equal(_testDaten.IntField, referenceData.IntField);
-            Assert.Equal(_testDaten.ListField, referenceData.ListField);
-            Assert.Equal(_testDaten.StringField, referenceData.StringField);
-            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
-        }
-
-        [Fact]
-        public void CanSerialize()
-        {
-            var referenceData = new TestClass
-            {
-                IntField = 25,
-                ListField = new List<string> { "Hello", "World" },
-                StringField = "Kuckuck"
-            };
-
-            //Should not throw an Exception
-            var testString = GenericXmlSerializer.SerializeToXmlInMemory(referenceData);
-            _testDaten = GenericXmlSerializer.DeserializeXmlMemoryStreamTo<TestClass>(testString);
-
-            Assert.Equal(_testDaten.IntField, referenceData.IntField);
-            Assert.Equal(_testDaten.ListField, referenceData.ListField);
-            Assert.Equal(_testDaten.StringField, referenceData.StringField);
-            Assert.True(TestClassHelper.AreBothTheSame(_testDaten, referenceData));
-
-        }
     }
 }

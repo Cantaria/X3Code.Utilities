@@ -7,64 +7,63 @@ using Xunit;
 
 // ReSharper disable InconsistentNaming
 
-namespace X3Code.UnitTests.Converter
+namespace X3Code.UnitTests.Converter;
+
+public class ConvertList_specs
 {
-    public class ConvertList_specs
+    #region Helpers
+
+    private class A
     {
-        #region Helpers
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int Number { get; set; }
+    }
 
-        private class A
+    private class B
+    {
+        public string NameValue { get; set; }
+        public string DescriptionValue { get; set; }
+        public int NumberValue { get; set; }
+    }
+
+    private IEnumerable<A> SeedData()
+    {
+        return new List<A>
         {
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public int Number { get; set; }
-        }
+            new A{Name = "C#", Description = "Programming Language", Number = 1},
+            new A{Name = "TCP/IP", Description = "Network protocol", Number = 2},
+            new A{Name = "Javascript", Description = "Scripting Language", Number = 3}
+        };
+    }
 
-        private class B
+    private static B ToB(A source)
+    {
+        return new B
         {
-            public string NameValue { get; set; }
-            public string DescriptionValue { get; set; }
-            public int NumberValue { get; set; }
-        }
+            DescriptionValue = source.Description,
+            NameValue = source.Name,
+            NumberValue = source.Number
+        };
+    }
 
-        private IEnumerable<A> SeedData()
-        {
-            return new List<A>
-            {
-                new A{Name = "C#", Description = "Programming Language", Number = 1},
-                new A{Name = "TCP/IP", Description = "Network protocol", Number = 2},
-                new A{Name = "Javascript", Description = "Scripting Language", Number = 3}
-            };
-        }
+    #endregion
 
-        private static B ToB(A source)
-        {
-            return new B
-            {
-                DescriptionValue = source.Description,
-                NameValue = source.Name,
-                NumberValue = source.Number
-            };
-        }
+    [Fact]
+    public void ConvertAWholeList()
+    {
+        var source = SeedData().ToList();
+        var result = source.ConvertList(ToB).ToList();
 
-        #endregion
-
-        [Fact]
-        public void ConvertAWholeList()
-        {
-            var source = SeedData().ToList();
-            var result = source.ConvertList(ToB).ToList();
-
-            Assert.Equal(source.Count, result.Count);
-            Assert.Contains(result, b => b.NumberValue == 3);
-            Assert.Contains(result, b => b.NumberValue == 2);
-            Assert.Contains(result, b => b.NumberValue == 1);
-            Assert.Contains(result, b => b.NameValue == "C#");
-            Assert.Contains(result, b => b.NameValue == "TCP/IP");
-            Assert.Contains(result, b => b.NameValue == "Javascript");
-            Assert.Contains(result, b => b.DescriptionValue == "Programming Language");
-            Assert.Contains(result, b => b.DescriptionValue == "Network protocol");
-            Assert.Contains(result, b => b.DescriptionValue == "Scripting Language");
-        }
+        Assert.Equal(source.Count, result.Count);
+        Assert.Contains(result, b => b.NumberValue == 3);
+        Assert.Contains(result, b => b.NumberValue == 2);
+        Assert.Contains(result, b => b.NumberValue == 1);
+        Assert.Contains(result, b => b.NameValue == "C#");
+        Assert.Contains(result, b => b.NameValue == "TCP/IP");
+        Assert.Contains(result, b => b.NameValue == "Javascript");
+        Assert.Contains(result, b => b.DescriptionValue == "Programming Language");
+        Assert.Contains(result, b => b.DescriptionValue == "Network protocol");
+        Assert.Contains(result, b => b.DescriptionValue == "Scripting Language");
     }
 }

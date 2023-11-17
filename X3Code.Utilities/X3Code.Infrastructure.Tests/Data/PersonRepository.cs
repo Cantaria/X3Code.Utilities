@@ -1,9 +1,8 @@
-namespace X3Code.Infrastructure.Tests.Data
+namespace X3Code.Infrastructure.Tests.Data;
+
+public class PersonRepository : GenericRepository<Person, UnitTestContext>, IPersonRepository
 {
-    public class PersonRepository : GenericRepository<Person, UnitTestContext>, IPersonRepository
+    public PersonRepository(UnitTestContext context) : base(context)
     {
-        public PersonRepository(UnitTestContext context) : base(context)
-        {
-        }
     }
 }

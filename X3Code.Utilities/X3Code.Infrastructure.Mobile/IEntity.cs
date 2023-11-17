@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace X3Code.Infrastructure.Mobile
+namespace X3Code.Infrastructure.Mobile;
+
+public interface IEntity
 {
-	public interface IEntity
-	{
-		string EntityId { get; set; }
-	}
+	string EntityId { get; set; }
 }
