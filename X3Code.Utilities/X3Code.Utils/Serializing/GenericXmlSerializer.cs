@@ -13,13 +13,13 @@ public static class GenericXmlSerializer
     /// </summary>
     /// <typeparam name="T">Type of the serialized object (XML-File)</typeparam>
     /// <param name="file">The full filepath to the xml file</param>
-    /// <returns></returns>
+    /// <returns>The deserialized object of type T</returns>
     public static T LoadXml<T>(string file) where T : class
     {
         var serializer = new XmlSerializer(typeof(T));
         using (Stream stream = File.OpenRead(file))
         {
-            return (T)serializer.Deserialize(stream);
+            return (T) serializer.Deserialize(stream);
         }
     }
 
@@ -27,7 +27,7 @@ public static class GenericXmlSerializer
     /// Serializes every type into a xml file. The file will be overwritten if existing.
     /// If the file extension is missing, it will not be added.
     /// </summary>
-    /// <typeparam name="T">type of the object to save</typeparam>
+    /// <typeparam name="T">Type of the object to save</typeparam>
     /// <param name="file">Full file path with extension(!) where the xml file should be created.</param>
     /// <param name="dataToSave">The object to serialize into a xml file</param>
     public static void SaveXml<T>(string file, T dataToSave)

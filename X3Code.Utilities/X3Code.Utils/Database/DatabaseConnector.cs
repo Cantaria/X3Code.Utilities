@@ -9,12 +9,12 @@ namespace X3Code.Utils.Database;
 public static class DatabaseConnector
 {
     /// <summary>
-    /// Fills the DataTable with the result from the given query
+    /// Fills the DataTable with the result from the given query.
     /// </summary>
-    /// <param name="datatable">An empty DataTable which will be filled with data from the database</param>
-    /// <param name="query">The full SELECT Statement</param>
-    /// <param name="connectionString">The full connectionstring for the target database</param>
-    /// <returns></returns>
+    /// <param name="connectionString">The full connection string for the target database.</param>
+    /// <param name="query">The full SELECT statement.</param>
+    /// <param name="datatable">An empty DataTable which will be filled with data from the database.</param>
+    /// <returns>The filled DataTable.</returns>
     public static DataTable SelectAsDataTable(string connectionString, string query, DataTable datatable)
     {
         using (var connection = new SqlConnection(connectionString))
@@ -29,11 +29,11 @@ public static class DatabaseConnector
     }
 
     /// <summary>
-    /// Fires any SQL command to an database. Use with care! This methods checks nothing!
+    /// Fires any SQL command to a database. Use with care! This method checks nothing!
     /// </summary>
-    /// <param name="connectionString">T</param>
-    /// <param name="query"></param>
-    /// <returns>Returns the number of rows affected</returns>
+    /// <param name="connectionString">The connection string for the database</param>
+    /// <param name="query">The SQL command to be executed</param>
+    /// <returns>The number of rows affected by the SQL command</returns>
     public static int ExecuteSqlCommandOn(string connectionString, string query)
     {
         using (var connection = new SqlConnection(connectionString))
@@ -44,12 +44,12 @@ public static class DatabaseConnector
     }
 
     /// <summary>
-    /// Fires any SQL command to an database within the given SQL-transaction. Use with care! This methods checks nothing!
+    /// Fires any SQL command to a database within the given SQL-transaction. Use with care! This method checks nothing!
     /// </summary>
-    /// <param name="transaction"></param>
-    /// <param name="connectionString"></param>
-    /// <param name="query"></param>
-    /// <returns>Returns the number of rows affected</returns>
+    /// <param name="transaction">The SQL-transaction in which the command will be executed.</param>
+    /// <param name="connectionString">The connection string to the database.</param>
+    /// <param name="query">The SQL command/query to be executed.</param>
+    /// <returns>The number of rows affected by the SQL command.</returns>
     public static int ExecuteSqlCommandOn(ref SqlTransaction transaction, string connectionString, string query)
     {
         using (var connection = new SqlConnection(connectionString))
