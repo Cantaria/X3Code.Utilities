@@ -14,6 +14,11 @@ namespace X3Code.Infrastructure.Mobile;
 /// <typeparam name="TContext">The underlying DbContext, which can be used for the TEntity</typeparam>
 public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity> where TEntity : class, IEntity, new() where TContext : DbContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenericRepository{TContext}"/> class.
+    /// </summary>
+    /// <param name="context">The context to use.</param>
+    /// <typeparam name="TContext">The type of the database context.</typeparam>
     protected GenericRepository(TContext context)
     {
         DataBase = context;
