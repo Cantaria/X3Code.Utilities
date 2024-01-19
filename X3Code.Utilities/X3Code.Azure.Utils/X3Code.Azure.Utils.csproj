@@ -31,9 +31,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Core" Version="1.36.0" />
+      <PackageReference Include="Azure.Core" Version="1.37.0" />
       <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
-      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
     </ItemGroup>
 
     <ItemGroup>
