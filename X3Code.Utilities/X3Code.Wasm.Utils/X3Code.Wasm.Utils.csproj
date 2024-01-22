@@ -9,10 +9,26 @@
 1.8.0: Update to .NET8</PackageReleaseNotes>
         <AssemblyVersion>1.8.0</AssemblyVersion>
         <FileVersion>1.8.0</FileVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>X3-Code WASM Utilities</Title>
+        <Authors>X3-Code</Authors>
+        <Description>Utilities and helpers for Blazor WASM</Description>
+        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
+        <PackageIcon>x3code_logo.png</PackageIcon>
+        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.JSInterop" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\x3code_logo.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>x3code_logo.png</Link>
+      </None>
     </ItemGroup>
 
 
