@@ -50,8 +50,10 @@ public class RegexUtilitiesTest
     public void CanHandleNullOrEmptyValues()
     {
         var tester = new PlaceHolderTester();
-        string placeholderString = null;
-        
-        //TODO
+        var nullResult = tester.FillPlaceholderFromEntity(null);
+        var emptyResult = tester.FillPlaceholderFromEntity(string.Empty);
+
+        Assert.Null(nullResult);
+        Assert.Empty(emptyResult);
     }
 }

@@ -75,6 +75,8 @@ public static class RegexUtilities
     /// <returns></returns>
     public static string FillPlaceholderFromEntity<T>(this T dataEntity, string input, string numberFormat = null, string dateTimeFormat = null) where T : class
     {
+        if (string.IsNullOrWhiteSpace(input)) return input;
+        
         var result = PlaceholderRegex.Replace(input, matches => {
 
             var name = matches.Groups["name"].Value;
