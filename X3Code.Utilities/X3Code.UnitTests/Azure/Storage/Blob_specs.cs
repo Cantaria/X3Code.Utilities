@@ -40,7 +40,7 @@ public class Blob_specs
         var files = await storage.ListFiles();
         Assert.Single(files);
             
-        storage.Delete(storageFilePath);
+        await storage.Delete(storageFilePath);
         var doesNotExist = await storage.Exists(storageFilePath);
         Assert.False(doesNotExist);
     }
