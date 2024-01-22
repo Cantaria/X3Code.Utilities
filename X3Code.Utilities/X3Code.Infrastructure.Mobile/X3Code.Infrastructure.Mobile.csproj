@@ -2,8 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <PackageVersion>1.7.0</PackageVersion>
+        <PackageVersion>1.8.2</PackageVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <AssemblyVersion>1.8.2</AssemblyVersion>
+        <FileVersion>1.8.2</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>

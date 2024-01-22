@@ -13,11 +13,12 @@
     <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <AssemblyVersion>1.8.0</AssemblyVersion>
-    <FileVersion>1.8.0</FileVersion>
+    <AssemblyVersion>1.8.2</AssemblyVersion>
+    <FileVersion>1.8.2</FileVersion>
     <Version>1.3.3</Version>
     <PackageIcon>x3code_logo.png</PackageIcon>
-    <PackageReleaseNotes>1.8.0: Update to .NET8
+    <PackageReleaseNotes>1.8.2: Nuget package updates
+1.8.0: Update to .NET8
 1.7.2: NuGet package updates
 1.7.0: Net7
 1.6.3: Added placeholder replacement and generic Property reader
@@ -28,7 +29,7 @@
 1.5.0: Upgrade .Net5
 1.3.3: romanian number converter added
 1.3.1: Abitrary Number converter added</PackageReleaseNotes>
-    <PackageVersion>1.8.0</PackageVersion>
+    <PackageVersion>1.8.2</PackageVersion>
     <Title>X3-Code Utilities</Title>
   </PropertyGroup>
 

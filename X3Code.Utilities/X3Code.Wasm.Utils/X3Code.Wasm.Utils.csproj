@@ -4,8 +4,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.8.0</Version>
-        <PackageReleaseNotes>1.8.0: Update to .NET8</PackageReleaseNotes>
+        <Version>1.8.2</Version>
+        <PackageReleaseNotes>1.8.2: NuGet package updates
+1.8.0: Update to .NET8</PackageReleaseNotes>
         <AssemblyVersion>1.8.0</AssemblyVersion>
         <FileVersion>1.8.0</FileVersion>
     </PropertyGroup>
