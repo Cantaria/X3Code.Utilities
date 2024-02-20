@@ -6,6 +6,7 @@ dotnet nuget push X3Code.Azure.Utils.1.7.0.nupkg --source X3Get
 dotnet nuget push X3Code.Azure.Utils.1.7.2.nupkg --source X3Get
 dotnet nuget push X3Code.Azure.Utils.1.8.0.nupkg --source X3Get
 dotnet nuget push X3Code.Azure.Utils.1.8.2.nupkg --source X3Get
+dotnet nuget push X3Code.Azure.Utils.1.8.3.nupkg --source X3Get
 
 dotnet nuget push X3Code.Utilities.1.3.1.nupkg --source X3Get
 dotnet nuget push X3Code.Utilities.1.3.2.nupkg --source X3Get
@@ -24,6 +25,7 @@ dotnet nuget push X3Code.Utilities.1.7.0.nupkg --source X3Get
 dotnet nuget push X3Code.Utilities.1.7.2.nupkg --source X3Get
 dotnet nuget push X3Code.Utilities.1.8.0.nupkg --source X3Get
 dotnet nuget push X3Code.Utilities.1.8.2.nupkg --source X3Get
+dotnet nuget push X3Code.Utilities.1.8.3.nupkg --source X3Get
 
 dotnet nuget push X3Code.Infrastructure.1.3.1.nupkg --source X3Get
 dotnet nuget push X3Code.Infrastructure.1.3.2.nupkg --source X3Get
@@ -41,6 +43,7 @@ dotnet nuget push X3Code.Infrastructure.1.7.0.nupkg --source X3Get
 dotnet nuget push X3Code.Infrastructure.1.7.2.nupkg --source X3Get
 dotnet nuget push X3Code.Infrastructure.1.8.0.nupkg --source X3Get
 dotnet nuget push X3Code.Infrastructure.1.8.2.nupkg --source X3Get
+dotnet nuget push X3Code.Infrastructure.1.8.3.nupkg --source X3Get
 
 dotnet nuget push X3Code.Wasm.Utils.1.8.2.nupkg --source X3Get
 
