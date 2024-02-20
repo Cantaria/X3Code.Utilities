@@ -4,8 +4,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <PackageVersion>1.8.2</PackageVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <AssemblyVersion>1.8.2</AssemblyVersion>
-        <FileVersion>1.8.2</FileVersion>
+        <AssemblyVersion>1.8.3</AssemblyVersion>
+        <FileVersion>1.8.3</FileVersion>
+        <PackageReleaseNotes>1.8.3: enabled nullable</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

@@ -13,7 +13,7 @@ public static class EntityPropertyExtension
     /// <param name="dateTimeFormat">Optional datetime format for output. If missing 'yyyy.MM.dd HH:mm' will be used.</param>
     /// <typeparam name="TEntity"></typeparam>
     /// <returns></returns>
-    public static string TryReadPropertyAsString<TEntity>(this TEntity source, string propertyName, string numberFormat = null, string dateTimeFormat = null)
+    public static string? TryReadPropertyAsString<TEntity>(this TEntity source, string propertyName, string? numberFormat = null, string? dateTimeFormat = null)
     {
         if (source == null || string.IsNullOrWhiteSpace(propertyName)) return string.Empty;
 
@@ -55,7 +55,7 @@ public static class EntityPropertyExtension
     /// <typeparam name="TEntity">Type of the input entity</typeparam>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public static TOutput TryReadProperty<TOutput, TEntity>(this TEntity source, string propertyName)
+    public static TOutput? TryReadProperty<TOutput, TEntity>(this TEntity source, string propertyName)
     {
         if (source == null || string.IsNullOrWhiteSpace(propertyName)) return default;
         
@@ -65,6 +65,6 @@ public static class EntityPropertyExtension
         if (property.PropertyType != typeof(TOutput)) 
             throw new InvalidOperationException($"Property type miss match. The source property is from type [{property.PropertyType}] and can't be converted into destination type [{typeof(TOutput)}].");
 
-        return (TOutput) property.GetValue(source);
+        return (TOutput) property.GetValue(source)!;
     }
 }

@@ -2,7 +2,6 @@
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace X3Code.Utils.Extensions;
 
@@ -61,7 +60,7 @@ public static class DataRowExtension
     /// <param name="columnName">The name of the column that contains the string.</param>
     /// <returns>A string populated with the value from the DataRow's specific column. If the conversion fails or the value is null or empty, returns null.</returns>
     /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
-    public static string ToStringOrNull(this DataRow row, string columnName)
+    public static string? ToStringOrNull(this DataRow row, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
             
@@ -99,7 +98,7 @@ public static class DataRowExtension
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
     /// <returns>A decimal representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
     /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
-    public static decimal ToDecimal(this DataRow source, string columnName, IFormatProvider culture = null)
+    public static decimal ToDecimal(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
@@ -124,7 +123,7 @@ public static class DataRowExtension
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
     /// <returns>A float representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
     /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
-    public static float ToFloat(this DataRow source, string columnName, IFormatProvider culture = null)
+    public static float ToFloat(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
@@ -148,7 +147,7 @@ public static class DataRowExtension
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
     /// <returns>A double representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
     /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
-    public static double ToDouble(this DataRow source, string columnName, IFormatProvider culture = null)
+    public static double ToDouble(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
@@ -190,7 +189,7 @@ public static class DataRowExtension
             default: return false;
         }
     }
-        
+
     /// <summary>
     /// Converts a specific column of a DataRow to a char.
     /// </summary>
@@ -202,9 +201,10 @@ public static class DataRowExtension
     public static char ToChar(this DataRow row, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
-            
+
         if (row[columnName] == DBNull.Value) return '\0';
         var result = row.ToStringOrNull(columnName);
+        if (result == null) throw new NullReferenceException("Column returned nothing");
         if (result.Length > 1) throw new Exception("String contains more than one character");
 
         return result.First();

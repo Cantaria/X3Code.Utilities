@@ -42,7 +42,7 @@ public static class ArbitraryNumberConverter
 
             int digit = digits.IndexOf(c);
             if (digit == -1)
-                throw new ArgumentException("Invalid character in the arbitrary numeral system number", "number");
+                throw new ArgumentException("Invalid character in the arbitrary numeral system number", nameof(number));
 
             result += digit * multiplier;
             multiplier *= radix;

@@ -19,7 +19,7 @@ public static class GenericXmlSerializer
         var serializer = new XmlSerializer(typeof(T));
         using (Stream stream = File.OpenRead(file))
         {
-            return (T) serializer.Deserialize(stream);
+            return (T) serializer.Deserialize(stream)!;
         }
     }
 
@@ -68,7 +68,7 @@ public static class GenericXmlSerializer
 
         using (StringReader reader = new StringReader(xmlString))
         {
-            return (T)xmlSerializer.Deserialize(reader);
+            return (T)xmlSerializer.Deserialize(reader)!;
         }
     }
 
@@ -101,7 +101,7 @@ public static class GenericXmlSerializer
 
         using (MemoryStream stream = new MemoryStream(toDeserialize))
         {
-            return (T)xmlSerializer.Deserialize(stream);
+            return (T)xmlSerializer.Deserialize(stream)!;
         }
     }
 }

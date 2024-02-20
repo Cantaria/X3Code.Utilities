@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using X3Code.Utils.Extensions;
@@ -73,14 +72,14 @@ public static class RegexUtilities
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string FillPlaceholderFromEntity<T>(this T dataEntity, string input, string numberFormat = null, string dateTimeFormat = null) where T : class
+    public static string FillPlaceholderFromEntity<T>(this T dataEntity, string input, string? numberFormat = null, string? dateTimeFormat = null) where T : class
     {
         if (string.IsNullOrWhiteSpace(input)) return input;
         
         var result = PlaceholderRegex.Replace(input, matches => {
 
             var name = matches.Groups["name"].Value;
-            return dataEntity.TryReadPropertyAsString(name, numberFormat, dateTimeFormat);
+            return dataEntity.TryReadPropertyAsString(name, numberFormat, dateTimeFormat) ?? input;
         });
 
         return result;
@@ -95,7 +94,7 @@ public static class RegexUtilities
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string FillPlaceholderStringFromEntity<T>(this string input, T dataEntity, string numberFormat = null, string dateTimeFormat = null) where T : class
+    public static string FillPlaceholderStringFromEntity<T>(this string input, T dataEntity, string? numberFormat = null, string? dateTimeFormat = null) where T : class
     {
         return dataEntity.FillPlaceholderFromEntity(input, numberFormat, dateTimeFormat);
     }

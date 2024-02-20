@@ -12,7 +12,7 @@ public class RepositoryTest : RepositoryBaseTest
     [Fact]
     public void AddToDatabase()
     {
-        var reference = new Person("First", "Second", DateTime.Today);
+        var reference = new Person{Name = "First", Surname = "Second", Birthday = DateTime.Today};
         var repo = Services.GetRequiredService<IPersonRepository>();
             
         repo.Add(reference);
