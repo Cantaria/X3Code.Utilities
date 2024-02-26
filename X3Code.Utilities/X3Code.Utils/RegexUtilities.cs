@@ -19,7 +19,7 @@ public static class RegexUtilities
     /// </summary>
     /// <param name="email">The email that should be validated</param>
     /// <returns></returns>
-    public static bool IsValidEmail(string email)
+    public static bool IsValidEmail(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))
             return false;
@@ -72,7 +72,7 @@ public static class RegexUtilities
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string FillPlaceholderFromEntity<T>(this T dataEntity, string input, string? numberFormat = null, string? dateTimeFormat = null) where T : class
+    public static string? FillPlaceholderFromEntity<T>(this T dataEntity, string? input, string? numberFormat = null, string? dateTimeFormat = null) where T : class
     {
         if (string.IsNullOrWhiteSpace(input)) return input;
         
@@ -94,7 +94,7 @@ public static class RegexUtilities
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string FillPlaceholderStringFromEntity<T>(this string input, T dataEntity, string? numberFormat = null, string? dateTimeFormat = null) where T : class
+    public static string? FillPlaceholderStringFromEntity<T>(this string? input, T dataEntity, string? numberFormat = null, string? dateTimeFormat = null) where T : class
     {
         return dataEntity.FillPlaceholderFromEntity(input, numberFormat, dateTimeFormat);
     }
