@@ -28,6 +28,7 @@
 1.6.2: NuGet Updates
 1.5.6: NuGet Dependencies Updated</PackageReleaseNotes>
     <Title>X3-Code Infrastructure</Title>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />

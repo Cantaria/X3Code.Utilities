@@ -19,7 +19,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <param name="predicate">The expression used to filter the entities.</param>
 	/// <param name="asNoTracking">Indicates whether to track the retrieved entity or not. Default is false.</param>
 	/// <returns>The retrieved entity if found, otherwise null.</returns>
-	TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
+	TEntity? Get(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities of type <typeparamref name="TEntity"/>.
@@ -143,7 +143,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <remarks>This method is used to retrieve entities from the database based on the specified predicate. By default,
 	/// change tracking is enabled for the queried entities. Setting the asNoTracking parameter to true will
 	/// disable the change tracking for the retrieved entities.</remarks>
-	Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
+	Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities asynchronously from the database. </summary> <param name="asNoTracking">Specifies whether to track the entities or not. Default is false.</param> <returns>A task that represents the asynchronous operation and contains the collection of entities retrieved from the database.</returns>
