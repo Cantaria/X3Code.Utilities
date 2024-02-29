@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace X3Code.Infrastructure.Mobile;
+﻿namespace X3Code.Infrastructure.Mobile;
 
 /// <summary>
 /// Represents an abstract entity class.
@@ -14,5 +11,5 @@ public abstract class Entity : IEntity
 	/// <value>
 	/// A string representing the entity identifier.
 	/// </value>
-	public string EntityId { get; set; }
+	public required string EntityId { get; set; }
 }

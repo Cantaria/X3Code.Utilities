@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace X3Code.Infrastructure.Mobile;
+﻿namespace X3Code.Infrastructure.Mobile;
 
 /// <summary>
 /// Represents an entity.

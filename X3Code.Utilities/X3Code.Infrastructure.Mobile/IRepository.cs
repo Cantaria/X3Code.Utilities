@@ -19,7 +19,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <param name="predicate">The predicate used to filter the entities.</param>
 	/// <param name="asNoTracking">Determines whether to track changes for the retrieved entity. The default value is false.</param>
 	/// <returns>The retrieved entity that matches the given predicate.</returns>
-	TEntity Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
+	TEntity? Get(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities from the database.
@@ -178,7 +178,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// The retrieved entity will be either tracked or not tracked based on the value of the asNoTracking parameter.
 	/// By default, change tracking is enabled.
 	/// </remarks>
-	Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
+	Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities asynchronously from the database.
