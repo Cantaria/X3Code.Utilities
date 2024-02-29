@@ -64,6 +64,7 @@ public class MimeTypeConverter_specs
     [InlineData(MimeTypeFileExtension.Xml, MimeTypes.Xml)]
     [InlineData(".unknown", MimeTypes.Default)]
     [InlineData("", "")]
+    [InlineData("noDot", "")]
     public void CanConvertFileExtensionToMime(string fileExtension, string expectedResult)
     {
         var result = MimeTypeConverter.GetContentTypeForFileExtension(fileExtension);
@@ -126,6 +127,7 @@ public class MimeTypeConverter_specs
     [InlineData(MimeTypes.Xml, MimeTypeFileExtension.Xml)]
     [InlineData(".unknown", "")]
     [InlineData("", "")]
+    [InlineData("noDot", "")]
     public void CanConvertMimeTypeToFileExtension(string mimeType, string expectedResult)
     {
         var result = MimeTypeConverter.GetFileExtensionByContentType(mimeType);

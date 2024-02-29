@@ -14,8 +14,10 @@ public static class MimeTypeConverter
     /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
     /// <param name="fileName">The filename with extension</param>
     /// <returns>"application/octet-stream" if unknown, else the mime type</returns>
-    public static string GetContentTypeForFileExtension(string fileName)
+    public static string GetContentTypeForFileExtension(string? fileName)
     {
+        if (string.IsNullOrWhiteSpace(fileName)) return string.Empty;
+        
         string extension = Path.GetExtension(fileName);
         if (string.IsNullOrWhiteSpace(extension)) return string.Empty;
 
@@ -96,7 +98,7 @@ public static class MimeTypeConverter
     /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
     /// <param name="contentType">The content type</param>
     /// <returns>The file extension is known, else string.Empty</returns>
-    public static string GetFileExtensionByContentType(string contentType)
+    public static string GetFileExtensionByContentType(string? contentType)
     {
         if (string.IsNullOrWhiteSpace(contentType)) return string.Empty;
 
