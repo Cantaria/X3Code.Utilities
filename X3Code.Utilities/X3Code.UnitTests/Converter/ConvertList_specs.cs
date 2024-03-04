@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using X3Code.Utils.Convert;
 using Xunit;
 
@@ -15,15 +13,15 @@ public class ConvertList_specs
 
     private class A
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
         public int Number { get; set; }
     }
 
     private class B
     {
-        public string NameValue { get; set; }
-        public string DescriptionValue { get; set; }
+        public string? NameValue { get; set; }
+        public string? DescriptionValue { get; set; }
         public int NumberValue { get; set; }
     }
 
@@ -31,9 +29,9 @@ public class ConvertList_specs
     {
         return new List<A>
         {
-            new A{Name = "C#", Description = "Programming Language", Number = 1},
-            new A{Name = "TCP/IP", Description = "Network protocol", Number = 2},
-            new A{Name = "Javascript", Description = "Scripting Language", Number = 3}
+            new (){Name = "C#", Description = "Programming Language", Number = 1},
+            new (){Name = "TCP/IP", Description = "Network protocol", Number = 2},
+            new (){Name = "Javascript", Description = "Scripting Language", Number = 3}
         };
     }
 

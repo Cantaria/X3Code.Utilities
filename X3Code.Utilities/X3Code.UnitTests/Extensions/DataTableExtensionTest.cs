@@ -88,7 +88,7 @@ public class DataTableExtensionTest
         };
     }
 
-    private DataRow GetFirstRowWithColumnContains(DataRowCollection rows, string columnName, string key)
+    private DataRow? GetFirstRowWithColumnContains(DataRowCollection rows, string columnName, string key)
     {
         foreach (DataRow row in rows)
         {
@@ -226,11 +226,11 @@ public class DataTableExtensionTest
     [Fact]
     public void CanConvertWithTableName()
     {
-        const string Name = "MyDataTable";
+        const string name = "MyDataTable";
         var referenceData = GenerateDeathStars().ToList();
-        var asDataTable = referenceData.ToDataTable(Name);
+        var asDataTable = referenceData.ToDataTable(name);
 
-        Assert.Equal(Name, asDataTable.TableName);
+        Assert.Equal(name, asDataTable.TableName);
     }
 
     [Theory]
@@ -241,13 +241,15 @@ public class DataTableExtensionTest
     [InlineData("WeaponCount", typeof(int))]
     [InlineData("Firepower", typeof(long))]
     [InlineData("BuildCosts", typeof(decimal))]
-    public void ShouldHaveaColumnASpecificType(string columnname, Type columntype)
+    public void ShouldHaveColumnSpecificType(string columnName, Type columnType)
     {
         var referenceData = GenerateDeathStars().ToList();
         var asDataTable = referenceData.ToDataTable();
 
-        var column = asDataTable.Columns[columnname];
-        Assert.Equal(columntype, column.DataType);
+        var column = asDataTable.Columns[columnName];
+
+        Assert.NotNull(column);
+        Assert.Equal(columnType, column.DataType);
     }
 }
 
@@ -262,7 +264,7 @@ public class Spaceship
     }
 
     public string ShipyardName { get; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public DateTime BuildDate { get; set; }
     public DateTime? LifeTimeEnd { get; set; }
     public bool CanBeDestroyedBySkywalker { get; set; }

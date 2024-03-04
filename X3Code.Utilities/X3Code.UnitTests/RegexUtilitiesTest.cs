@@ -54,6 +54,7 @@ public class RegexUtilitiesTest
         var emptyResult = tester.FillPlaceholderFromEntity(string.Empty);
 
         Assert.Null(nullResult);
+        Assert.NotNull(emptyResult);
         Assert.Empty(emptyResult);
     }
 }

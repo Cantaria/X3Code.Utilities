@@ -64,7 +64,7 @@ public class EntityPropertyExtensionTest
     [Fact]
     public void CanHandleNullsNonGeneric()
     {
-        PropertyUnitTest tester = null;
+        PropertyUnitTest? tester = null;
         var inputNullResult = tester.TryReadPropertyAsString(DecimalPropertyName);
         Assert.Equal("", inputNullResult);
 
@@ -100,7 +100,7 @@ public class EntityPropertyExtensionTest
     [Fact]
     public void CanHandleNullsGeneric()
     {
-        PropertyUnitTest tester = null;
+        PropertyUnitTest? tester = null;
         var inputNullResult = tester.TryReadProperty<decimal, PropertyUnitTest>(DecimalPropertyName);
         Assert.Equal(new decimal(), inputNullResult);
 

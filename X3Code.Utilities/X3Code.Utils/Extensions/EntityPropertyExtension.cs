@@ -55,7 +55,7 @@ public static class EntityPropertyExtension
     /// <typeparam name="TEntity">Type of the input entity</typeparam>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public static TOutput? TryReadProperty<TOutput, TEntity>(this TEntity source, string propertyName)
+    public static TOutput? TryReadProperty<TOutput, TEntity>(this TEntity? source, string propertyName) //TEntity? -> Evil... don't know to keep that
     {
         if (source == null || string.IsNullOrWhiteSpace(propertyName)) return default;
         
