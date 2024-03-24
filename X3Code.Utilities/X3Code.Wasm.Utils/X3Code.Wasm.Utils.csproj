@@ -4,11 +4,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.8.2</Version>
-        <PackageReleaseNotes>1.8.2: NuGet package updates
+        <Version>1.8.5</Version>
+        <PackageReleaseNotes>1.8.5: last version was missing nullables, nuget package updates
+1.8.2: NuGet package updates
 1.8.0: Update to .NET8</PackageReleaseNotes>
-        <AssemblyVersion>1.8.0</AssemblyVersion>
-        <FileVersion>1.8.0</FileVersion>
+        <AssemblyVersion>1.8.5</AssemblyVersion>
+        <FileVersion>1.8.5</FileVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>X3-Code WASM Utilities</Title>
         <Authors>X3-Code</Authors>
@@ -20,7 +21,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.JSInterop" Version="8.0.1" />
+      <PackageReference Include="Microsoft.JSInterop" Version="8.0.3" />
     </ItemGroup>
 
     <ItemGroup>

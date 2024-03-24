@@ -5,22 +5,23 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.8.4</PackageVersion>
+        <PackageVersion>1.8.5</PackageVersion>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
         <PackageIcon>x3code_logo.png</PackageIcon>
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
-        <PackageReleaseNotes>1.8.2: Nuget package updates
+        <PackageReleaseNotes>1.8.5: last version was missing nullables, nuget package updates
+1.8.2: Nuget package updates
 1.8.0: Update to .NET8
 1.7.2: NuGet package updates
 1.7.0: Net7
 1.6.2: NuGet Updates
 1.5.6: NuGet Dependencies Updated
 1.5.0: Initial creation</PackageReleaseNotes>
-        <AssemblyVersion>1.8.4</AssemblyVersion>
-        <FileVersion>1.8.4</FileVersion>
+        <AssemblyVersion>1.8.5</AssemblyVersion>
+        <FileVersion>1.8.5</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,9 +33,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Core" Version="1.37.0" />
+      <PackageReference Include="Azure.Core" Version="1.38.0" />
       <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
-      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     </ItemGroup>
 
     <ItemGroup>
