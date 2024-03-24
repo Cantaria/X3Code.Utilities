@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <AssemblyVersion>1.8.3</AssemblyVersion>
-    <FileVersion>1.8.3</FileVersion>
+    <AssemblyVersion>1.8.4</AssemblyVersion>
+    <FileVersion>1.8.4</FileVersion>
     <Version>1.3.3</Version>
     <PackageIcon>x3code_logo.png</PackageIcon>
     <PackageReleaseNotes>1.8.3: enabled nullable
