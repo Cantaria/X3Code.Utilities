@@ -47,7 +47,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <param name="predicate">The expression which should be used to search for an entity</param>
     /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
     /// <returns>The searched Entity, if found</returns>
-    public TEntity? Get(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false)
+    public TEntity? Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
     {
         if (asNoTracking)
         {
@@ -227,11 +227,11 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <param name="predicate">The expression which should be used to search for an entity</param>
     /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
     /// <returns>The searched Entity, if found</returns>
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false)
+    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
     {
         if (asNoTracking)
         {
-            return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate);
+            return await Entities.AsNoTracking().SingleAsync(predicate);
         }
 
         return await Entities.SingleOrDefaultAsync(predicate);

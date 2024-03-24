@@ -19,7 +19,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <param name="predicate">The expression used to filter the entities.</param>
 	/// <param name="asNoTracking">Indicates whether to track the retrieved entity or not. Default is false.</param>
 	/// <returns>The retrieved entity if found, otherwise null.</returns>
-	TEntity? Get(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
+	TEntity? Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities of type <typeparamref name="TEntity"/>.
@@ -44,7 +44,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// </summary>
 	/// <param name="predicate">The predicate to filter the data.</param>
 	/// <param name="asNoTracking">Determines whether to track the entities or not.</param>
-	/// <returns>An IQueryable<TEntity> containing the queried data.</returns>
 	IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
@@ -63,9 +62,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <remarks>
 	/// The <paramref name="entity"/> will be added to the database. If <paramref name="asNoTracking"/> is set to true, the entity will not be tracked by the context after being added.
 	/// </remarks>
-	/// <seealso cref="Remove"/>
-	/// <seealso cref="Update"/>
-	/// <seealso cref="GetById"/>
 	void Add(TEntity entity, bool asNoTracking = false);
 
 	/// <summary>
@@ -87,12 +83,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// the entity will be retrieved as no-tracking before removing it. Otherwise, the entity will be retrieved as
 	/// tracking and removed from the database context.
 	/// </remarks>
-	/// <seealso cref="Add(TEntity)"/>
-	/// <seealso cref="Update(TEntity)"/>
-	/// <seealso cref="Get(TEntity)"/>
-	/// <seealso cref="GetAll{TEntity}()"/>
-	/// <seealso cref="Find(Expression{Func{TEntity, bool}})"/>
-	/// <seealso cref="FindByKey{TKey}(TKey)"/>
 	void Remove(TEntity entity, bool asNoTracking = false);
 
 	/// <summary>
@@ -109,9 +99,15 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <exception cref="ArgumentNullException">Thrown when the entities parameter is null.</exception>
 	void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 
-	/// Updates the specified entity in the database. </summary> <param name="entity">The entity to update.</param> <param name="asNoTracking">Indicates whether to use the DbContext's tracking feature. If set to true, changes to the entity will not be tracked by the context.</param> <remarks>
+	/// <summary>
+	/// Updates the specified entity in the database.
+	/// </summary>
+	/// <param name="entity">The entity to update.</param>
+	/// <param name="asNoTracking">Indicates whether to use the DbContext's tracking feature. If set to true, changes to the entity will not be tracked by the context.</param>
+	/// <remarks>
 	/// This method updates the entity in the database. If <paramref name="asNoTracking"/> is set to true, the entity will not be tracked for changes by the DbContext, allowing for better
-	/// performance in certain scenarios. </remarks>
+	/// performance in certain scenarios.
+	/// </remarks>
 	void Update(TEntity entity, bool asNoTracking = false);
 
 	/// <summary>
@@ -143,7 +139,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <remarks>This method is used to retrieve entities from the database based on the specified predicate. By default,
 	/// change tracking is enabled for the queried entities. Setting the asNoTracking parameter to true will
 	/// disable the change tracking for the retrieved entities.</remarks>
-	Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
+	Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Retrieves all entities asynchronously from the database. </summary> <param name="asNoTracking">Specifies whether to track the entities or not. Default is false.</param> <returns>A task that represents the asynchronous operation and contains the collection of entities retrieved from the database.</returns>

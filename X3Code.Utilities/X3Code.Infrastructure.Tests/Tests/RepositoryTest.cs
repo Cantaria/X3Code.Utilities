@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using X3Code.Infrastructure.Tests.Data;
 using X3Code.Infrastructure.Tests.Mockups;
@@ -50,6 +51,27 @@ public class RepositoryTest : RepositoryBaseTest
             Assert.Equal(referencePerson.Birthday, personFromDb.Birthday);
             Assert.Equal(referencePerson.EntityId, personFromDb.EntityId);
         }
+    }
+
+    [Fact]
+    public async Task SearchingForNonExistent()
+    {
+        var dontFindMe = new Person
+        {
+            Name = "find",
+            Birthday = new DateTime(1990, 1, 1),
+            Surname = "never",
+            EntityId = Guid.NewGuid()
+        };
+
+        var repo = Services.GetRequiredService<IPersonRepository>();
+        await repo.AddAsync(dontFindMe);
+
+        var nothingFoundResult = await repo.GetAsync(x => x.Name == "wrong");
+        Assert.Null(nothingFoundResult);
+
+        var foundHim = await repo.GetAsync(x => x.Name == dontFindMe.Name);
+        Assert.NotNull(foundHim);
     }
         
     [Fact]
