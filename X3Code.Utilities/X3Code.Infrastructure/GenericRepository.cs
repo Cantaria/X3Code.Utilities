@@ -231,7 +231,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     {
         if (asNoTracking)
         {
-            return await Entities.AsNoTracking().SingleAsync(predicate);
+            return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate);
         }
 
         return await Entities.SingleOrDefaultAsync(predicate);

@@ -13,13 +13,14 @@
     <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <AssemblyVersion>1.8.5</AssemblyVersion>
-    <FileVersion>1.8.5</FileVersion>
+    <AssemblyVersion>1.8.6</AssemblyVersion>
+    <FileVersion>1.8.6</FileVersion>
     <Version>1.3.1</Version>
     <PackageIcon>x3code_logo.png</PackageIcon>
     <PackageIconUrl />
-    <PackageVersion>1.8.5</PackageVersion>
-    <PackageReleaseNotes>1.8.5: last version was missing nullables, nuget package updates
+    <PackageVersion>1.8.6</PackageVersion>
+    <PackageReleaseNotes>1.8.6: changed GetAll-predicate from nullable to non-nullable
+1.8.5: last version was missing nullables, nuget package updates
 1.8.3: enabled nullable
 1.8.2: Nuget package updates
 1.8.1: Added generic bulk writer
