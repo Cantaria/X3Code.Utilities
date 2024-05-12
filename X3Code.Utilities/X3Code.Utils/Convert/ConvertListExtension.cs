@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace X3Code.Utils.Convert;
 
@@ -18,12 +19,6 @@ public static class ConvertListExtension
     /// <returns>The converted list with the destination type</returns>
     public static IEnumerable<TDestination> ConvertList<TSource, TDestination>(this IEnumerable<TSource> source, Func<TSource, TDestination> convertFunction)
     {
-        var result = new List<TDestination>();
-        foreach (var item in source)
-        {
-            var apiModel = convertFunction(item);
-            result.Add(apiModel);
-        }
-        return result;
+        return source.Select(convertFunction);
     }
 }
