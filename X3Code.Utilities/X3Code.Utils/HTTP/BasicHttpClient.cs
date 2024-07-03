@@ -173,6 +173,19 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     }
 
     /// <summary>
+    /// Sends a GET request to the specified <paramref name="uri"/> and returns the response as an object of type <typeparamref name="TResponse"/>.
+    /// </summary>
+    /// <typeparam name="TResponse">The type of the response object.</typeparam>
+    /// <param name="uri">The URI of the request.</param>
+    /// <returns>The response object of type <typeparamref name="TResponse"/>.</returns>
+    public async Task<TResponse?> GetAsync<TResponse>(string uri) where TResponse : class
+    {
+        var response = await _client.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<TResponse>();
+    }
+
+    /// <summary>
     /// Sends an HTTP PUT request to the specified URI with the provided JSON data.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
@@ -246,6 +259,19 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         var response = await _client.DeleteAsync(uri);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
+    }
+
+    /// <summary>
+    /// Sends a DELETE request to the specified URI and returns the deserialized response object of type TResponse.
+    /// </summary>
+    /// <typeparam name="TResponse">The type of the response object.</typeparam>
+    /// <param name="uri">The URI to send the DELETE request to.</param>
+    /// <returns>The deserialized response object of type TResponse.</returns>
+    public async Task<TResponse?> DeleteAsync<TResponse>(string uri) where TResponse : class
+    {
+        var response = await _client.DeleteAsync(uri);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<TResponse>();
     }
     
     /// <summary>
