@@ -17,4 +17,13 @@ public class HttpClientTest
         Assert.NotNull(result);
         Assert.NotEmpty(result);
     }
+    
+    [Fact]
+    public async Task CanGetDataUrlParamsFromRestService()
+    {
+        var result = await ApiClient.GetByIDs(3, 5, 10);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+    }
 }
