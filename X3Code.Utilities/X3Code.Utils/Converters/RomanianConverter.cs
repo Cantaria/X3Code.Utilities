@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace X3Code.Utils.Convert;
+namespace X3Code.Utils.Converters;
 
 /// <summary>
 /// A converter for converting decimal numbers to romanian numerals and back

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using X3Code.Utils.Convert;
+using X3Code.Utils.Converters;
+using X3Code.Utils.Extensions;
 using Xunit;
 
 // ReSharper disable InconsistentNaming

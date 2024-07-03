@@ -1,14 +1,27 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace X3Code.Utils.Convert;
+namespace X3Code.Utils.Extensions;
 
 /// <summary>
-/// Useful extension for converting a list
+/// Contains little helpers for list
 /// </summary>
-public static class ConvertListExtension
+public static class CollectionExtension
 {
+    /// <summary>
+    /// Return true, if the list is null or contains no elements.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
+    {
+        if (source == null || !source.Any()) return true;
+
+        return false;
+    }
+
     /// <summary>
     /// Converts a whole list with help of the convertFunction from TSource to TDestination
     /// </summary>

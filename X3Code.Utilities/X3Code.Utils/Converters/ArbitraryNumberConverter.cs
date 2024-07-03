@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace X3Code.Utils.Convert;
+namespace X3Code.Utils.Converters;
 
 /// <summary>
 /// A converter which converts the decimal system into any (up to base 36) number system and back

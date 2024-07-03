@@ -4,7 +4,7 @@ using Xunit;
 
 namespace X3Code.UnitTests.Extensions;
 
-public class ListExtensionTest
+public class CollectionExtensionTest
 {
     [Fact]
     public void CanDetectEmptyList()
