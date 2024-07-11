@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace X3Code.Utils.HTTP;
 
 /// <summary>
-/// A basic HTTP client for performing HTTP requests.
+/// A basic HTTP client encapsulation for performing HTTP requests.
 /// </summary>
 public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 {
-    private readonly HttpClient _client;
+    private  readonly HttpClient _client;
     
     protected BasicHttpClient(HttpClientConfiguration configuration)
     {
@@ -21,6 +21,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         Configuration = configuration;
         _client = new HttpClient();
         _client.BaseAddress = new Uri(configuration.BaseUrl);
+        _client.Timeout = configuration.TimeOut;
         foreach (var header in configuration.Header)
         {
             _client.DefaultRequestHeaders.Add(header.Key, header.Value);   
