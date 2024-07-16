@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using X3Code.UnitTests.HTTP.Models;
 using X3Code.Utils.HTTP;
 using Xunit;
 
@@ -25,5 +26,30 @@ public class HttpClientTest
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
+    }
+
+    [Fact]
+    public async Task CanPostData()
+    {
+        var testData = new AddObjectApiModel
+        {
+            Name = "Unit-Test",
+            Payload = new Data
+            {
+                Price = 15.4D,
+                CpuModel = "AMD",
+                HardDiskSpace = "5MB",
+                Year = 2022
+            }
+        };
+
+        var postResult = await ApiClient.PostAsync<AddObjectApiModel, AddObjectResponseModel>("objects", testData);
+        Assert.NotNull(postResult);
+
+        var res = await ApiClient.GetAsync($"objects?id={postResult.Id}");
+        
+        var getResult = await ApiClient.GetAsync<AddObjectResponseModel>($"objects?id={postResult.Id}");
+        Assert.NotNull(getResult);
+        Assert.NotNull(getResult.Payload);
     }
 }
