@@ -183,6 +183,8 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     {
         var response = await _client.GetAsync(uri);
         response.EnsureSuccessStatusCode();
+
+        var res = response.Content.ReadAsStringAsync();
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
 
@@ -244,7 +246,6 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class
     {
         var response = await _client.PostAsJsonAsync(uri, content);
-
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<TResponse>();

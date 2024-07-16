@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using X3Code.UnitTests.HTTP.Models;
 using X3Code.Utils.HTTP;
@@ -61,9 +62,9 @@ internal class RestFullApiClient : BasicHttpClient
     /// <exception cref="Exception"></exception>
     public async Task<AddObjectResponseModel> AddObject(AddObjectApiModel model)
     {
-        var postResult = await PostAsync<AddObjectApiModel, AddObjectResponseModel>("objects", model);
+        var postResult = await PostAsync<AddObjectApiModel, IEnumerable<AddObjectResponseModel>>("objects", model);
         if (postResult == null) throw new Exception("Nothing returned from REST service");
 
-        return postResult;
+        return postResult.First();
     }
 }
