@@ -43,13 +43,13 @@ public class HttpClientTest
             }
         };
 
-        var postResult = await ApiClient.PostAsync<AddObjectApiModel, AddObjectResponseModel>("objects", testData);
+        var postResult = await ApiClient.AddObject(testData);
         Assert.NotNull(postResult);
 
         var res = await ApiClient.GetAsync($"objects?id={postResult.Id}");
         
         var getResult = await ApiClient.GetAsync<AddObjectResponseModel>($"objects?id={postResult.Id}");
         Assert.NotNull(getResult);
-        Assert.NotNull(getResult.Payload);
+        Assert.Equal(testData.Name, getResult.Name);
     }
 }

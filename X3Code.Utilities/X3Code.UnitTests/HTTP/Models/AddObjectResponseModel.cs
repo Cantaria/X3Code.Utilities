@@ -10,7 +10,7 @@ internal class AddObjectResponseModel
     [JsonProperty("name")]
     public string? Name { get; set; }
     
-    [JsonProperty("data", )]
+    [JsonProperty("data")]
     public Data? Payload { get; set; }
     
     [JsonProperty("createdAt")]
