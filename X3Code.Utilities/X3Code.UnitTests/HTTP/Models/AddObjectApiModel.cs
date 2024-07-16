@@ -1,7 +1,9 @@
+using System;
 using Newtonsoft.Json;
 
 namespace X3Code.UnitTests.HTTP.Models;
 
+[Serializable]
 internal class AddObjectApiModel
 {
     [JsonProperty("name")]
@@ -11,7 +13,7 @@ internal class AddObjectApiModel
     public Data? Payload { get; set; }
 }
 
-
+[Serializable]
 internal class Data
 {
     [JsonProperty("year")]

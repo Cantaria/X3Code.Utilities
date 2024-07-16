@@ -1,7 +1,9 @@
+using System;
 using Newtonsoft.Json;
 
 namespace X3Code.UnitTests.HTTP.Models;
 
+[Serializable]
 internal class AddObjectResponseModel
 {
     [JsonProperty("id")]
