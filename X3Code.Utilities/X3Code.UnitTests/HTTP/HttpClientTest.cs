@@ -48,7 +48,7 @@ public class HttpClientTest
 
         var res = await ApiClient.GetAsync($"objects?id={postResult.Id}");
         
-        var getResult = await ApiClient.GetAsync<AddObjectResponseModel>($"objects?id={postResult.Id}");
+        var getResult = await ApiClient.GetAsync<AddObjectResponseModel>($"objects/{postResult.Id}");
         Assert.NotNull(getResult);
         Assert.Equal(testData.Name, getResult.Name);
     }
