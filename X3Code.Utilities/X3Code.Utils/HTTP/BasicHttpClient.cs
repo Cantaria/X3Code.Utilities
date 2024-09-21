@@ -12,19 +12,17 @@ namespace X3Code.Utils.HTTP;
 /// </summary>
 public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 {
-    private  readonly HttpClient _client;
-    
     protected BasicHttpClient(HttpClientConfiguration configuration)
     {
         if (string.IsNullOrWhiteSpace(configuration.BaseUrl)) throw new Exception("No Base-URL set in HTTP Client configuration. Please set Base-URL first.");
 
         Configuration = configuration;
-        _client = new HttpClient();
-        _client.BaseAddress = new Uri(configuration.BaseUrl);
-        _client.Timeout = configuration.TimeOut;
+        Client = new HttpClient();
+        Client.BaseAddress = new Uri(configuration.BaseUrl);
+        Client.Timeout = configuration.TimeOut;
         foreach (var header in configuration.Header)
         {
-            _client.DefaultRequestHeaders.Add(header.Key, header.Value);   
+            Client.DefaultRequestHeaders.Add(header.Key, header.Value);   
         }
     }
 
@@ -36,7 +34,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <summary>
     /// The underlying HTTP-Client if needed directly
     /// </summary>
-    protected HttpClient Client { get; set; }
+    protected HttpClient Client { get; }
 
     #region Client
     
@@ -50,12 +48,12 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         if (string.IsNullOrWhiteSpace(header)) throw new Exception("Empty header is not allowed.");
         if (string.IsNullOrWhiteSpace(value)) throw new Exception("Empty value is not allowed.");
 
-        if (_client.DefaultRequestHeaders.Contains(header))
+        if (Client.DefaultRequestHeaders.Contains(header))
         {
-            _client.DefaultRequestHeaders.Remove(header);
+            Client.DefaultRequestHeaders.Remove(header);
         }
 
-        _client.DefaultRequestHeaders.Add(header, value);
+        Client.DefaultRequestHeaders.Add(header, value);
     }
 
     /// <summary>
@@ -65,9 +63,9 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public void RemoveHeader(string header)
     {
         if (string.IsNullOrWhiteSpace(header)) throw new Exception("Empty header is not allowed.");
-        if (_client.DefaultRequestHeaders.Contains(header))
+        if (Client.DefaultRequestHeaders.Contains(header))
         {
-            _client.DefaultRequestHeaders.Remove(header);
+            Client.DefaultRequestHeaders.Remove(header);
         }
     }
     
@@ -89,12 +87,12 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 
         var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
 
-        if (_client.DefaultRequestHeaders.Authorization != null)
+        if (Client.DefaultRequestHeaders.Authorization != null)
         {
-            _client.DefaultRequestHeaders.Remove("Authorization");
+            Client.DefaultRequestHeaders.Remove("Authorization");
         }
 
-        _client.DefaultRequestHeaders.Add("Authorization", $"Basic {encodedCredentials}");
+        Client.DefaultRequestHeaders.Add("Authorization", $"Basic {encodedCredentials}");
     }
 
 
@@ -123,13 +121,13 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         var bearerToken = token.StartsWith("Bearer ") ? token : $"Bearer {token}";
 
         // Remove the bearer token header if it exists
-        if (_client.DefaultRequestHeaders.Authorization != null)
+        if (Client.DefaultRequestHeaders.Authorization != null)
         {
-            _client.DefaultRequestHeaders.Remove("Authorization");
+            Client.DefaultRequestHeaders.Remove("Authorization");
         }
 
         // Add the new bearer token header
-        _client.DefaultRequestHeaders.Add("Authorization", bearerToken);
+        Client.DefaultRequestHeaders.Add("Authorization", bearerToken);
     }
 
     /// <summary>
@@ -149,9 +147,9 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public void RemoveAuthentication()
     {
         // Remove the bearer token header if it exists
-        if (_client.DefaultRequestHeaders.Authorization != null)
+        if (Client.DefaultRequestHeaders.Authorization != null)
         {
-            _client.DefaultRequestHeaders.Remove("Authorization");
+            Client.DefaultRequestHeaders.Remove("Authorization");
         }
     }
     
@@ -168,7 +166,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </returns>
     public async Task<string> GetAsync(string uri)
     {
-        var response = await _client.GetAsync(uri);
+        var response = await Client.GetAsync(uri);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -181,7 +179,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>The response object of type <typeparamref name="TResponse"/>.</returns>
     public async Task<TResponse?> GetAsync<TResponse>(string uri) where TResponse : class
     {
-        var response = await _client.GetAsync(uri);
+        var response = await Client.GetAsync(uri);
         response.EnsureSuccessStatusCode();
 
         var res = response.Content.ReadAsStringAsync();
@@ -198,7 +196,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     {
         var data = new StringContent(json, Configuration.DefaultEncoding, Configuration.MediaType);
 
-        var response = await _client.PutAsync(uri, data);
+        var response = await Client.PutAsync(uri, data);
 
         response.EnsureSuccessStatusCode();
 
@@ -213,7 +211,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>On success the cast object</returns>
     public async Task<TResponse?> PutAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class
     {
-        var response = await _client.PutAsJsonAsync(uri, content);
+        var response = await Client.PutAsJsonAsync(uri, content);
 
         response.EnsureSuccessStatusCode();
 
@@ -230,7 +228,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     {
         var data = new StringContent(json, Configuration.DefaultEncoding, Configuration.MediaType);
 
-        var response = await _client.PostAsync(uri, data);
+        var response = await Client.PostAsync(uri, data);
 
         response.EnsureSuccessStatusCode();
 
@@ -245,7 +243,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>A Task representing the asynchronous operation. The task result contains the response content as a string.</returns>
     public async Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class
     {
-        var response = await _client.PostAsJsonAsync(uri, content);
+        var response = await Client.PostAsJsonAsync(uri, content);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<TResponse>();
@@ -258,7 +256,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>The response content as a string.</returns>
     public async Task<string> DeleteAsync(string uri)
     {
-        var response = await _client.DeleteAsync(uri);
+        var response = await Client.DeleteAsync(uri);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -271,7 +269,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>The deserialized response object of type TResponse.</returns>
     public async Task<TResponse?> DeleteAsync<TResponse>(string uri) where TResponse : class
     {
-        var response = await _client.DeleteAsync(uri);
+        var response = await Client.DeleteAsync(uri);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
@@ -283,7 +281,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>A Task that represents the asynchronous operation. The Task result contains the stream that was downloaded.</returns>
     public async Task<Stream> DownloadStreamAsync(string uri)
     {
-        return await _client.GetStreamAsync(uri);
+        return await Client.GetStreamAsync(uri);
     }
 
 
@@ -296,7 +294,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task UploadStreamAsync(string uri, Stream stream)
     {
         var content = new StreamContent(stream);
-        var response = await _client.PostAsync(uri, content);
+        var response = await Client.PostAsync(uri, content);
 
         response.EnsureSuccessStatusCode();
     }
@@ -305,6 +303,6 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     
     public void Dispose()
     {
-        _client.Dispose();
+        Client.Dispose();
     }
 }
