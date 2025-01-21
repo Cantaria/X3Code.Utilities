@@ -82,7 +82,7 @@ public class RepositoryTest : RepositoryBaseTest
             
         repo.AddAll(reference);
 
-        var fromDatabase = repo.Query(x => x.Name != null && x.Name.Contains("25")).ToList();
+        var fromDatabase = repo.Query(x => !string.IsNullOrWhiteSpace(x.Name) && x.Name.Contains("25")).ToList();
         Assert.Single(fromDatabase);
 
         var dbPerson = fromDatabase.First();
