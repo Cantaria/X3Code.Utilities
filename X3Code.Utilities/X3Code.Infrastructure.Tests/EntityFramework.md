@@ -1,5 +1,13 @@
-## Falls dotnet nicht funktioniert.
+## Install dotnet EF
+
+```bash
 dotnet tool install --global dotnet-ef --version <Versionsnr des NuGet Paketes>
+```
+## Update dotnet EF
+
+```bash
+dotnet tool update --global dotnet-ef
+```
 
 ----
 ## how to migrate:

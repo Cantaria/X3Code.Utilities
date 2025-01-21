@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using X3Code.Infrastructure.Tests;
 
@@ -11,9 +12,11 @@ using X3Code.Infrastructure.Tests;
 namespace X3Code.Infrastructure.Tests.Migrations
 {
     [DbContext(typeof(UnitTestContext))]
-    partial class UnitTestContextModelSnapshot : ModelSnapshot
+    [Migration("20250121195721_S002")]
+    partial class S002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
