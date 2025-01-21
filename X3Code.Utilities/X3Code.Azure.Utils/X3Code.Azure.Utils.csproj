@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.8.7</PackageVersion>
+        <PackageVersion>1.9.0</PackageVersion>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
@@ -20,8 +20,8 @@
 1.6.2: NuGet Updates
 1.5.6: NuGet Dependencies Updated
 1.5.0: Initial creation</PackageReleaseNotes>
-        <AssemblyVersion>1.8.7</AssemblyVersion>
-        <FileVersion>1.8.7</FileVersion>
+        <AssemblyVersion>1.9.0</AssemblyVersion>
+        <FileVersion>1.9.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
