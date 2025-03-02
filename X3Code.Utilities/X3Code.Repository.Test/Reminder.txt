@@ -1,0 +1,1 @@
+Remove the <noWarn> tag from project file after finalizing X3Code.Repository project!

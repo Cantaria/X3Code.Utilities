@@ -4,12 +4,18 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <NoWarn>InProgress</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
       <PackageReference Include="xunit" Version="2.9.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\X3Code.Repository.Extensions\X3Code.Repository.Extensions.csproj" />
+      <ProjectReference Include="..\X3Code.Repository\X3Code.Repository.csproj" />
     </ItemGroup>
 
 </Project>

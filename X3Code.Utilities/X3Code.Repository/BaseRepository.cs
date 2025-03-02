@@ -7,7 +7,7 @@ namespace X3Code.Repository;
 [Experimental("InProgress")]
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
-    protected BaseRepository(DbContext context)
+    public BaseRepository(DbContext context)
     {
         DataBase = context;
         Entities = context.Set<TEntity>();
