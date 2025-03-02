@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace X3Code.Repository;
 
 [Experimental("InProgress")]
-public class Entity<T> : IEntity<T> where T : struct
+public class Entity<T> : IEntity<T> where T : notnull
 {
     [Key]
-    public T EntityId { get; set; }
+    public required T EntityId { get; set; }
 }
