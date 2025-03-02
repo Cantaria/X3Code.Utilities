@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using X3Code.Repository.Extensions.DataTypes;
+using X3Code.Infrastructure.Extensions;
 using X3Code.Repository.Test.Entities;
 
 namespace X3Code.Repository.Test.Context;

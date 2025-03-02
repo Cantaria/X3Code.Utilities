@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\X3Code.Repository.Extensions\X3Code.Repository.Extensions.csproj" />
       <ProjectReference Include="..\X3Code.Repository\X3Code.Repository.csproj" />
     </ItemGroup>
 

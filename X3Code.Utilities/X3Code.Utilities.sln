@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Repository", "X3Code
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Repository.Test", "X3Code.Repository.Test\X3Code.Repository.Test.csproj", "{D9C6AB6B-4F9D-445A-83C4-C9D0F4FBF50A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X3Code.Repository.Extensions", "X3Code.Repository.Extensions\X3Code.Repository.Extensions.csproj", "{19262404-7ED4-4143-8FE8-11E8B6C06E79}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,10 +71,6 @@ Global
 		{D9C6AB6B-4F9D-445A-83C4-C9D0F4FBF50A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9C6AB6B-4F9D-445A-83C4-C9D0F4FBF50A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9C6AB6B-4F9D-445A-83C4-C9D0F4FBF50A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19262404-7ED4-4143-8FE8-11E8B6C06E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19262404-7ED4-4143-8FE8-11E8B6C06E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19262404-7ED4-4143-8FE8-11E8B6C06E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19262404-7ED4-4143-8FE8-11E8B6C06E79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +88,5 @@ Global
 		{9D7034B9-0A37-413D-9A98-8CF1644F2153} = {D2787FC9-A6CB-4424-B04C-D3C33AFA743D}
 		{1D6F2348-46B0-4E26-84CA-1479585EDA73} = {91B723E7-5D5A-430C-A034-CE09797876C5}
 		{D9C6AB6B-4F9D-445A-83C4-C9D0F4FBF50A} = {CFA62420-82FE-4E6D-97A7-6F24D8FF19FD}
-		{19262404-7ED4-4143-8FE8-11E8B6C06E79} = {91B723E7-5D5A-430C-A034-CE09797876C5}
 	EndGlobalSection
 EndGlobal

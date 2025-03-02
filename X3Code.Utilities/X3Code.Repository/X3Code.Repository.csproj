@@ -8,6 +8,13 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\X3Code.Infrastructure\Extensions\DecimalExtension.cs">
+        <Link>Extensions\DecimalExtension.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>
