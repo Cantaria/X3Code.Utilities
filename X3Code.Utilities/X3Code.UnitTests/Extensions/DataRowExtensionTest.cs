@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using X3Code.UnitTests.Models;
 using X3Code.Utils.Extensions;
 using Xunit;
 
@@ -254,7 +255,7 @@ public class DataRowExtensionTest
         {
             Name = "Darth Vader",
             Age = 99,
-            Birthday = new DateTime(1990, 5, 4),
+            BirthDate = new DateTime(1990, 5, 4),
             CheckMark = 'D',
             IsEvil = true,
             SomeDecimal = 25.6M,
@@ -269,7 +270,7 @@ public class DataRowExtensionTest
         Assert.NotNull(test);
         Assert.Equal(reference.Name, test.Name);
         Assert.Equal(reference.Age, test.Age);
-        Assert.Equal(reference.Birthday, test.Birthday);
+        Assert.Equal(reference.BirthDate, test.BirthDate);
         Assert.Equal(reference.IsEvil, test.IsEvil);
         Assert.Equal(reference.CheckMark, test.CheckMark);
         Assert.Equal(reference.SomeDecimal, test.SomeDecimal);
@@ -277,16 +278,4 @@ public class DataRowExtensionTest
         Assert.Equal(reference.SomeDouble, test.SomeDouble);
     }
         
-}
-
-internal class Person
-{
-    public string? Name { get; set; }
-    public int Age { get; set; }
-    public DateTime Birthday { get; set; }
-    public bool IsEvil { get; set; }
-    public char CheckMark { get; set; }
-    public decimal SomeDecimal { get; set; }
-    public float SomeFloat { get; set; }
-    public double SomeDouble { get; set; }
 }
