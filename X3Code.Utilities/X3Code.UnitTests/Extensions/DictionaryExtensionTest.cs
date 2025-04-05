@@ -79,10 +79,9 @@ public class DictionaryExtensionsTest
     {
         // Arrange
         IEnumerable<string> values = Array.Empty<string>();
-        List<string> duplicates;
 
         // Act
-        var result = values.ConvertToDictionary(v => v, out duplicates);
+        var result = values.ConvertToDictionary(person => person, out var duplicates);
 
         // Assert
         Assert.Empty(result);
