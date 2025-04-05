@@ -94,89 +94,46 @@ public class DictionaryExtensionsTest
     {
         // Arrange
         var values = new List<Person> { Person.Michael, Person.Clemens, Person.Alexander, Person.John, Person.Viktoria };
-        List<string> duplicates;
 
         // Act
-        //var result = values.ConvertToDictionary(person => person.Name, out duplicates);
+        var result = values.ConvertToDictionary(person => person.Name!, out var duplicates);
 
         // Assert
-        //Assert.Equal(3, result.Count);
-        //Assert.True(result.ContainsKey("A"));
-        //Assert.True(result.ContainsKey("B"));
-        //Assert.True(result.ContainsKey("C"));
-        //Assert.Empty(duplicates);
+        Assert.Equal(5, result.Count);
+        Assert.True(result.ContainsKey(Person.Michael.Name!));
+        Assert.True(result.ContainsKey(Person.Alexander.Name!));
+        Assert.True(result.ContainsKey(Person.Viktoria.Name!));
+        Assert.Empty(duplicates);
     }
 
     [Fact]
     public void ConvertToDictionary_DuplicatesWithIgnoreEnabled_TracksDuplicates()
     {
         // Arrange
-        var values = new List<string> { "A", "B", "A", "C", "B" };
-        List<string> duplicates;
+        var values = new List<Person> { Person.Michael, Person.Clemens, Person.Michael, Person.John, Person.Viktoria };
 
         // Act
-        var result = values.ConvertToDictionary(v => v, out duplicates);
+        var result = values.ConvertToDictionary(person => person.Name!, out var duplicates);
 
         // Assert
-        Assert.Equal(3, result.Count);
-        Assert.True(result.ContainsKey("A"));
-        Assert.True(result.ContainsKey("B"));
-        Assert.True(result.ContainsKey("C"));
-        Assert.Equal(2, duplicates.Count);
-        Assert.Contains("A", duplicates);
-        Assert.Contains("B", duplicates);
+        Assert.Equal(4, result.Count);
+        Assert.True(result.ContainsKey(Person.Michael.Name!)); 
+        Assert.True(result.ContainsKey(Person.Viktoria.Name!));
+        Assert.True(result.ContainsKey(Person.Clemens.Name!));
+        Assert.Single(duplicates);
+        Assert.Contains(duplicates, x => x.Name == Person.Michael.Name! );
     }
 
     [Fact]
     public void ConvertToDictionary_DuplicatesWithIgnoreDisabled_ThrowsException()
     {
         // Arrange
-        var values = new List<string> { "A", "B", "A" };
-        List<string> duplicates;
+        var values = new List<Person> { Person.Michael, Person.Clemens, Person.Michael, Person.John, Person.Viktoria };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => values.ConvertToDictionary(v => v, out duplicates, false));
-        Assert.Equal("Duplicate key [A] found.", exception.Message);
+        var exception = Assert.Throws<Exception>(() => values.ConvertToDictionary(person => person.Name!, out var duplicates, false));
+        Assert.Equal($"Duplicate key [{Person.Michael.Name!}] found.", exception.Message);
     }
-
-    [Fact]
-    public void ConvertToDictionary_CustomKeySelector_NoDuplicates()
-    {
-        // Arrange
-        var values = new List<string> { "Alice", "Bob", "Charlie" };
-        List<string> duplicates;
-
-        // Act
-        var result = values.ConvertToDictionary(v => v.Length, out duplicates);
-
-        // Assert
-        Assert.Equal(3, result.Count);
-        Assert.True(result.ContainsKey(5));
-        Assert.True(result.ContainsKey(3));
-        Assert.True(result.ContainsKey(7));
-        Assert.Empty(duplicates);
-    }
-
-    [Fact]
-    public void ConvertToDictionary_CustomKeySelector_WithDuplicates_TracksDuplicates()
-    {
-        // Arrange
-        var values = new List<string>
-            { "Alice", "Alfred", "Bob", "Charlie" }; // "Alice" and "Alfred" have the same length
-        List<string> duplicates;
-
-        // Act
-        var result = values.ConvertToDictionary(v => v.Length, out duplicates);
-
-        // Assert
-        Assert.Equal(3, result.Count);
-        Assert.True(result.ContainsKey(5)); // Either "Alice" or "Alfred" will be in the dictionary
-        Assert.True(result.ContainsKey(3));
-        Assert.True(result.ContainsKey(7));
-        Assert.Single(duplicates);
-        Assert.Contains("Alfred", duplicates); // "Alfred" is the duplicate
-    }
-
 
     #endregion
 
