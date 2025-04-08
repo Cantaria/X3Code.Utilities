@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using System.Collections.Generic;
+using X3Code.UnitTests.Mockups;
 using X3Code.UnitTests.Models;
 using X3Code.Utils.Extensions;
 
@@ -92,16 +93,16 @@ public class DictionaryExtensionsTest
     public void ConvertToDictionary_NoDuplicates_ReturnsDictionaryWithAllValues()
     {
         // Arrange
-        var values = new List<Person> { Person.Michael, Person.Clemens, Person.Alexander, Person.John, Person.Viktoria };
+        var values = new List<Person> { PersonMockups.Michael, PersonMockups.Clemens, PersonMockups.Alexander, PersonMockups.John, PersonMockups.Viktoria };
 
         // Act
         var result = values.ConvertToDictionary(person => person.Name!, out var duplicates);
 
         // Assert
         Assert.Equal(5, result.Count);
-        Assert.True(result.ContainsKey(Person.Michael.Name!));
-        Assert.True(result.ContainsKey(Person.Alexander.Name!));
-        Assert.True(result.ContainsKey(Person.Viktoria.Name!));
+        Assert.True(result.ContainsKey(PersonMockups.Michael.Name!));
+        Assert.True(result.ContainsKey(PersonMockups.Alexander.Name!));
+        Assert.True(result.ContainsKey(PersonMockups.Viktoria.Name!));
         Assert.Empty(duplicates);
     }
 
@@ -109,29 +110,29 @@ public class DictionaryExtensionsTest
     public void ConvertToDictionary_DuplicatesWithIgnoreEnabled_TracksDuplicates()
     {
         // Arrange
-        var values = new List<Person> { Person.Michael, Person.Clemens, Person.Michael, Person.John, Person.Viktoria };
+        var values = new List<Person> { PersonMockups.Michael, PersonMockups.Clemens, PersonMockups.Michael, PersonMockups.John, PersonMockups.Viktoria };
 
         // Act
         var result = values.ConvertToDictionary(person => person.Name!, out var duplicates);
 
         // Assert
         Assert.Equal(4, result.Count);
-        Assert.True(result.ContainsKey(Person.Michael.Name!)); 
-        Assert.True(result.ContainsKey(Person.Viktoria.Name!));
-        Assert.True(result.ContainsKey(Person.Clemens.Name!));
+        Assert.True(result.ContainsKey(PersonMockups.Michael.Name!)); 
+        Assert.True(result.ContainsKey(PersonMockups.Viktoria.Name!));
+        Assert.True(result.ContainsKey(PersonMockups.Clemens.Name!));
         Assert.Single(duplicates);
-        Assert.Contains(duplicates, x => x.Name == Person.Michael.Name! );
+        Assert.Contains(duplicates, x => x.Name == PersonMockups.Michael.Name! );
     }
 
     [Fact]
     public void ConvertToDictionary_DuplicatesWithIgnoreDisabled_ThrowsException()
     {
         // Arrange
-        var values = new List<Person> { Person.Michael, Person.Clemens, Person.Michael, Person.John, Person.Viktoria };
+        var values = new List<Person> { PersonMockups.Michael, PersonMockups.Clemens, PersonMockups.Michael, PersonMockups.John, PersonMockups.Viktoria };
 
         // Act & Assert
         var exception = Assert.Throws<Exception>(() => values.ConvertToDictionary(person => person.Name!, out var duplicates, false));
-        Assert.Equal($"Duplicate key [{Person.Michael.Name!}] found.", exception.Message);
+        Assert.Equal($"Duplicate key [{PersonMockups.Michael.Name!}] found.", exception.Message);
     }
 
     #endregion

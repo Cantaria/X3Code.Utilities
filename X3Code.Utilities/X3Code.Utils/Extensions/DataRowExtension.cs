@@ -22,7 +22,7 @@ public static class DataRowExtension
         foreach (var property in genericType.GetProperties())
         {
             var propertyType = property;
-            var valueFromRow = System.Convert.ChangeType(source[property.Name], propertyType.PropertyType);
+            var valueFromRow = Convert.ChangeType(source[property.Name], propertyType.PropertyType);
             genericType.GetProperty(property.Name)?.SetValue(result, valueFromRow);
         }
             

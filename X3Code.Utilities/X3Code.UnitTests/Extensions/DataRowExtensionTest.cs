@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using X3Code.UnitTests.Mockups;
 using X3Code.UnitTests.Models;
 using X3Code.Utils.Extensions;
 using Xunit;
@@ -251,17 +252,7 @@ public class DataRowExtensionTest
     [Fact]
     public void CanConvertRowToEntity()
     {
-        var reference = new Person
-        {
-            Name = "Darth Vader",
-            Age = 99,
-            BirthDate = new DateTime(1990, 5, 4),
-            CheckMark = 'D',
-            IsEvil = true,
-            SomeDecimal = 25.6M,
-            SomeDouble = 17.3,
-            SomeFloat = 19.2F
-        };
+        var reference = PersonMockups.Clemens;
         var asList = new List<Person> {reference};
         var dataTable = asList.ToDataTable();
         var row = dataTable.Rows[0];
