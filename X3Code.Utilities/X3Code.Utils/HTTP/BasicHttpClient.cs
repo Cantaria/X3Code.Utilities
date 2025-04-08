@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using X3Code.Utils.Exceptions;
 
 namespace X3Code.Utils.HTTP;
 
@@ -167,7 +168,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<string> GetAsync(string uri)
     {
         var response = await Client.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
         return await response.Content.ReadAsStringAsync();
     }
 
@@ -180,7 +181,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> GetAsync<TResponse>(string uri) where TResponse : class
     {
         var response = await Client.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
 
         var res = response.Content.ReadAsStringAsync();
         return await response.Content.ReadFromJsonAsync<TResponse>();
@@ -198,7 +199,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 
         var response = await Client.PutAsync(uri, data);
 
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
 
         return await response.Content.ReadAsStringAsync();
     }
@@ -213,7 +214,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     {
         var response = await Client.PutAsJsonAsync(uri, content);
 
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
 
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
@@ -230,7 +231,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 
         var response = await Client.PostAsync(uri, data);
 
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
 
         return await response.Content.ReadAsStringAsync();
     }
@@ -244,7 +245,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class
     {
         var response = await Client.PostAsJsonAsync(uri, content);
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
 
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
@@ -257,7 +258,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<string> DeleteAsync(string uri)
     {
         var response = await Client.DeleteAsync(uri);
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
         return await response.Content.ReadAsStringAsync();
     }
 
@@ -270,7 +271,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> DeleteAsync<TResponse>(string uri) where TResponse : class
     {
         var response = await Client.DeleteAsync(uri);
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
     
@@ -296,7 +297,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         var content = new StreamContent(stream);
         var response = await Client.PostAsync(uri, content);
 
-        response.EnsureSuccessStatusCode();
+        CheckSuccessCode(response);
     }
 
     #endregion
@@ -304,5 +305,19 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public void Dispose()
     {
         Client.Dispose();
+    }
+
+    private void CheckSuccessCode(HttpResponseMessage response)
+    {
+        if (response.IsSuccessStatusCode) return;
+
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new X3HttpRequestException(ex.Message, ex, response);
+        }
     }
 }
