@@ -34,4 +34,12 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="..\x3code_logo.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>x3code_logo.png</Link>
+      </None>
+    </ItemGroup>
+
 </Project>
