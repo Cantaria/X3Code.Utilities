@@ -11,7 +11,6 @@ x3AzureUtils=X3Code.Azure.Utils.$version.nupkg
 x3Utils=X3Code.Utilities.$version.nupkg
 x3Infrastructure=X3Code.Infrastructure.$version.nupkg
 x3Wasm=X3Code.Wasm.Utils.$version.nupkg
-x3Repo=X3Code.Repository.$version.nupkg
 PACKAGE_SOURCE=github
 
 echo "Trying to push: $x3AzureUtils"
@@ -42,9 +41,3 @@ else
     echo "File $x3Wasm does not exist. Do nothing"
 fi
 
-echo "Trying to push: $x3Repo"
-if test -f "$x3Repo"; then
-    dotnet nuget push $x3Repo --source $PACKAGE_SOURCE -k $apikey
-else
-    echo "File $x3Repo does not exist. Do nothing"
-fi
