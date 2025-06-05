@@ -60,9 +60,6 @@ public class CustomRepository : BaseRepository<Custom>, ICustomRepository
 > protected DbSet<TEntity> Entities { get; }
 > ```
 
-4. Add your Repositories to the DI-Container
-5. Register your Entities to the Db-Context
-
 ## Prerequisites
 - .NET 9.0 or later
 - Entity Framework Core
@@ -70,21 +67,22 @@ public class CustomRepository : BaseRepository<Custom>, ICustomRepository
 ## Usage Examples
 ```csharp
 // Register in your DI container
-services.AddScoped<IRepository<Product>, ProductRepository>();
-
+services.AddScoped<ICustomRepository>, CustomRepository>();
+```
+```csharp
 // Inject and use in your service
 public class ProductService
 {
-    private readonly IRepository<Product> _repository;
+    private readonly ICustomRepository _repository;
 
-    public ProductService(IRepository<Product> repository)
+    public ProductService(ICustomRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task<Product> GetProductAsync(int id)
+    public async Task<Product> GetProductAsync(Guid id)
     {
-        return await _repository.GetByIdAsync(id);
+        return await _repository.GetAll(x => x.EntityId = id);
     }
 }
 ```
