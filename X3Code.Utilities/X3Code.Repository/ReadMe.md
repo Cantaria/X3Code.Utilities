@@ -19,7 +19,7 @@ dotnet add package X3Code.Repository
 ```
 
 ## Quick Start
-1. Define your entity by implementing `Entity<T>`.
+1. Define your entity by implementing `Entity<T>`. This class inherits from `IEntity<T>` and will implement you primary key with the type defined.
 ```csharp
 csharp public class Product : Entity<T> 
 {
@@ -36,13 +36,33 @@ public int EntityId { get; set; }
 ```
 etc
 
-2. Create your repository:
+2. Create an empty interface for your repository and inherit from `IBaseRepository<T>`
+> This will make it much easier, to handle the repositories and add them to the DI-container
 ```csharp
-public class ProductRepository : Repository 
+public interface ICustomRepository : IBaseRepository<Custom>
 {
-    public ProductRepository(DbContext context) : base(context) { }
+    
 }
 ```
+
+3. Then create the corresponding repository. You need to inherit the `BaseRepository<T>` and your self created `ICustomRepository`. With this trick, you repository class stays clean and easy. You can add functionality if needed.
+```csharp
+public class CustomRepository : BaseRepository<Custom>, ICustomRepository
+{
+    public VehiclePartRepository(DbContext context) : base(context)
+    {
+    }
+}
+```
+> If you need access to the DbContext or the Entity, you can use the inherited properties
+> ```csharp
+> protected DbContext DataBase { get; }    
+> protected DbSet<TEntity> Entities { get; }
+> ```
+
+4. Add your Repositories to the DI-Container
+5. Register your Entities to the Db-Context
+
 ## Prerequisites
 - .NET 9.0 or later
 - Entity Framework Core
