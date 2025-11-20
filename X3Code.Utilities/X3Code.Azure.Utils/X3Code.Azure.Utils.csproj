@@ -5,14 +5,15 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.9.1</PackageVersion>
+        <PackageVersion>1.10.0</PackageVersion>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
         <PackageIcon>x3code_logo.png</PackageIcon>
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
-        <PackageReleaseNotes>1.8.5: last version was missing nullables, nuget package updates
+        <PackageReleaseNotes>1.10.0: update to .net 10
+1.8.5: last version was missing nullables, nuget package updates
 1.8.2: Nuget package updates
 1.8.0: Update to .NET8
 1.7.2: NuGet package updates
@@ -20,8 +21,8 @@
 1.6.2: NuGet Updates
 1.5.6: NuGet Dependencies Updated
 1.5.0: Initial creation</PackageReleaseNotes>
-        <AssemblyVersion>1.9.1</AssemblyVersion>
-        <FileVersion>1.9.1</FileVersion>
+        <AssemblyVersion>1.10.0</AssemblyVersion>
+        <FileVersion>1.10.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
