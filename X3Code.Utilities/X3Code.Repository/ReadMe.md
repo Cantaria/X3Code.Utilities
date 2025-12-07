@@ -1,6 +1,6 @@
 # X3Code.Repository
 
-> ⚠️ **Note**: This library is currently in an experimental state.
+> ⚠️ **Note**: This library is currently under development. Use with care and own risk!
 
 ## Overview
 X3Code.Repository is a lightweight library that provides a flexible and easy-to-implement repository pattern for .NET applications. It's designed to work seamlessly with Entity Framework while remaining database provider-independent.

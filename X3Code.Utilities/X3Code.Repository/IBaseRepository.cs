@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace X3Code.Repository;
 
-[Experimental("InProgress")]
 public interface IBaseRepository<TEntity>
 {
 	TEntity? Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);

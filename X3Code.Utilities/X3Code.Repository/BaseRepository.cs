@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +10,6 @@ namespace X3Code.Repository;
 /// <typeparam name="TEntity">
 /// The type of the entity to be managed by the repository. Must be a class.
 /// </typeparam>
-[Experimental("InProgress")]
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
     /// <summary>

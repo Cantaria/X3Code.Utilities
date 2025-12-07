@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace X3Code.Repository;
 
@@ -9,7 +8,6 @@ namespace X3Code.Repository;
 /// <typeparam name="T">
 /// The type of the primary key for the entity. Must be non-nullable.
 /// </typeparam>
-[Experimental("InProgress")]
 public class Entity<T> : IEntity<T> where T : notnull
 {
     /// <summary>
