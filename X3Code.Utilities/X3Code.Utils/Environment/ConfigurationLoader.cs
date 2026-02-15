@@ -27,6 +27,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <param name="environmentByEnum">The environment to set. Can be used for selection configuration files.</param>
     public ConfigurationLoader(SoftwareEnvironment environmentByEnum)
     {
+        if (environmentByEnum == SoftwareEnvironment.Unknown) throw new ArgumentException("Environment cannot be Unknown and should be known!");
         _environmentByEnum = environmentByEnum;
     }
 
