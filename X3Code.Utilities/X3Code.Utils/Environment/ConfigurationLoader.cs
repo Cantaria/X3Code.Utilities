@@ -7,17 +7,33 @@ using X3Code.Utils.Serializing;
 
 namespace X3Code.Utils.Environment;
 
+/// <summary>
+/// Provides functionality to load configuration files in different formats,
+/// specifically for different software environments.
+/// </summary>
 public class ConfigurationLoader : IConfigurationLoader
 {
-    private SoftwareEnvironment _environmentByEnum = SoftwareEnvironment.Unknown;
-    private string? _environmentName;
+    private readonly SoftwareEnvironment _environmentByEnum = SoftwareEnvironment.Unknown;
 
+    /// <summary>
+    /// Gets the name of the current software environment. This can be used to determine
+    /// the specific configuration or behavior based on the environment type (e.g., Development,
+    /// Test, Production). The environment name is represented as a <see cref="string"/>.
+    /// </summary>
+    /// <remarks>
+    /// - If the environment is set using an enum value, this property returns the corresponding name.
+    /// - If the environment is manually specified as a string, it strictly follows the allowed format:
+    /// - Maximum length of 20 characters
+    /// - No whitespaces
+    /// - Allowed characters: alphanumeric, '.', '-', '_'.
+    /// - If the environment is not explicitly set, it defaults to an empty string.
+    /// </remarks>
     public string Environment
     {
         get
         {
             if (_environmentByEnum != SoftwareEnvironment.Unknown) return _environmentByEnum.ToString();
-            return _environmentName ?? string.Empty;
+            return field ?? string.Empty;
         }
     }
 
@@ -47,9 +63,30 @@ public class ConfigurationLoader : IConfigurationLoader
         if (environment.Contains(' ')) throw new ArgumentException("Environment name cannot contain whitespaces.");
         if (environment.Any(c => !char.IsLetterOrDigit(c) && c != '.' && c != '-' && c != '_')) throw new ArgumentException("Environment name cannot contain special characters other than . - _");
         
-        _environmentName = environment;
+        Environment = environment;
     }
 
+    /// <summary>
+    /// Loads a configuration object of the specified type from a configuration file.
+    /// Supports both JSON and XML file formats.
+    /// </summary>
+    /// <typeparam name="T">The type of the configuration object to load. Must be a class with a parameterless constructor.</typeparam>
+    /// <param name="pathToConfigFile">The directory path where the configuration file is located.</param>
+    /// <param name="fileName">The name of the configuration file, including its extension.</param>
+    /// <param name="useEnvironment">
+    /// A boolean indicating whether to include the active environment suffix in the configuration file name.
+    /// If true, the loader will append the current environment to the file name (e.g., "config-development.json").
+    /// </param>
+    /// <returns>The deserialized configuration object of type <typeparamref name="T"/>.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="pathToConfigFile"/> or <paramref name="fileName"/> is null or whitespace.
+    /// </exception>
+    /// <exception cref="FileNotFoundException">
+    /// Thrown if the configuration file does not exist at the specified location.
+    /// </exception>
+    /// <exception cref="Exception">
+    /// Thrown if the file extension is unsupported, the file content is empty, or deserialization fails.
+    /// </exception>
     public T Load<T>(string pathToConfigFile, string fileName, bool useEnvironment = true) where T : class, new()
     {
         if (string.IsNullOrWhiteSpace(pathToConfigFile)) throw new ArgumentNullException(nameof(pathToConfigFile));
@@ -59,8 +96,8 @@ public class ConfigurationLoader : IConfigurationLoader
 
         if (useEnvironment)
         {
-            var fileNameWithouthExtension = Path.GetFileNameWithoutExtension(fileName);
-            fileName = $"{fileNameWithouthExtension}-{Environment.ToString().ToLowerInvariant()}.{fileExtension}";
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            fileName = $"{fileNameWithoutExtension}-{Environment.ToLowerInvariant()}.{fileExtension}";
         }
         
         var fullPath = GetFullPath(pathToConfigFile, fileName);
@@ -98,18 +135,18 @@ public class ConfigurationLoader : IConfigurationLoader
         return result;
     }
 
-    private string GetFullPath(string pathToConfigFile, string path)
+    private string GetFullPath(string pathToConfigFile, string filename)
     {
         string configPath = pathToConfigFile;
 
-        // On Linux/macOS, if path starts with ".", resolve it relative to user home directory
+        // On Linux/macOS, if the path starts with ".", resolve it relative to the user home directory
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && configPath.StartsWith("."))
         {
             string homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
             configPath = Path.Combine(homeDirectory, configPath);
         }
 
-        string fullPath = Path.Combine(configPath, path);
+        string fullPath = Path.Combine(configPath, filename);
         return fullPath;
     }
 }
