@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -24,11 +25,12 @@ public class AzureBlobStorage : StorageBase
     /// List files from a specific blob path
     /// </summary>
     /// <param name="path">Path to the folder the files should be listed, can be null</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public override async Task<IEnumerable<string>> ListFiles(string? path = null)
+    public override async Task<IEnumerable<string>> ListFiles(string? path = null, CancellationToken cancellationToken = default)
     {
         var result = new List<string>();
-        var blobs = _containerClient.GetBlobsAsync(BlobTraits.None, BlobStates.None, path);
+        var blobs = _containerClient.GetBlobsAsync(BlobTraits.None, BlobStates.None, path, cancellationToken);
         await foreach (var blobItem in blobs)
         {
             result.Add(blobItem.Name);

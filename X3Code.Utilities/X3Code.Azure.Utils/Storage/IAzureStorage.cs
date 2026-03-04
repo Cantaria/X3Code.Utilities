@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace X3Code.Azure.Utils.Storage;
@@ -11,8 +12,9 @@ public interface IAzureStorage
     /// List files from a specific blob path
     /// </summary>
     /// <param name="path">Path to the folder the files should be listed, can be null</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IEnumerable<string>> ListFiles(string? path);
+    Task<IEnumerable<string>> ListFiles(string? path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks if the blob exists

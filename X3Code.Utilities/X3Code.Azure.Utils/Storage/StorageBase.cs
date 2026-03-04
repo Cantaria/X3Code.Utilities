@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace X3Code.Azure.Utils.Storage;
@@ -18,7 +19,7 @@ public abstract class StorageBase : IAzureStorage
         ContainerName = containerName;
     }
 
-    public abstract Task<IEnumerable<string>> ListFiles(string? path = null);
+    public abstract Task<IEnumerable<string>> ListFiles(string? path = null, CancellationToken cancellationToken = default);
     public abstract Task<bool> Exists(string path);
     public abstract Task Delete(string path);
     public abstract Task<Stream> DownloadFile(string path);
