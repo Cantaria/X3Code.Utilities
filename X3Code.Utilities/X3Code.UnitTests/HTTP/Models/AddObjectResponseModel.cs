@@ -16,5 +16,5 @@ internal class AddObjectResponseModel
     public Data? Payload { get; set; }
     
     [JsonProperty("createdAt")]
-    public DateTime CreatedAt { get; set; }
+    public long CreatedAt { get; set; }
 }
