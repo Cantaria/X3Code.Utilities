@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using X3Code.Utils.Serializing;
 
-namespace X3Code.Utils.Environment;
+namespace X3Code.Utils.Configurations;
 
 /// <summary>
 /// Provides functionality to load configuration files in different formats,
@@ -97,7 +97,7 @@ public class ConfigurationLoader : IConfigurationLoader
         if (useEnvironment)
         {
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            fileName = $"{fileNameWithoutExtension}-{Environment.ToLowerInvariant()}.{fileExtension}";
+            fileName = $"{fileNameWithoutExtension}-{Environment.ToLowerInvariant()}{fileExtension}";
         }
         
         var fullPath = GetFullPath(pathToConfigFile, fileName);

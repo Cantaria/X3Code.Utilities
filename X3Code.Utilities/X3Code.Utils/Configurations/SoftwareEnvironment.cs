@@ -1,4 +1,4 @@
-namespace X3Code.Utils.Environment;
+namespace X3Code.Utils.Configurations;
 
 public enum SoftwareEnvironment
 {

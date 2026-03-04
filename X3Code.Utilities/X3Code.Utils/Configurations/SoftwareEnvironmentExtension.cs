@@ -1,6 +1,6 @@
 using System;
 
-namespace X3Code.Utils.Environment;
+namespace X3Code.Utils.Configurations;
 
 public static class SoftwareEnvironmentExtension
 {
