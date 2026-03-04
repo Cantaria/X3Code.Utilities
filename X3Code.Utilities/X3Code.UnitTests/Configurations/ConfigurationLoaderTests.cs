@@ -91,7 +91,7 @@ public class ConfigurationLoaderTests : IDisposable
         var loader = new ConfigurationLoader(SoftwareEnvironment.Development);
         var config = new TestConfig { Key = "Test", Value = 42 };
         var fileName = "config.json";
-        var expectedFileName = "config-development.json";
+        var expectedFileName = "config.development.json";
         var fullPath = Path.Combine(_testPath, expectedFileName);
         
         File.WriteAllText(fullPath, JsonSerializer.Serialize(config));
@@ -126,7 +126,7 @@ public class ConfigurationLoaderTests : IDisposable
         var loader = new ConfigurationLoader(SoftwareEnvironment.Staging);
         var config = new TestConfig { Key = "XmlTest", Value = 77 };
         var fileName = "settings.xml";
-        var expectedFileName = "settings-staging.xml";
+        var expectedFileName = "settings.staging.xml";
         var fullPath = Path.Combine(_testPath, expectedFileName);
         
         GenericXmlSerializer.SaveXml(fullPath, config);

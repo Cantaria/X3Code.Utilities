@@ -97,7 +97,7 @@ public class ConfigurationLoader : IConfigurationLoader
         if (useEnvironment)
         {
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            fileName = $"{fileNameWithoutExtension}-{Environment.ToLowerInvariant()}{fileExtension}";
+            fileName = $"{fileNameWithoutExtension}.{Environment.ToLowerInvariant()}{fileExtension}";
         }
         
         var fullPath = GetFullPath(pathToConfigFile, fileName);
