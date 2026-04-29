@@ -96,7 +96,7 @@ public class ConfigurationLoaderTests : IDisposable
         
         File.WriteAllText(fullPath, JsonSerializer.Serialize(config));
 
-        var loadedConfig = loader.Load<TestConfig>(_testPath, fileName, useEnvironment: true);
+        var loadedConfig = loader.Load<TestConfig>(fileName, _testPath, useEnvironment: true);
 
         Assert.NotNull(loadedConfig);
         Assert.Equal(config.Key, loadedConfig.Key);
@@ -113,7 +113,7 @@ public class ConfigurationLoaderTests : IDisposable
         
         File.WriteAllText(fullPath, JsonSerializer.Serialize(config));
 
-        var loadedConfig = loader.Load<TestConfig>(_testPath, fileName, useEnvironment: false);
+        var loadedConfig = loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false);
 
         Assert.NotNull(loadedConfig);
         Assert.Equal(config.Key, loadedConfig.Key);
@@ -131,7 +131,7 @@ public class ConfigurationLoaderTests : IDisposable
         
         GenericXmlSerializer.SaveXml(fullPath, config);
 
-        var loadedConfig = loader.Load<TestConfig>(_testPath, fileName, useEnvironment: true);
+        var loadedConfig = loader.Load<TestConfig>(fileName, _testPath, useEnvironment: true);
 
         Assert.NotNull(loadedConfig);
         Assert.Equal(config.Key, loadedConfig.Key);
@@ -142,7 +142,7 @@ public class ConfigurationLoaderTests : IDisposable
     public void Load_Throws_FileNotFound()
     {
         var loader = new ConfigurationLoader(SoftwareEnvironment.Development);
-        Assert.Throws<FileNotFoundException>(() => loader.Load<TestConfig>(_testPath, "nonexistent.json", useEnvironment: false));
+        Assert.Throws<FileNotFoundException>(() => loader.Load<TestConfig>("nonexistent.json", _testPath, useEnvironment: false));
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public class ConfigurationLoaderTests : IDisposable
         var fullPath = Path.Combine(_testPath, fileName);
         File.WriteAllText(fullPath, "some content");
 
-        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(_testPath, fileName, useEnvironment: false));
+        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
         Assert.Contains("Unsupported file extension", exception.Message);
     }
 
@@ -165,7 +165,7 @@ public class ConfigurationLoaderTests : IDisposable
         var fullPath = Path.Combine(_testPath, fileName);
         File.WriteAllText(fullPath, "");
 
-        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(_testPath, fileName, useEnvironment: false));
+        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
         Assert.Contains("is empty", exception.Message);
     }
 
@@ -177,6 +177,55 @@ public class ConfigurationLoaderTests : IDisposable
         var fullPath = Path.Combine(_testPath, fileName);
         File.WriteAllText(fullPath, "{ invalid json }");
 
-        Assert.Throws<JsonException>(() => loader.Load<TestConfig>(_testPath, fileName, useEnvironment: false));
+        Assert.Throws<JsonException>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
+    }
+
+    [Fact]
+    public void Load_SupportsHomeDirectoryReference()
+    {
+        var homePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+        var testSubDir = "ConfigLoaderHomeTest_" + Guid.NewGuid();
+        var fullPathDir = Path.Combine(homePath, testSubDir);
+        
+        try
+        {
+            Directory.CreateDirectory(fullPathDir);
+            
+            var loader = new ConfigurationLoader(SoftwareEnvironment.Development);
+            var config = new TestConfig { Key = "HomeTest", Value = 123 };
+            var fileName = "homeconfig.json";
+            var fullFilePath = Path.Combine(fullPathDir, fileName);
+            
+            File.WriteAllText(fullFilePath, JsonSerializer.Serialize(config));
+
+            // Test mit "~" am Anfang
+            var loadedConfig = loader.Load<TestConfig>(fileName, $"~/{testSubDir}", useEnvironment: false);
+
+            Assert.NotNull(loadedConfig);
+            Assert.Equal(config.Key, loadedConfig.Key);
+            Assert.Equal(config.Value, loadedConfig.Value);
+
+            // Test mit nur "~"
+            var fileNameOnlyHome = "onlyhome.json";
+            var fullFilePathOnlyHome = Path.Combine(homePath, fileNameOnlyHome);
+            try
+            {
+                File.WriteAllText(fullFilePathOnlyHome, JsonSerializer.Serialize(config));
+                var loadedOnlyHome = loader.Load<TestConfig>(fileNameOnlyHome, "~", useEnvironment: false);
+                Assert.NotNull(loadedOnlyHome);
+                Assert.Equal(config.Key, loadedOnlyHome.Key);
+            }
+            finally
+            {
+                if (File.Exists(fullFilePathOnlyHome)) File.Delete(fullFilePathOnlyHome);
+            }
+        }
+        finally
+        {
+            if (Directory.Exists(fullPathDir))
+            {
+                Directory.Delete(fullPathDir, true);
+            }
+        }
     }
 }

@@ -67,31 +67,23 @@ public class ConfigurationLoader : IConfigurationLoader
     }
 
     /// <summary>
-    /// Loads a configuration object of the specified type from a configuration file.
-    /// Supports both JSON and XML file formats.
+    /// Loads a configuration of the specified type from the provided file and path.
+    /// Supports JSON and XML file formats.
     /// </summary>
     /// <typeparam name="T">The type of the configuration object to load. Must be a class with a parameterless constructor.</typeparam>
-    /// <param name="pathToConfigFile">The directory path where the configuration file is located.</param>
-    /// <param name="fileName">The name of the configuration file, including its extension.</param>
-    /// <param name="useEnvironment">
-    /// A boolean indicating whether to include the active environment suffix in the configuration file name.
-    /// If true, the loader will append the current environment to the file name (e.g., "config-development.json").
-    /// </param>
-    /// <returns>The deserialized configuration object of type <typeparamref name="T"/>.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="pathToConfigFile"/> or <paramref name="fileName"/> is null or whitespace.
-    /// </exception>
-    /// <exception cref="FileNotFoundException">
-    /// Thrown if the configuration file does not exist at the specified location.
-    /// </exception>
-    /// <exception cref="Exception">
-    /// Thrown if the file extension is unsupported, the file content is empty, or deserialization fails.
-    /// </exception>
-    public T Load<T>(string pathToConfigFile, string fileName, bool useEnvironment = true) where T : class, new()
+    /// <param name="fileName">The name of the configuration file to be loaded.</param>
+    /// <param name="pathToConfigFile">The absolute or relative path to the directory containing the configuration file. If relative, '~' can be used to denote the home directory.</param>
+    /// <param name="useEnvironment">A boolean indicating whether to use the environment setting while loading the configuration.</param>
+    /// <returns>An instance of the specified configuration type loaded from the provided file.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> or <paramref name="pathToConfigFile"/> is null or whitespace.</exception>
+    /// <exception cref="Exception">Thrown if the file extension is unsupported or the file cannot be loaded.</exception>
+    public T Load<T>(string fileName, string pathToConfigFile, bool useEnvironment = true) where T : class, new()
     {
         if (string.IsNullOrWhiteSpace(pathToConfigFile)) throw new ArgumentNullException(nameof(pathToConfigFile));
         if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
-        
+
+        if (pathToConfigFile.StartsWith("~")) pathToConfigFile = pathToConfigFile.Replace("~", DetermineHomePath());
+
         var fileExtension = Path.GetExtension(fileName);
 
         if (useEnvironment)
@@ -99,17 +91,23 @@ public class ConfigurationLoader : IConfigurationLoader
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             fileName = $"{fileNameWithoutExtension}.{Environment.ToLowerInvariant()}{fileExtension}";
         }
-        
+
         var fullPath = GetFullPath(pathToConfigFile, fileName);
-        
-        if (fileExtension.Equals(".json", StringComparison.OrdinalIgnoreCase)) 
+
+        if (fileExtension.Equals(".json", StringComparison.OrdinalIgnoreCase))
             return LoadConfigurationFromJson<T>(fullPath);
-        if (fileExtension.Equals(".xml", StringComparison.OrdinalIgnoreCase)) 
+        if (fileExtension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
             return LoadConfigurationFromXml<T>(fullPath);
-        
-        throw new Exception($"Unsupported file extension [{fileExtension}] for configuration file [{fileName}]. This Loader only supports .json and .xml files.");
+
+        throw new Exception(
+            $"Unsupported file extension [{fileExtension}] for configuration file [{fileName}]. This Loader only supports .json and .xml files.");
     }
-    
+
+    private string DetermineHomePath()
+    {
+        return System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+    }
+
     private T LoadConfigurationFromJson<T>(string fullPath) where T : class, new()
     {
         if (!File.Exists(fullPath)) throw new FileNotFoundException($"Configuration file [{fullPath}] not found.");
