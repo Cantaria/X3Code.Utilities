@@ -40,4 +40,10 @@ public class HttpClientConfiguration
     /// <remarks>Default: 100 Seconds</remarks>
     /// </summary>
     public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(100);
+
+    /// <summary>
+    /// When set to true, TLS/SSL certificate validation errors (e.g. self-signed or untrusted-root certificates) are ignored for this client.
+    /// <remarks>Only intended for local/dev/test environments. Never enable this for production - it removes protection against man-in-the-middle attacks.</remarks>
+    /// </summary>
+    public bool IgnoreCertificateErrors { get; set; } = false;
 }

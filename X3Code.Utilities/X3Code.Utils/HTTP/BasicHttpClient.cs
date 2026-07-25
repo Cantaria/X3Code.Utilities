@@ -18,7 +18,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         if (string.IsNullOrWhiteSpace(configuration.BaseUrl)) throw new Exception("No Base-URL set in HTTP Client configuration. Please set Base-URL first.");
 
         Configuration = configuration;
-        Client = new HttpClient();
+        Client = CreateHttpClient(configuration);
         Client.BaseAddress = new Uri(configuration.BaseUrl);
         Client.Timeout = configuration.TimeOut;
         foreach (var header in configuration.Header)
@@ -36,6 +36,17 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// The underlying HTTP-Client if needed directly
     /// </summary>
     protected HttpClient Client { get; }
+
+    private static HttpClient CreateHttpClient(HttpClientConfiguration configuration)
+    {
+        if (!configuration.IgnoreCertificateErrors) return new HttpClient();
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+        return new HttpClient(handler);
+    }
 
     #region Client
     
