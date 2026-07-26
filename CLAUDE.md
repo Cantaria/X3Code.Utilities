@@ -45,7 +45,7 @@ All test projects use **xunit**. `X3Code.Repository.Test` uses EF Core's InMemor
 | `X3Code.Wasm.Utils` | — | Blazor WASM helpers, currently just a `LocalStorageService` wrapping JSInterop |
 | `X3Code.Azure.Utils` | — | Azure helpers, currently `AzureBlobStorage`/`IAzureStorage`/`StorageBase` |
 
-Everything targets `net10.0` and has `GeneratePackageOnBuild=true`, so a normal `dotnet build` produces a `.nupkg` per packable project in that project's own `bin/<Configuration>/` folder. The two `Infrastructure*` repository-pattern projects and `X3Code.Repository` are intentionally separate, near-duplicate implementations (SQL Server vs Sqlite vs the newer pattern) — don't assume they should be merged.
+Everything targets `net10.0` and has `GeneratePackageOnBuild=true`, so a normal `dotnet build` produces a `.nupkg` per packable project. `X3Code.Utilities/Directory.Build.props` sets `PackageOutputPath` to the repo-root `NuGet/` folder, so all built packages land there together (rather than in each project's own `bin/`) — that folder is also where `NuGet/deploy_Now.sh` (the current version of the publish script, see below) expects to find them. The two `Infrastructure*` repository-pattern projects and `X3Code.Repository` are intentionally separate, near-duplicate implementations (SQL Server vs Sqlite vs the newer pattern) — don't assume they should be merged.
 
 ### Cross-project code sharing without ProjectReference
 
@@ -62,7 +62,7 @@ Each packable csproj carries its own `Version`, `PackageVersion`, `AssemblyVersi
 
 ### Release/publish flow
 
-`deploy_Now.sh` at the repo root is a manual publish script: it prompts for a version string and an API key, then runs `dotnet nuget push` for each package's `.nupkg` (by convention `<PackageId>.<version>.nupkg` in the current directory) against a NuGet source named `github`. It only knows about `X3Code.Azure.Utils`, `X3Code.Utilities`, `X3Code.Infrastructure`, and `X3Code.Wasm.Utils` — it does not currently push `X3Code.Repository` or `X3Code.Infrastructure.Mobile`.
+Built packages are collected in the repo-root `NuGet/` folder (see `PackageOutputPath` above). `NuGet/deploy_Now.sh` is the manual publish script actually meant to be run from there: it prompts for a version string and an API key, then runs `dotnet nuget push` for each package's `.nupkg` (`<PackageId>.<version>.nupkg`, expected in the current directory) against a NuGet source named `github`. It covers `X3Code.Azure.Utils`, `X3Code.Utilities`, `X3Code.Infrastructure`, `X3Code.Wasm.Utils`, and `X3Code.Repository` — it does not push `X3Code.Infrastructure.Mobile`. There is also an older, out-of-date copy of this script at the repo root (missing the `X3Code.Repository` push) — use the one in `NuGet/`.
 
 ### CI
 

@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\NuGet</PackageOutputPath>
+  </PropertyGroup>
+
+</Project>
