@@ -14,14 +14,14 @@
         <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
-        <AssemblyVersion>1.10.2</AssemblyVersion>
-        <FileVersion>1.10.2</FileVersion>
-        <Version>1.10.2</Version>
+        <AssemblyVersion>1.10.3</AssemblyVersion>
+        <FileVersion>1.10.3</FileVersion>
+        <Version>1.10.3</Version>
         <PackageIcon>x3code_logo.png</PackageIcon>
         <PackageIconUrl />
-        <PackageVersion>1.10.2</PackageVersion>
+        <PackageVersion>1.10.3</PackageVersion>
         <Title>X3-Code Repository</Title>
-        <PackageReleaseNotes>nuget updates</PackageReleaseNotes>
+        <PackageReleaseNotes>Adds IUnitOfWork: a scope that puts the writes of several repositories into one database transaction</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
