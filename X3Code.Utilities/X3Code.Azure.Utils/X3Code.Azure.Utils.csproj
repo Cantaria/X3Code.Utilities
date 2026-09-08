@@ -6,9 +6,9 @@
         <Product>X3Code.Azure.Utils</Product>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
-        <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
-        <Version>1.10.2</Version>
-        <PackageReleaseNotes>nuget updates, breaking changes from third party lib</PackageReleaseNotes>
+        <PackageReleaseNotes>10.0.0: New version scheme - the major now tracks the .NET generation the package is built for (net10.0), the minor carries features and breaking changes, the patch carries fixes. All X3Code packages move to 10.0.0 together.
+The package now ships its XML documentation, so consumers get IntelliSense. Added an MIT license expression, a README and a symbol package (snupkg) with SourceLink.
+Azure.Storage.Blobs 12.27.0 -> 12.29.2, Azure.Core 1.51.1 -> 1.55.0, Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

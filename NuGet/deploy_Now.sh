@@ -13,8 +13,8 @@ PACKAGE_SOURCE=github
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Pakete, die bewusst NICHT veroeffentlicht werden.
-# X3Code.Infrastructure.Mobile war noch nie im Deploy - siehe offene Entscheidung,
-# ob es publiziert oder auf IsPackable=false gesetzt wird.
+# X3Code.Infrastructure.Mobile wird ausserhalb dieses Repos gepflegt und laeuft nicht
+# ueber dieses Deploy. Das Projekt baut weiterhin ein Paket, es wird hier nur nicht gepusht.
 EXCLUDED_PACKAGE_IDS=(
     "X3Code.Infrastructure.Mobile"
 )

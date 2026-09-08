@@ -5,9 +5,11 @@
         <Product>X3Code.Infrastructure.Mobile</Product>
         <Title>X3-Code Infrastructure Mobile</Title>
         <Description>The X3Code repository pattern built against EF Core Sqlite, for mobile use</Description>
-        <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
-        <Version>1.10.2</Version>
-        <PackageReleaseNotes>nuget updates</PackageReleaseNotes>
+        <PackageReleaseNotes>10.0.0: New version scheme - the major now tracks the .NET generation the package is built for (net10.0), the minor carries features and breaking changes, the patch carries fixes. All X3Code packages move to 10.0.0 together.
+Security: the native SQLite bundle is now pinned to SQLitePCLRaw.bundle_e_sqlite3 2.1.13. Entity Framework Core previously pulled in 2.1.11, which carries GHSA-2m69-gcr7-jv3q (high severity).
+The package now ships its XML documentation, and carries package metadata for the first time (id, title, description, license, icon, README).
+Fixed malformed documentation tags on IRepository and GenericRepository.
+Entity Framework Core 10.0.3 -> 10.0.11.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

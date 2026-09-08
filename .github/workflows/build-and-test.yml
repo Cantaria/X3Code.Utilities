@@ -1,0 +1,65 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ master, 'feature/**' ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore X3Code.Utilities/X3Code.Utilities.sln
+
+      - name: Build
+        run: dotnet build X3Code.Utilities/X3Code.Utilities.sln --configuration Release --no-restore
+
+      # Hermetic: no external dependency at all.
+      - name: Test - X3Code.UnitTests
+        run: >
+          dotnet test X3Code.Utilities/X3Code.UnitTests/X3Code.UnitTests.csproj
+          --configuration Release --no-build --logger "trx;LogFileName=unittests.trx"
+
+      - name: Test - X3Code.Repository.Test
+        run: >
+          dotnet test X3Code.Utilities/X3Code.Repository.Test/X3Code.Repository.Test.csproj
+          --configuration Release --no-build --logger "trx;LogFileName=repository.trx"
+
+      # Starts a throwaway SQL Server via Testcontainers. Docker is available on the
+      # ubuntu runners out of the box. The Slow bulk-write suite goes up to ten million
+      # rows and is excluded here - run it locally when touching BulkWrite.
+      - name: Test - X3Code.Infrastructure.Tests
+        run: >
+          dotnet test X3Code.Utilities/X3Code.Infrastructure.Tests/X3Code.Infrastructure.Tests.csproj
+          --configuration Release --no-build --filter "Category!=Slow"
+          --logger "trx;LogFileName=infrastructure.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+          if-no-files-found: ignore
+
+      - name: Collect packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: |
+            NuGet/*.nupkg
+            NuGet/*.snupkg
+          if-no-files-found: error

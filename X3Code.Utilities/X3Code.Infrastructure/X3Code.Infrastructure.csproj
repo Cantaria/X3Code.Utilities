@@ -5,9 +5,10 @@
     <Product>X3Code.Infrastructure</Product>
     <Title>X3-Code Infrastructure</Title>
     <Description>Contains the unit of work repository pattern</Description>
-    <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
-    <Version>1.10.2</Version>
-    <PackageReleaseNotes>nuget updates</PackageReleaseNotes>
+    <PackageReleaseNotes>10.0.0: New version scheme - the major now tracks the .NET generation the package is built for (net10.0), the minor carries features and breaking changes, the patch carries fixes. All X3Code packages move to 10.0.0 together.
+The package now ships its XML documentation, so consumers get IntelliSense. Added an MIT license expression, a README and a symbol package (snupkg) with SourceLink.
+Fixed malformed documentation tags on IRepository and GenericRepository, and an unescaped comparison in the DecimalExtension docs.
+Entity Framework Core 10.0.3 -> 10.0.11, Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

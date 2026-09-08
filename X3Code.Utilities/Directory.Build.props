@@ -27,6 +27,23 @@
     <PackageOutputPath>$(MSBuildThisFileDirectory)..\NuGet</PackageOutputPath>
   </PropertyGroup>
 
+  <!--
+    Versionierung: <.NET-Major>.<Minor>.<Patch>, im Gleichschritt fuer alle Pakete.
+
+      10  .NET-/EF-Generation, identisch mit dem TargetFramework. Steigt beim Umstieg
+          auf net11.0 auf 11.
+       0  eigene Features UND Breaking Changes innerhalb dieser Generation.
+       0  reine Fehlerbehebungen, oeffentliche API unveraendert.
+
+    Da der Major-Slot fuer die Framework-Generation reserviert ist, werden Breaking
+    Changes ueber den Minor und die PackageReleaseNotes des jeweiligen Pakets
+    kommuniziert. Hier stehen KEINE AssemblyVersion/FileVersion/PackageVersion mehr -
+    die leiten sich alle aus Version ab.
+  -->
+  <PropertyGroup>
+    <Version>10.0.0</Version>
+  </PropertyGroup>
+
   <!-- Herausgeber-Metadaten, für jedes Paket identisch -->
   <PropertyGroup>
     <Authors>X3-Code</Authors>

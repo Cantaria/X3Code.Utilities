@@ -5,17 +5,22 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using X3Code.Infrastructure.Tests.Data;
+using X3Code.Infrastructure.Tests.Helper;
 using X3Code.Infrastructure.Tests.Mockups;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace X3Code.Infrastructure.Tests.Tests;
 
+// Laeuft bis 10 Mio. Entitaeten und dauert entsprechend. Der Trait erlaubt der CI,
+// die Suite per --filter "Category!=Slow" zu ueberspringen.
+[Collection(SqlServerCollection.Name)]
+[Trait("Category", "Slow")]
 public class BulkWriterTest : RepositoryBaseTest
 {
     private readonly ITestOutputHelper _output;
 
-    public BulkWriterTest(ITestOutputHelper output)
+    public BulkWriterTest(SqlServerFixture database, ITestOutputHelper output) : base(database)
     {
         _output = output;
     }

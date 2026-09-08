@@ -3,13 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using X3Code.Infrastructure.Tests.Data;
+using X3Code.Infrastructure.Tests.Helper;
 using X3Code.Infrastructure.Tests.Mockups;
 using Xunit;
 
 namespace X3Code.Infrastructure.Tests.Tests;
 
+[Collection(SqlServerCollection.Name)]
 public class RepositoryTest : RepositoryBaseTest
 {
+    public RepositoryTest(SqlServerFixture database) : base(database)
+    {
+    }
+
     [Fact]
     public void AddToDatabase()
     {
