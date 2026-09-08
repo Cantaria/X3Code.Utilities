@@ -11,7 +11,8 @@ The package now ships its XML documentation, so consumers get IntelliSense. Adde
 The README now documents IUnitOfWork, which groups the writes of several repositories into a single database transaction.
 Entity Framework Core 10.0.3 -> 10.0.11.
 
-1.10.3: Adds IUnitOfWork: a scope that puts the writes of several repositories into one database transaction</PackageReleaseNotes>
+1.10.3: Adds IUnitOfWork: a scope that puts the writes of several repositories into one database transaction
+All asynchronous methods on IBaseRepository/BaseRepository now take a CancellationToken and pass it down into Entity Framework, matching what IUnitOfWork.BeginAsync already did. The parameter is optional, so existing call sites keep compiling.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

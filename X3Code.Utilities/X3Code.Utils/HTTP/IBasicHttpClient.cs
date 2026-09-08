@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace X3Code.Utils.HTTP;
@@ -54,62 +55,65 @@ public interface IBasicHttpClient
     /// Sends an HTTP GET request to the specified URI and returns the response body as a string.
     /// </summary>
     /// <param name="uri">The URI of the resource to request.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>
     /// The response body as a string.
     /// </returns>
-    Task<string> GetAsync(string uri);
-
+    Task<string> GetAsync(string uri, CancellationToken cancellationToken = default);
     /// <summary>
     /// Sends an HTTP PUT request to the specified URI with the provided JSON data.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="json">The JSON data to send in the request body.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>The response content as a string.</returns>
-    Task<string> PutAsync(string uri, string json);
-
+    Task<string> PutAsync(string uri, string json, CancellationToken cancellationToken = default);
     /// <summary>
     /// Sends an HTTP PUT request to the specified URI with the provided data object.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="content">The object data to send in the request body.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>On success the cast object</returns>
-    Task<TResponse?> PutAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class;
+    Task<TResponse?> PutAsync<TMessage, TResponse>(string uri, TMessage content, CancellationToken cancellationToken = default) where TMessage : class where TResponse : class;
 
     /// <summary>
     /// Sends an HTTP POST request to the specified URI, with the provided JSON payload.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="json">The JSON payload to include in the request body.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A Task representing the asynchronous operation. The task result contains the response content as a string.</returns>
-    Task<string> PostAsync(string uri, string json);
-
+    Task<string> PostAsync(string uri, string json, CancellationToken cancellationToken = default);
     /// <summary>
     /// Sends an HTTP POST request to the specified URI, with the provided data payload.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="content">The data payload to include in the request body.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A Task representing the asynchronous operation. The task result contains the response content as a string.</returns>
-    Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content) where TMessage : class where TResponse : class;
+    Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content, CancellationToken cancellationToken = default) where TMessage : class where TResponse : class;
 
     /// <summary>
     /// Sends a DELETE request to the specified URI and returns the response content as a string.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>The response content as a string.</returns>
-    Task<string> DeleteAsync(string uri);
-
+    Task<string> DeleteAsync(string uri, CancellationToken cancellationToken = default);
     /// <summary>
     /// Downloads a stream from the specified URI.
     /// </summary>
     /// <param name="uri">The URI to download the stream from.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A Task that represents the asynchronous operation. The Task result contains the stream that was downloaded.</returns>
-    Task<Stream> DownloadStreamAsync(string uri);
-
+    Task<Stream> DownloadStreamAsync(string uri, CancellationToken cancellationToken = default);
     /// <summary>
     /// Uploads a stream to the specified URI.
     /// </summary>
     /// <param name="uri">The URI to upload the stream to.</param>
     /// <param name="stream">The Stream to be uploaded.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    Task UploadStreamAsync(string uri, Stream stream);
+    Task UploadStreamAsync(string uri, Stream stream, CancellationToken cancellationToken = default);
 }

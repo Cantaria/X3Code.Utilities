@@ -15,14 +15,14 @@ public interface IBaseRepository<TEntity>
 	void RemoveAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
 	void Update(TEntity entity, bool asNoTracking = false);
 	void UpdateAll(IEnumerable<TEntity> entities, bool asNoTracking = false);
-	Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
-	Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false);
-	Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
-	Task AddAsync(TEntity entity, bool asNoTracking = false);
-	Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
-	Task RemoveAsync(TEntity entity, bool asNoTracking = false);
-	Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
-	Task UpdateAsync(TEntity entity, bool asNoTracking = false);
-	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
-	Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds);
+	Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task AddAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task RemoveAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task UpdateAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
+	Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds, CancellationToken cancellationToken = default);
 }

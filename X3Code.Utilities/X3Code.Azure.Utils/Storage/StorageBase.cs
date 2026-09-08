@@ -20,8 +20,8 @@ public abstract class StorageBase : IAzureStorage
     }
 
     public abstract Task<IEnumerable<string>> ListFiles(string? path = null, CancellationToken cancellationToken = default);
-    public abstract Task<bool> Exists(string path);
-    public abstract Task Delete(string path);
-    public abstract Task<Stream> DownloadFile(string path);
-    public abstract Task UploadFile(Stream stream, string destinationPath);
+    public abstract Task<bool> Exists(string path, CancellationToken cancellationToken = default);
+    public abstract Task Delete(string path, CancellationToken cancellationToken = default);
+    public abstract Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default);
+    public abstract Task UploadFile(Stream stream, string destinationPath, CancellationToken cancellationToken = default);
 }

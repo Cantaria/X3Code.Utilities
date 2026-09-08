@@ -43,38 +43,43 @@ public class AzureBlobStorage : StorageBase
     /// Checks if the blob exists
     /// </summary>
     /// <param name="path"></param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns></returns>
-    public override async Task<bool> Exists(string path)
+    public override async Task<bool> Exists(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(path)) return false;
             
         var blob = GetBlob(path);
-        return await ExistsBlob(blob);
+        return await ExistsBlob(blob, cancellationToken);
     }
 
     /// <summary>
     /// Deletes the given file from the blob storage
     /// </summary>
     /// <param name="path"></param>
-    public override async Task Delete(string path)
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    public override async Task Delete(string path, CancellationToken cancellationToken = default)
     {
         var blob = GetBlob(path);
-        await blob.DeleteAsync();
+        await blob.DeleteAsync(cancellationToken: cancellationToken);
     }
 
     /// <summary>
     /// Downloads a specific blob
     /// </summary>
     /// <param name="path"></param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public override async Task<Stream> DownloadFile(string path)
+    public override async Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default)
     {
         var blob = GetBlob(path);
-        if (!await ExistsBlob(blob)) throw new Exception($"The blob on path [{path}] could not be found.");
+        if (!await ExistsBlob(blob, cancellationToken)) throw new Exception($"The blob on path [{path}] could not be found.");
 
         var stream = new MemoryStream();
-        await blob.DownloadToAsync(stream);
+        await blob.DownloadToAsync(stream, cancellationToken);
+        stream.Position = 0; // sonst steht der Stream am Ende und der Aufrufer liest 0 Bytes
+
         return stream;
     }
 
@@ -83,14 +88,19 @@ public class AzureBlobStorage : StorageBase
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="destinationPath"></param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns></returns>
-    public override async Task UploadFile(Stream stream, string destinationPath)
+    public override async Task UploadFile(Stream stream, string destinationPath, CancellationToken cancellationToken = default)
     {
         var destinationBlob = GetBlob(destinationPath);
-        if (stream.Length == 0) throw new Exception("Stream is empty.");
-        stream.Position = 0;
+        // Netzwerk- und Kompressions-Streams koennen weder ihre Laenge nennen noch zurueckspulen.
+        if (stream.CanSeek)
+        {
+            if (stream.Length == 0) throw new ArgumentException("Stream is empty.", nameof(stream));
+            stream.Position = 0;
+        }
 
-        await destinationBlob.UploadAsync(stream);
+        await destinationBlob.UploadAsync(stream, cancellationToken);
     }
 
     #region Private Helpers
@@ -102,9 +112,9 @@ public class AzureBlobStorage : StorageBase
         return _containerClient.GetBlobClient(path);
     }
 
-    private async Task<bool> ExistsBlob(BlobClient blob)
+    private static async Task<bool> ExistsBlob(BlobClient blob, CancellationToken cancellationToken)
     {
-        return await blob.ExistsAsync();
+        return await blob.ExistsAsync(cancellationToken);
     }
 
     #endregion

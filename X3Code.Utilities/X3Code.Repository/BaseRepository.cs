@@ -255,18 +255,19 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether or not the entity should be tracked by the context.
     /// Set to true for better performance when only read access is required.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the entity
     /// that matches the predicate, or null if no such entity is found.
     /// </returns>
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
+    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         if (asNoTracking)
         {
-            return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate);
+            return await Entities.AsNoTracking().SingleOrDefaultAsync(predicate, cancellationToken);
         }
 
-        return await Entities.SingleOrDefaultAsync(predicate);
+        return await Entities.SingleOrDefaultAsync(predicate, cancellationToken);
     }
 
     /// <summary>
@@ -276,17 +277,18 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether to track the changes of the retrieved entities.
     /// If set to <c>true</c>, entities are not tracked by the context.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>
     /// A task representing the asynchronous operation, containing a collection of all entities of type <typeparamref name="TEntity"/>.
     /// </returns>
-    public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         if (asNoTracking)
         {
-            return await Entities.AsNoTracking().ToListAsync();
+            return await Entities.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        return await Entities.ToListAsync();
+        return await Entities.ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -297,16 +299,17 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether the retrieved entities should be tracked by the context.
     /// If set to true, entities are retrieved without tracking.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>An awaitable task result containing a collection of entities matching the predicate.</returns>
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate,
-        bool asNoTracking = false)
+        bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         if (asNoTracking)
         {
-            return await Entities.AsNoTracking().Where(predicate).ToListAsync();
+            return await Entities.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
         }
 
-        return await Entities.Where(predicate).ToListAsync();
+        return await Entities.Where(predicate).ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -317,11 +320,12 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether the entity should be removed from the tracking mechanism
     /// after being added. Defaults to false.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task AddAsync(TEntity entity, bool asNoTracking = false)
+    public async Task AddAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
-        await Entities.AddAsync(entity);
-        await DataBase.SaveChangesAsync();
+        await Entities.AddAsync(entity, cancellationToken);
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -337,13 +341,14 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// Specifies whether the entities should be detached from the change tracker after being added to the database.
     /// When true, the entities will not be tracked by the DbContext after addition.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
+    public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
 
-        await Entities.AddRangeAsync(asList);
-        await DataBase.SaveChangesAsync();
+        await Entities.AddRangeAsync(asList, cancellationToken);
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -356,11 +361,12 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// </summary>
     /// <param name="entity">The entity to be removed from the database.</param>
     /// <param name="asNoTracking">Indicates whether the entity should be removed from tracking after being removed from the database.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task RemoveAsync(TEntity entity, bool asNoTracking = false)
+    public async Task RemoveAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         Entities.Remove(entity);
-        await DataBase.SaveChangesAsync();
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -376,13 +382,14 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether the entities should be removed from the tracking state
     /// after being deleted from the database.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
+    public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
 
         Entities.RemoveRange(asList);
-        await DataBase.SaveChangesAsync();
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -398,14 +405,15 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean flag indicating whether the entity should be removed from the tracking state
     /// after being updated. If set to true, the entity is detached from the context.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task completes when the changes
     /// are saved to the database.
     /// </returns>
-    public async Task UpdateAsync(TEntity entity, bool asNoTracking = false)
+    public async Task UpdateAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         Entities.Update(entity);
-        await DataBase.SaveChangesAsync();
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -421,13 +429,14 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// A boolean value indicating whether to detach the entities from the change tracker
     /// after the update operation is complete. If true, the entities will not be tracked.
     /// </param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false)
+    public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
 
         Entities.UpdateRange(asList);
-        await DataBase.SaveChangesAsync();
+        await DataBase.SaveChangesAsync(cancellationToken);
 
         if (asNoTracking)
         {
@@ -442,8 +451,9 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// <param name="entities">The collection of entities to be written to the database.</param>
     /// <param name="tableName">The name of the database table where the entities will be written.</param>
     /// <param name="timeOutInSeconds">The timeout duration in seconds for the bulk write operation.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>The total number of entities successfully written to the database.</returns>
-    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds)
+    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds, CancellationToken cancellationToken = default)
     {
         var entityList = entities.ToList();
         if (entityList.Count == 0)
@@ -458,10 +468,10 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         {
             var batch = entityList.Skip(i).Take(batchSize).ToList();
     
-            await Entities.AddRangeAsync(batch);
+            await Entities.AddRangeAsync(batch, cancellationToken);
             totalWritten += batch.Count;
     
-            await DataBase.SaveChangesAsync();
+            await DataBase.SaveChangesAsync(cancellationToken);
     
             // Detach to avoid tracking issues
             RemoveFromTracking(batch);

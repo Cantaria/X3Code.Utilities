@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace X3Code.Utils.Extensions;
 
@@ -13,6 +14,11 @@ public static class EntityPropertyExtension
     /// <param name="dateTimeFormat">Optional datetime format for output. If missing 'yyyy.MM.dd HH:mm' will be used.</param>
     /// <typeparam name="TEntity"></typeparam>
     /// <returns></returns>
+    /// <remarks>
+    /// Formatting is always done with <see cref="CultureInfo.InvariantCulture"/>, so the result
+    /// does not depend on the machine the code runs on. A decimal is rendered as "42.42"
+    /// everywhere, never as "42,42".
+    /// </remarks>
     public static string? TryReadPropertyAsString<TEntity>(this TEntity source, string propertyName, string? numberFormat = null, string? dateTimeFormat = null)
     {
         if (source == null || string.IsNullOrWhiteSpace(propertyName)) return string.Empty;
@@ -23,13 +29,13 @@ public static class EntityPropertyExtension
         if (!string.IsNullOrWhiteSpace(numberFormat))
         {
             if (property.PropertyType == typeof(decimal))
-                return source.TryReadProperty<decimal, TEntity>(propertyName).ToString(numberFormat);
+                return source.TryReadProperty<decimal, TEntity>(propertyName).ToString(numberFormat, CultureInfo.InvariantCulture);
 
             if (property.PropertyType == typeof(float))
-                return source.TryReadProperty<float, TEntity>(propertyName).ToString(numberFormat);
+                return source.TryReadProperty<float, TEntity>(propertyName).ToString(numberFormat, CultureInfo.InvariantCulture);
         
             if (property.PropertyType == typeof(double))
-                return source.TryReadProperty<double, TEntity>(propertyName).ToString(numberFormat);
+                return source.TryReadProperty<double, TEntity>(propertyName).ToString(numberFormat, CultureInfo.InvariantCulture);
         }
 
         if (property.PropertyType == typeof(DateTime))
@@ -37,13 +43,19 @@ public static class EntityPropertyExtension
             var datetime = (DateTime)property.GetValue(source)!;
             if (string.IsNullOrWhiteSpace(dateTimeFormat))
             {
-                return datetime.ToString("yyyy.MM.dd HH:mm");
+                return datetime.ToString("yyyy.MM.dd HH:mm", CultureInfo.InvariantCulture);
             }
 
-            return datetime.ToString(dateTimeFormat);
+            return datetime.ToString(dateTimeFormat, CultureInfo.InvariantCulture);
         }
 
-        return property.GetValue(source)?.ToString();
+        var value = property.GetValue(source);
+        if (value == null) return null;
+
+        // IFormattable covers the numeric and date types; everything else keeps its own ToString.
+        return value is IFormattable formattable
+            ? formattable.ToString(null, CultureInfo.InvariantCulture)
+            : value.ToString();
     }
 
     /// <summary>

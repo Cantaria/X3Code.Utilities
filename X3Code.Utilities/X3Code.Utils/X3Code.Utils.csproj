@@ -8,7 +8,14 @@
     <PackageReleaseNotes>10.0.0: New version scheme - the major now tracks the .NET generation the package is built for (net10.0), the minor carries features and breaking changes, the patch carries fixes. All X3Code packages move to 10.0.0 together.
 The package now ships its XML documentation, so consumers get IntelliSense. Added an MIT license expression, a README and a symbol package (snupkg) with SourceLink.
 Fixed six malformed documentation links that used cref for external URLs instead of href (ArbitraryNumberConverter, RegexUtilities, MimeTypeConverter).
-Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.</PackageReleaseNotes>
+Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.
+All asynchronous methods on IBasicHttpClient/BasicHttpClient now take a CancellationToken. The parameter is optional, so existing call sites keep compiling.
+Fixed: the generic GetAsync overload started a ReadAsStringAsync task that was never awaited and read the content stream in parallel with the deserialization.
+Fixed: UploadStreamAsync never disposed its StreamContent.
+DatabaseConnector was rewritten. ExecuteSqlCommandOn never opened its connection and threw on every call; the transactional overload attached the transaction to a second, foreign connection and could not work either. Both are fixed and now have tests.
+BREAKING: the transactional overload is now ExecuteSqlCommandOn(SqlTransaction transaction, string query, ...) and runs on the transaction's own connection - the ref keyword and the connection string are gone. Since the old signature threw on every call, no working code can depend on it.
+Every DatabaseConnector method now accepts SqlParameter values, plus asynchronous overloads with a CancellationToken. Use the parameters instead of concatenating user input into the SQL string.
+EntityPropertyExtension formats with InvariantCulture. Previously a decimal came out as "42,42" on a machine with a German locale and as "42.42" elsewhere.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
