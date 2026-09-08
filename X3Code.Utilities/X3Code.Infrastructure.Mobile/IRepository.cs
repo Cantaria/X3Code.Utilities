@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace X3Code.Infrastructure.Mobile;
@@ -158,6 +159,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// </summary>
 	/// <param name="predicate">The predicate expression used to filter the entities.</param>
 	/// <param name="asNoTracking">Whether to disable change tracking for the retrieved entity. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task representing the asynchronous operation. The task result represents the retrieved entity.</returns>
 	/// <example>
 	/// This example retrieves a user entity with the specified user ID.
@@ -170,86 +172,86 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// The retrieved entity will be either tracked or not tracked based on the value of the asNoTracking parameter.
 	/// By default, change tracking is enabled.
 	/// </remarks>
-	Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false);
-
+	Task<TEntity?> GetAsync(Expression<Func<TEntity?, bool>> predicate, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Retrieves all entities asynchronously from the database.
 	/// </summary>
 	/// <param name="asNoTracking">
 	/// If set to <c>true</c>, the entities will not be tracked by the DbContext.
 	/// </param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>
 	/// A task representing the asynchronous operation. The task result contains
 	/// an enumerable collection of entities of type <typeparamref name="TEntity"/>.
 	/// </returns>
-	Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false);
-
+	Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Retrieves all entities asynchronously based on the provided predicate.
 	/// </summary>
 	/// <param name="predicate">The expression predicate used to filter the entities.</param>
 	/// <param name="asNoTracking">A flag indicating whether to include tracking information for the entities. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task that represents the asynchronous operation and returns an enumerable collection of entities.</returns>
 	/// <remarks>
 	/// This method retrieves all entities from the data source that satisfy the specified predicate.
 	/// By default, tracking information is included for the entities. However, by setting the <paramref name="asNoTracking"/> parameter to true, tracking can be disabled.
 	/// </remarks>
-	Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
-
+	Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Adds a new entity to the database asynchronously.
 	/// </summary>
 	/// <param name="entity">The entity to be added to the database.</param>
 	/// <param name="asNoTracking">Indicates whether to track the entity after adding it. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the entity that was added to the database.</returns>
-	Task AddAsync(TEntity entity, bool asNoTracking = false);
-
+	Task AddAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Adds multiple entities to the database asynchronously.
 	/// </summary>
 	/// <param name="entities">The collection of entities to add.</param>
 	/// <param name="asNoTracking">Indicates whether the entities should be added without tracking.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
 	/// <remarks>
 	/// This method adds the specified collection of entities to the database.
 	/// By default, the entities are added with tracking. If <paramref name="asNoTracking"/> is set to true,
 	/// the entities are added without tracking, which can improve performance in certain scenarios.
 	/// </remarks>
-	Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
-
+	Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Removes the specified entity from the database asynchronously.
 	/// </summary>
 	/// <param name="entity">The entity to be removed.</param>
 	/// <param name="asNoTracking">Indicates whether to prevent tracking of the entity after removal. The default value is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
 	/// <remarks>
 	/// This method removes the specified entity from the database. If <paramref name="asNoTracking"/> is set to true, the entity will not be tracked by the database context after removal
 	/// .
 	/// </remarks>
-	Task RemoveAsync(TEntity entity, bool asNoTracking = false);
-
+	Task RemoveAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Removes all entities asynchronously from the database that match the given collection of entities.
 	/// </summary>
 	/// <param name="entities">A collection of entities to be removed.</param>
 	/// <param name="asNoTracking">A boolean indicating whether to disable change tracking for the removed entities. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
-
+	Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Updates the specified entity asynchronously.
 	/// </summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <param name="asNoTracking">Indicates whether to track the entity after updating. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	Task UpdateAsync(TEntity entity, bool asNoTracking = false);
-
+	Task UpdateAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	/// <summary>
 	/// Updates multiple entities asynchronously in the database.
 	/// </summary>
 	/// <param name="entities">The collection of entities to be updated.</param>
 	/// <param name="asNoTracking">A boolean value indicating whether tracking should be enabled or disabled for the entities being updated. Default is false.</param>
+	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A Task representing the asynchronous operation.</returns>
-	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false);
+	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
 }

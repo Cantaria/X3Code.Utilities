@@ -12,8 +12,14 @@ The README now documents IUnitOfWork, which groups the writes of several reposit
 Entity Framework Core 10.0.3 -> 10.0.11.
 
 1.10.3: Adds IUnitOfWork: a scope that puts the writes of several repositories into one database transaction
-All asynchronous methods on IBaseRepository/BaseRepository now take a CancellationToken and pass it down into Entity Framework, matching what IUnitOfWork.BeginAsync already did. The parameter is optional, so existing call sites keep compiling.</PackageReleaseNotes>
+All asynchronous methods on IBaseRepository/BaseRepository now take a CancellationToken and pass it down into Entity Framework, matching what IUnitOfWork.BeginAsync already did. The parameter is optional, so existing call sites keep compiling.
+BREAKING: DecimalExtension now lives in the X3Code.Repository.Extensions namespace instead of X3Code.Infrastructure.Extensions. Change the using in your DbContext. The type was previously compiled into both packages under the same name, which produced a CS0121 for anyone referencing X3Code.Repository and X3Code.Infrastructure together - and a consumer of this package should not have to write a using for a foreign package anyway.</PackageReleaseNotes>
     </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Haengt die gelinkte DecimalExtension.cs in den Namespace dieses Pakets, siehe Kommentar in der Datei. -->
+    <DefineConstants>$(DefineConstants);X3CODE_REPOSITORY_LINK</DefineConstants>
+  </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" />

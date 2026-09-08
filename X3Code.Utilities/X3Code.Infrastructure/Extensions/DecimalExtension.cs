@@ -2,7 +2,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+// Diese Datei wird per <Compile Include> auch nach X3Code.Repository gelinkt. Dort
+// bekommt sie den Namespace des eigenen Pakets: derselbe Typ zweimal unter demselben
+// Namen wuerde bei Konsumenten, die beide Pakete referenzieren, zu CS0121 fuehren -
+// und ein Konsument von X3Code.Repository sollte ohnehin kein using auf ein fremdes
+// Paket schreiben muessen.
+#if X3CODE_REPOSITORY_LINK
+namespace X3Code.Repository.Extensions;
+#else
 namespace X3Code.Infrastructure.Extensions;
+#endif
 
 /// <summary>
 /// Provides some decimal configurations for decimals

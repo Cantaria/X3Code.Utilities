@@ -9,7 +9,13 @@
 The package now ships its XML documentation, so consumers get IntelliSense. Added an MIT license expression, a README and a symbol package (snupkg) with SourceLink.
 Fixed malformed documentation tags on IRepository and GenericRepository, and an unescaped comparison in the DecimalExtension docs.
 Entity Framework Core 10.0.3 -> 10.0.11, Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.
-All asynchronous methods on IRepository/GenericRepository now take a CancellationToken and pass it down into Entity Framework. The parameter is optional, so existing call sites keep compiling.</PackageReleaseNotes>
+All asynchronous methods on IRepository/GenericRepository now take a CancellationToken and pass it down into Entity Framework. The parameter is optional, so existing call sites keep compiling.
+Fixed a name clash that hit every consumer referencing X3Code.Utilities and X3Code.Infrastructure together: DataTableExtensions was compiled into both assemblies as a public type, so calling ToDataTable failed with CS0121 (ambiguous call). The linked copy in this package is now compiled as internal - it only ever served GenericRepository.BulkWrite. Take ToDataTable from X3Code.Utilities.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Kompiliert die gelinkte DataTableExtension.cs intern, siehe Kommentar in der Datei. -->
+    <DefineConstants>$(DefineConstants);X3CODE_LINKED_INTERNAL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

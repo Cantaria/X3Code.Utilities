@@ -63,6 +63,15 @@ Libraries deliberately do **not** use `<ProjectReference>` between each other (t
 
 If you touch one of these linked files, check both csproj files that reference it — you're editing shared source, not a private copy. Test projects, by contrast, *do* use real `<ProjectReference>`s to the libraries they exercise.
 
+**Each linked file must differ in the second assembly, or consumers get `CS0121`.** Compiling the same public type under the same full name into two packages makes every call ambiguous for anyone referencing both. Both files therefore carry a `#if` driven by a `DefineConstants` symbol set in the linking csproj:
+
+| File | Symbol, set in | Effect in the second assembly |
+|---|---|---|
+| `DataTableExtension.cs` | `X3CODE_LINKED_INTERNAL` in `X3Code.Infrastructure.csproj` | compiled `internal` — it only serves `GenericRepository.BulkWrite`, consumers take `ToDataTable` from `X3Code.Utilities` |
+| `DecimalExtension.cs` | `X3CODE_REPOSITORY_LINK` in `X3Code.Repository.csproj` | namespace becomes `X3Code.Repository.Extensions` — `internal` is not an option here because consumers call `ConfigureDecimalColum` in their `OnModelCreating` |
+
+If you ever link a third file, give it the same treatment: decide whether the second copy can be `internal` (preferred) or needs its own namespace, and add the `#if` plus the symbol.
+
 ### Versioning
 
 All six packages are versioned **in lockstep from a single `<Version>` in `X3Code.Utilities/Directory.Build.props`**. No csproj carries a `Version`, `PackageVersion`, `AssemblyVersion`, or `FileVersion` of its own — those all derive from that one property. To cut a release, bump it once.
