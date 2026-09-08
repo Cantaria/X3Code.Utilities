@@ -1,0 +1,63 @@
+<Project>
+
+  <!--
+    Central Package Management: alle NuGet-Versionen stehen ausschließlich hier.
+    In den csproj-Dateien nur noch <PackageReference Include="..." /> ohne Version.
+  -->
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!--
+      Transitives Pinning bleibt AUS: es haengt jede zentral gepinnte Version als echte
+      Abhaengigkeit an die nuspec. X3Code.Utilities bekaeme so z.B. Azure.Core angehaengt,
+      das ueber Microsoft.Data.SqlClient nur transitiv hereinkommt. Wo ein transitives
+      Paket wirklich gepinnt werden muss, steht dafuer ein expliziter PackageReference
+      im betroffenen Projekt.
+    -->
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Entity Framework Core">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup Label="Datenbank-Treiber">
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.6" />
+    <!--
+      Das native SQLite, das EntityFrameworkCore.Sqlite mitbringt, war 2.1.11 und trägt
+      GHSA-2m69-gcr7-jv3q (high). 2.1.13 ist der Fix innerhalb desselben Major.
+      Dank CentralPackageTransitivePinningEnabled wirkt der Pin auch transitiv.
+    -->
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />
+  </ItemGroup>
+
+  <ItemGroup Label="Azure">
+    <!-- Muss mindestens das erfuellen, was Azure.Storage.Blobs transitiv verlangt (>= 1.55.0). -->
+    <PackageVersion Include="Azure.Core" Version="1.55.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.29.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Blazor / WASM">
+    <PackageVersion Include="Microsoft.JSInterop" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup Label="Test">
+    <!--
+      X3Code.UnitTests nutzt Newtonsoft im Quelltext (HTTP/Models), bekam es bisher aber nur
+      transitiv ueber Microsoft.NET.Test.Sdk mitgeliefert. Deshalb hier explizit.
+    -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="coverlet.collector" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
+
+</Project>
