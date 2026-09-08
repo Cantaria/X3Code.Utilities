@@ -12,14 +12,11 @@ Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.
 All asynchronous methods on IBasicHttpClient/BasicHttpClient now take a CancellationToken. The parameter is optional, so existing call sites keep compiling.
 Fixed: the generic GetAsync overload started a ReadAsStringAsync task that was never awaited and read the content stream in parallel with the deserialization.
 Fixed: UploadStreamAsync never disposed its StreamContent.
-DatabaseConnector was rewritten. ExecuteSqlCommandOn never opened its connection and threw on every call; the transactional overload attached the transaction to a second, foreign connection and could not work either. Both are fixed and now have tests.
-BREAKING: the transactional overload is now ExecuteSqlCommandOn(SqlTransaction transaction, string query, ...) and runs on the transaction's own connection - the ref keyword and the connection string are gone. Since the old signature threw on every call, no working code can depend on it.
-Every DatabaseConnector method now accepts SqlParameter values, plus asynchronous overloads with a CancellationToken. Use the parameters instead of concatenating user input into the SQL string.
+BREAKING: DatabaseConnector moved out into its own package, X3Code.Sql.Utils, and into the X3Code.Sql.Utils namespace. It was the only type here that needed Microsoft.Data.SqlClient and pulled that whole graph - Azure.Identity, Microsoft.IdentityModel.*, the native SNI assets - into every consumer of this package. X3Code.Utilities now has no package dependencies at all.
+DataRowExtension no longer casts the cell to string. Against a typed DataTable - which is what a database hands back - that threw an InvalidCastException, and it took ToInteger, ToDecimal, ToFloat, ToDouble, ToDateTime, ToBoolean and ToChar down with it. Typed columns are now read natively, so ToDateTime no longer needs a matching pattern for a real date column.
+ToChar returns the documented '\0' for an empty column instead of throwing, and signals a too-long value with ArgumentException instead of a bare Exception.
 EntityPropertyExtension formats with InvariantCulture. Previously a decimal came out as "42,42" on a machine with a German locale and as "42.42" elsewhere.</PackageReleaseNotes>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" />
-  </ItemGroup>
 
 </Project>

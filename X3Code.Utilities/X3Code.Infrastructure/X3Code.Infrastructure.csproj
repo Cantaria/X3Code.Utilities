@@ -10,25 +10,16 @@ The package now ships its XML documentation, so consumers get IntelliSense. Adde
 Fixed malformed documentation tags on IRepository and GenericRepository, and an unescaped comparison in the DecimalExtension docs.
 Entity Framework Core 10.0.3 -> 10.0.11, Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.
 All asynchronous methods on IRepository/GenericRepository now take a CancellationToken and pass it down into Entity Framework. The parameter is optional, so existing call sites keep compiling.
-Fixed a name clash that hit every consumer referencing X3Code.Utilities and X3Code.Infrastructure together: DataTableExtensions was compiled into both assemblies as a public type, so calling ToDataTable failed with CS0121 (ambiguous call). The linked copy in this package is now compiled as internal - it only ever served GenericRepository.BulkWrite. Take ToDataTable from X3Code.Utilities.</PackageReleaseNotes>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <!-- Kompiliert die gelinkte DataTableExtension.cs intern, siehe Kommentar in der Datei. -->
-    <DefineConstants>$(DefineConstants);X3CODE_LINKED_INTERNAL</DefineConstants>
+Fixed a name clash that hit every consumer referencing X3Code.Utilities and X3Code.Infrastructure together: DataTableExtensions was compiled into both assemblies as a public type, so calling ToDataTable failed with CS0121 (ambiguous call). This package no longer carries a copy at all - BulkWrite builds its table from the EF model now. Take ToDataTable from X3Code.Utilities.
+BulkWrite was reworked. It used to open a second connection of its own, so the copied rows took no part in a transaction that was open on the context and survived a rollback. It now runs on the context's connection and joins that transaction.
+BulkWrite also used to derive its columns by reflecting over the entity's properties. That picked up navigation properties and ignored column names set via HasColumnName or [Column], which made SqlBulkCopy fail on columns the target table does not have. Columns now come from the EF model.
+The tableName parameter of BulkWrite is optional now and falls back to the table the entity is mapped to.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-  </ItemGroup>
-
-  <!-- Geteilte Quelldatei, bewusst statt eines ProjectReference. Siehe CLAUDE.md. -->
-  <ItemGroup>
-    <Compile Include="..\X3Code.Utils\Extensions\DataTableExtension.cs">
-      <Link>Extensions\DataTableExtension.cs</Link>
-    </Compile>
   </ItemGroup>
 
 </Project>

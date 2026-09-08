@@ -229,7 +229,7 @@ public class DataRowExtensionTest
         var nullValue = row.ToChar(NullColumnName);
         Assert.Equal(0, nullValue);
             
-        Assert.Throws<Exception>(() => row.ToChar(StringColumnName));
+        Assert.Throws<ArgumentException>(() => row.ToChar(StringColumnName));
     }
 
     [Fact]

@@ -13,6 +13,11 @@ namespace X3Code.Repository;
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
     /// <summary>
+    /// Entities per SaveChanges when no batch size is given.
+    /// </summary>
+    private const int DefaultBatchSize = 1000;
+
+    /// <summary>
     /// Provides a base implementation for repository operations across entities of a specific type.
     /// </summary>
     public BaseRepository(DbContext context)
@@ -445,39 +450,66 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     }
 
     /// <summary>
-    /// Performs a bulk write operation by inserting a collection of entities into the specified table
-    /// in batches to handle large datasets effectively.
+    /// Writes a collection of entities in batches, so a large set does not go into the database
+    /// as one oversized command.
     /// </summary>
     /// <param name="entities">The collection of entities to be written to the database.</param>
-    /// <param name="tableName">The name of the database table where the entities will be written.</param>
-    /// <param name="timeOutInSeconds">The timeout duration in seconds for the bulk write operation.</param>
+    /// <param name="timeOutInSeconds">Command timeout for the write. 0 keeps the context's current setting.</param>
+    /// <param name="batchSize">How many entities go into one SaveChanges. Defaults to 1000.</param>
     /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>The total number of entities successfully written to the database.</returns>
-    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds, CancellationToken cancellationToken = default)
+    /// <remarks>
+    /// Each batch is saved on its own. If batch five fails, batches one to four are already
+    /// committed - the name does not promise atomicity. Wrap the call in an
+    /// <see cref="IUnitOfWork"/> scope when you need all or nothing.
+    /// <para>
+    /// There used to be a tableName parameter here. It was never read and could not be honoured:
+    /// Entity Framework writes to the table the entity is mapped to.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="batchSize"/> is not positive.</exception>
+    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, int timeOutInSeconds = 0, int batchSize = DefaultBatchSize, CancellationToken cancellationToken = default)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(batchSize);
+
         var entityList = entities.ToList();
         if (entityList.Count == 0)
         {
             return 0;
         }
-    
-        var batchSize = 1000; // EF Core doesn't support native bulk insert, so use a manual batch size
-        var totalWritten = 0;
-    
-        for (var i = 0; i < entityList.Count; i += batchSize)
+
+        var previousTimeout = DataBase.Database.GetCommandTimeout();
+        if (timeOutInSeconds > 0)
         {
-            var batch = entityList.Skip(i).Take(batchSize).ToList();
-    
-            await Entities.AddRangeAsync(batch, cancellationToken);
-            totalWritten += batch.Count;
-    
-            await DataBase.SaveChangesAsync(cancellationToken);
-    
-            // Detach to avoid tracking issues
-            RemoveFromTracking(batch);
+            DataBase.Database.SetCommandTimeout(timeOutInSeconds);
         }
-    
-        return totalWritten;
+
+        try
+        {
+            var totalWritten = 0;
+
+            for (var i = 0; i < entityList.Count; i += batchSize)
+            {
+                var batch = entityList.Skip(i).Take(batchSize).ToList();
+
+                await Entities.AddRangeAsync(batch, cancellationToken);
+                totalWritten += batch.Count;
+
+                await DataBase.SaveChangesAsync(cancellationToken);
+
+                // Detach to avoid tracking issues
+                RemoveFromTracking(batch);
+            }
+
+            return totalWritten;
+        }
+        finally
+        {
+            if (timeOutInSeconds > 0)
+            {
+                DataBase.Database.SetCommandTimeout(previousTimeout);
+            }
+        }
     }
 
     #endregion

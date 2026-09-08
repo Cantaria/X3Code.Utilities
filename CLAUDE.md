@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo is the source for the **X3-Code.Utilities** NuGet package family — six independent .NET 10 class libraries under `X3Code.Utilities/`, each built and published as its own NuGet package. There is no single "app"; the deliverables are the packages themselves.
+This repo is the source for the **X3-Code.Utilities** NuGet package family — seven independent .NET 10 class libraries under `X3Code.Utilities/`, each built and published as its own NuGet package. There is no single "app"; the deliverables are the packages themselves.
 
 ## Common commands
 
@@ -32,20 +32,21 @@ dotnet test X3Code.UnitTests/X3Code.UnitTests.csproj --filter "FullyQualifiedNam
 
 All test projects use **xunit** and need no manual setup.
 
-- `X3Code.UnitTests` and `X3Code.Repository.Test` are fully hermetic (the latter runs on SQLite/InMemory).
+- `X3Code.UnitTests` and `X3Code.Repository.Test` are fully hermetic (the latter runs on SQLite/InMemory). One exception: `HttpClientTest` talks to a public third-party API and carries `[Trait("Category", "Integration")]`; CI runs the project with `--filter "Category!=Integration"`.
 - **`X3Code.Infrastructure.Tests` requires a running Docker daemon.** `X3Code.Infrastructure.Tests/Helper/SqlServerFixture.cs` starts one throwaway SQL Server container (`Testcontainers.MsSql`, image pinned to `mcr.microsoft.com/mssql/server:2022-latest`) for the whole assembly, applies the migrations against it, and removes it afterwards. There are no connection strings to edit — `ConstValues/DbConnectionStrings.cs` only serves the design-time EF tooling and reads the `X3_TEST_DB` environment variable, defaulting to a credential-free placeholder.
 
 `BulkWriterTest` is a performance suite that goes up to ten million rows; it carries `[Trait("Category", "Slow")]`. Skip it with `--filter "Category!=Slow"` (which is what CI does) and run it deliberately when touching `BulkWrite`.
 
-One known failure: `EntityPropertyExtensionTest.CanReadDataAsStringNonGeneric` expects `42.42` and gets `42,42` on a machine with a German locale. It is culture-dependent and predates the current work — it passes on the CI runners.
+All three projects are green.
 
 ## Architecture
 
-### The six packable libraries
+### The seven packable libraries
 
 | Project | PackageId | Purpose |
 |---|---|---|
-| `X3Code.Utils` | `X3Code.Utilities` | General-purpose helpers: config/env loading, converters, a lightweight `DatabaseConnector`, extension methods (Collection/DataRow/DataTable/DateTime/Dictionary/EntityProperty), a basic HTTP client, XML serialization, GUID tools, MIME helpers |
+| `X3Code.Utils` | `X3Code.Utilities` | General-purpose helpers: config/env loading, converters, extension methods (Collection/DataRow/DataTable/DateTime/Dictionary/EntityProperty), a basic HTTP client, XML serialization, GUID tools, MIME helpers. **Has no package dependencies** — keep it that way; anything needing a third-party package belongs in its own library |
+| `X3Code.Sql.Utils` | `X3Code.Sql.Utils` | `DatabaseConnector` — lightweight ADO.NET access to SQL Server, no ORM. Split out of `X3Code.Utilities` because it was the only type there pulling in `Microsoft.Data.SqlClient` |
 | `X3Code.Infrastructure` | `X3Code.Infrastructure` | Generic repository / unit-of-work pattern (`Entity`, `IEntity`, `IRepository`, `GenericRepository`) for EF Core against SQL Server |
 | `X3Code.Repository` | `X3Code.Repository` | Newer take on the same repository pattern (`Entity`, `IEntity`, `IBaseRepository`, `BaseRepository`) |
 | `X3Code.Infrastructure.Mobile` | `X3Code.Infrastructure.Mobile` | Same repository pattern as `X3Code.Infrastructure`, but built against EF Core Sqlite for mobile use. Maintained by someone outside this repo and deliberately **not** pushed by the publish script — that is intentional, not an oversight |
@@ -58,19 +59,13 @@ Everything targets `net10.0` and has `GeneratePackageOnBuild=true`, so a normal 
 
 Libraries deliberately do **not** use `<ProjectReference>` between each other (that would pull one package's dependency graph into another). Instead, a handful of files are shared by linking the same `.cs` file into a second project via `<Compile Include="..\OtherProject\Path.cs"><Link>...</Link></Compile>`:
 
-- `X3Code.Infrastructure` links `X3Code.Utils/Extensions/DataTableExtension.cs`
 - `X3Code.Repository` links `X3Code.Infrastructure/Extensions/DecimalExtension.cs`
 
 If you touch one of these linked files, check both csproj files that reference it — you're editing shared source, not a private copy. Test projects, by contrast, *do* use real `<ProjectReference>`s to the libraries they exercise.
 
-**Each linked file must differ in the second assembly, or consumers get `CS0121`.** Compiling the same public type under the same full name into two packages makes every call ambiguous for anyone referencing both. Both files therefore carry a `#if` driven by a `DefineConstants` symbol set in the linking csproj:
+**Each linked file must differ in the second assembly, or consumers get `CS0121`.** Compiling the same public type under the same full name into two packages makes every call ambiguous for anyone referencing both — this was a real, reproducible break, not a theoretical one. `DecimalExtension.cs` therefore carries a `#if X3CODE_REPOSITORY_LINK` (the symbol is set via `DefineConstants` in `X3Code.Repository.csproj`) that puts it in the `X3Code.Repository.Extensions` namespace when compiled into that package. `internal` would not work there: consumers call `ConfigureDecimalColum` in their own `OnModelCreating`.
 
-| File | Symbol, set in | Effect in the second assembly |
-|---|---|---|
-| `DataTableExtension.cs` | `X3CODE_LINKED_INTERNAL` in `X3Code.Infrastructure.csproj` | compiled `internal` — it only serves `GenericRepository.BulkWrite`, consumers take `ToDataTable` from `X3Code.Utilities` |
-| `DecimalExtension.cs` | `X3CODE_REPOSITORY_LINK` in `X3Code.Repository.csproj` | namespace becomes `X3Code.Repository.Extensions` — `internal` is not an option here because consumers call `ConfigureDecimalColum` in their `OnModelCreating` |
-
-If you ever link a third file, give it the same treatment: decide whether the second copy can be `internal` (preferred) or needs its own namespace, and add the `#if` plus the symbol.
+If you ever link another file, give it the same treatment: decide whether the second copy can be `internal` (preferred, invisible to consumers) or needs its own namespace, and add the `#if` plus the symbol. Better still, check first whether the second project needs the file at all — `X3Code.Infrastructure` used to link `DataTableExtension.cs` purely for `BulkWrite`, and once that built its table from the EF model instead, the link could go away entirely.
 
 ### Versioning
 

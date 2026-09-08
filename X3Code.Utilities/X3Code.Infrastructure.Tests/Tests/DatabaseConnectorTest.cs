@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
-using X3Code.Utils.Database;
+using X3Code.Sql.Utils;
 using Xunit;
 
 namespace X3Code.Infrastructure.Tests.Tests;

@@ -5,8 +5,11 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
-using X3Code.Utils.Extensions;
 
 namespace X3Code.Infrastructure;
 
@@ -387,11 +390,17 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// Performs a bulk write operation for the provided entities into the specified table.
     /// </summary>
     /// <param name="entities">Collection of entities to be written in the database table.</param>
-    /// <param name="tableName">Name of the database table where the entities should be written.</param>
+    /// <param name="tableName">Name of the target table. If omitted, the table the entity is mapped to is used.</param>
     /// <param name="timeOutInSeconds">Optional: Number of seconds for the operations to complete. If not set, default is used.</param>
     /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>Returns the number of rows copied.</returns>
-    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds = 0, CancellationToken cancellationToken = default)
+    /// <remarks>
+    /// The copy runs on the context's own connection and joins a transaction that is already
+    /// open on it, so a rollback takes the copied rows with it. Columns come from the EF model,
+    /// which means mapped column names are honoured and navigation properties stay out.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if the entity is not part of the context's model, or the provider is not SQL Server.</exception>
+    public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string? tableName = null, int timeOutInSeconds = 0, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
         if (asList.Count == 0)
@@ -399,50 +408,104 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
             return 0;
         }
 
-        var asDataTable = asList.ToDataTable(tableName);
-        var mappings = GetMapping(typeof(TEntity));
-        
-        using var bulkWriter = new SqlBulkCopy(DataBase.Database.GetConnectionString());
+        var entityType = DataBase.Model.FindEntityType(typeof(TEntity))
+                         ?? throw new InvalidOperationException($"[{typeof(TEntity).Name}] is not part of the model of [{DataBase.GetType().Name}].");
 
-        if (timeOutInSeconds > 0)
+        var destination = string.IsNullOrWhiteSpace(tableName)
+            ? entityType.GetTableName() ?? typeof(TEntity).Name
+            : tableName;
+
+        var columns = GetBulkColumns(entityType);
+        var asDataTable = BuildDataTable(asList, columns, destination);
+
+        if (DataBase.Database.GetDbConnection() is not SqlConnection connection)
         {
-            bulkWriter.BulkCopyTimeout = timeOutInSeconds;   
+            throw new InvalidOperationException("BulkWrite needs a SQL Server connection.");
         }
-        bulkWriter.DestinationTableName = tableName;
-        foreach (var mapping in mappings)
+
+        // Eine offene Transaktion des Contexts muss mitgegeben werden, sonst laeuft der
+        // Bulk-Insert daneben und ein Rollback holt die Zeilen nicht zurueck.
+        var transaction = DataBase.Database.CurrentTransaction?.GetDbTransaction() as SqlTransaction;
+
+        var wasClosed = connection.State != ConnectionState.Open;
+        if (wasClosed) await connection.OpenAsync(cancellationToken);
+
+        try
         {
-            bulkWriter.ColumnMappings.Add(mapping);
+            using var bulkWriter = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction);
+
+            if (timeOutInSeconds > 0)
+            {
+                bulkWriter.BulkCopyTimeout = timeOutInSeconds;
+            }
+
+            bulkWriter.DestinationTableName = destination;
+            foreach (var column in columns)
+            {
+                bulkWriter.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+            }
+
+            await bulkWriter.WriteToServerAsync(asDataTable, cancellationToken);
+
+            return bulkWriter.RowsCopied;
         }
-
-        await bulkWriter.WriteToServerAsync(asDataTable, cancellationToken);
-
-        return bulkWriter.RowsCopied;
+        finally
+        {
+            if (wasClosed) await connection.CloseAsync();
+        }
     }
 
     /// <summary>
-    /// Generates a list of columns mappings between the source data and the target table based on the properties of the provided object type.
+    /// The scalar columns of the entity, taken from the EF model rather than from reflection.
+    /// Reflection would also pick up navigation properties and would miss any column renamed
+    /// via HasColumnName or [Column]; both make SqlBulkCopy fail on a column the table has not got.
     /// </summary>
-    /// <param name="objectType">The type of the objects to generate mappings for.</param>
-    /// <returns>Returns an IEnumerable of column mappings.</returns>
-    private IEnumerable<SqlBulkCopyColumnMapping> GetMapping(Type? objectType)
+    private static List<BulkColumn> GetBulkColumns(IEntityType entityType)
     {
-        var result = new List<SqlBulkCopyColumnMapping>();
-        if (objectType == null)
-        {
-            return result;
-        }
+        var storeObject = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
+        var result = new List<BulkColumn>();
 
-        var properties = objectType.GetProperties();
-        foreach (var property in properties)
+        foreach (var property in entityType.GetProperties())
         {
-            if (!property.CanWrite) continue;
-            result.Add(new SqlBulkCopyColumnMapping(property.Name, property.Name));
+            // Shadow properties have no CLR property to read the value from.
+            if (property.PropertyInfo == null) continue;
+
+            var columnName = storeObject.HasValue
+                ? property.GetColumnName(storeObject.Value) ?? property.Name
+                : property.Name;
+
+            result.Add(new BulkColumn(columnName, property.PropertyInfo, property.ClrType));
         }
 
         return result;
     }
 
+    private static DataTable BuildDataTable(List<TEntity> entities, List<BulkColumn> columns, string tableName)
+    {
+        var table = new DataTable(tableName);
+
+        foreach (var column in columns)
+        {
+            table.Columns.Add(column.ColumnName, Nullable.GetUnderlyingType(column.ClrType) ?? column.ClrType);
+        }
+
+        foreach (var entity in entities)
+        {
+            var row = table.NewRow();
+            foreach (var column in columns)
+            {
+                row[column.ColumnName] = column.Property.GetValue(entity) ?? DBNull.Value;
+            }
+            table.Rows.Add(row);
+        }
+
+        return table;
+    }
+
+    private sealed record BulkColumn(string ColumnName, PropertyInfo Property, Type ClrType);
+
     #endregion
+
 
     private void RemoveFromTracking(TEntity entity)
     {

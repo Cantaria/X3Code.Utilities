@@ -24,5 +24,5 @@ public interface IBaseRepository<TEntity>
 	Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	Task UpdateAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default);
 	Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default);
-	Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds, CancellationToken cancellationToken = default);
+	Task<int> BulkWrite(IEnumerable<TEntity> entities, int timeOutInSeconds = 0, int batchSize = 1000, CancellationToken cancellationToken = default);
 }

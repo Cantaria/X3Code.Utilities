@@ -9,18 +9,7 @@ namespace X3Code.Utils.Extensions;
 /// <summary>
 /// Convert Ienumerable to a Datatable
 /// </summary>
-/// <remarks>
-/// Diese Datei wird per &lt;Compile Include&gt; auch nach X3Code.Infrastructure gelinkt.
-/// Dort wird sie intern kompiliert: waere sie in beiden Assemblies public, bekaeme jeder
-/// Konsument, der X3Code.Utilities und X3Code.Infrastructure zusammen referenziert,
-/// beim Aufruf von ToDataTable einen CS0121 (mehrdeutiger Aufruf).
-/// </remarks>
-#if X3CODE_LINKED_INTERNAL
-internal
-#else
-public
-#endif
-    static class DataTableExtensions
+public static class DataTableExtensions
 {
     /// <summary>
     /// Converts an IEnumerable into a DataTable. It creates a column for every writeable Property.

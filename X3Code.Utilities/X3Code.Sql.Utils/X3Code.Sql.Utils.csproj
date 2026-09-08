@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>X3Code.Sql.Utils</PackageId>
+        <Product>X3Code.Sql.Utils</Product>
+        <Title>X3-Code SQL Utilities</Title>
+        <Description>Lightweight ADO.NET access to SQL Server, without an ORM</Description>
+        <PackageReleaseNotes>10.0.0: Split out of X3Code.Utilities. DatabaseConnector was the only type there that needed Microsoft.Data.SqlClient, and it dragged that whole graph - Azure.Identity, Microsoft.IdentityModel.* and the native SNI assets - into every project that just wanted the general purpose helpers. X3Code.Utilities has no package dependencies at all now.
+BREAKING: the namespace is X3Code.Sql.Utils instead of X3Code.Utils.Database. Change the using; the API is otherwise the one described below.
+Fixed: ExecuteSqlCommandOn never opened its connection and threw on every single call. The transactional overload additionally attached the transaction to a second, foreign connection and could not work either.
+BREAKING: the transactional overload is now ExecuteSqlCommandOn(SqlTransaction transaction, string query, ...) and runs on the transaction's own connection - the ref keyword and the connection string are gone. Since the old signature threw on every call, no working code can depend on it.
+Every method accepts SqlParameter values now, plus asynchronous overloads with a CancellationToken. Use the parameters instead of concatenating user input into the SQL string.
+The SqlDataAdapter in SelectAsDataTable is disposed, and missing arguments raise ArgumentException instead of being swallowed.</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Data.SqlClient" />
+    </ItemGroup>
+
+</Project>

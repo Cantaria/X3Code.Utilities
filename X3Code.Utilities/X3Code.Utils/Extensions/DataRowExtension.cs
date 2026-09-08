@@ -42,6 +42,8 @@ public static class DataRowExtension
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (string.IsNullOrWhiteSpace(datePattern)) throw new ArgumentNullException(nameof(datePattern));
             
+        if (source[columnName] is DateTime nativeDate) return nativeDate;
+
         var dateAsString = source.ToStringOrNull(columnName);
         if (string.IsNullOrEmpty(dateAsString)) return null;
 
@@ -64,10 +66,13 @@ public static class DataRowExtension
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
             
-        if (row[columnName] == DBNull.Value) return null;
-        var result = (string)row[columnName];
+        var value = row[columnName];
+        if (value == DBNull.Value) return null;
 
-        return result.Trim();
+        // Frueher stand hier ein (string)-Cast. Bei einer typisierten DataTable - also genau
+        // dem, was DatabaseConnector.SelectAsDataTable liefert - warf der eine
+        // InvalidCastException, und zwar fuer die ganze To*-Familie darunter.
+        return Convert.ToString(value, CultureInfo.InvariantCulture)?.Trim();
     }
 
     /// <summary>
@@ -80,9 +85,11 @@ public static class DataRowExtension
     public static int ToInteger(this DataRow source, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
+        if (source[columnName] is int nativeInteger) return nativeInteger;
+
         var content = source.ToStringOrNull(columnName);
 
-        if (int.TryParse(content, out var result))
+        if (int.TryParse(content, NumberStyles.Any, CultureInfo.InvariantCulture, out var result))
         {
             return result;
         }
@@ -103,6 +110,8 @@ public static class DataRowExtension
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
         if (source[columnName] == DBNull.Value) return 0;
+        // Eine typisierte Zahlenspalte braucht keinen Umweg ueber die Zeichenkette.
+        if (source[columnName] is decimal or double or float or int or long) return Convert.ToDecimal(source[columnName], CultureInfo.InvariantCulture);
 
         var content = source.ToStringOrNull(columnName);
         if (string.IsNullOrWhiteSpace(content)) return 0;
@@ -128,6 +137,8 @@ public static class DataRowExtension
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
         if (source[columnName] == DBNull.Value) return 0;
+        // Eine typisierte Zahlenspalte braucht keinen Umweg ueber die Zeichenkette.
+        if (source[columnName] is decimal or double or float or int or long) return Convert.ToSingle(source[columnName], CultureInfo.InvariantCulture);
             
         var content = source.ToStringOrNull(columnName);
         if (string.IsNullOrWhiteSpace(content)) return 0;
@@ -152,6 +163,8 @@ public static class DataRowExtension
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (culture == null) culture = new CultureInfo("EN");
         if (source[columnName] == DBNull.Value) return 0;
+        // Eine typisierte Zahlenspalte braucht keinen Umweg ueber die Zeichenkette.
+        if (source[columnName] is decimal or double or float or int or long) return Convert.ToDouble(source[columnName], CultureInfo.InvariantCulture);
             
         var content = source.ToStringOrNull(columnName);
         if (string.IsNullOrWhiteSpace(content)) return 0;
@@ -174,7 +187,8 @@ public static class DataRowExtension
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
         if (source[columnName] == DBNull.Value) return false;
-            
+        if (source[columnName] is bool nativeBoolean) return nativeBoolean;
+
         var content = source.ToStringOrNull(columnName);
         if (string.IsNullOrWhiteSpace(content)) return false;
 
@@ -203,10 +217,14 @@ public static class DataRowExtension
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
 
         if (row[columnName] == DBNull.Value) return '\0';
-        var result = row.ToStringOrNull(columnName);
-        if (result == null) throw new NullReferenceException("Column returned nothing");
-        if (result.Length > 1) throw new Exception("String contains more than one character");
+        if (row[columnName] is char nativeChar) return nativeChar;
 
-        return result.First();
+        var result = row.ToStringOrNull(columnName);
+        // Dokumentiert ist '\0' fuer "nichts drin" - vorher flog hier eine NullReferenceException,
+        // und ein Leerstring lief in eine InvalidOperationException aus First().
+        if (string.IsNullOrEmpty(result)) return '\0';
+        if (result.Length > 1) throw new ArgumentException($"Column [{columnName}] contains more than one character.", nameof(columnName));
+
+        return result[0];
     }
 }

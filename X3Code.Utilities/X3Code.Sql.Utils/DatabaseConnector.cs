@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-namespace X3Code.Utils.Database;
+namespace X3Code.Sql.Utils;
 
 /// <summary>
 /// Connects to a SQL Server database and runs the query.

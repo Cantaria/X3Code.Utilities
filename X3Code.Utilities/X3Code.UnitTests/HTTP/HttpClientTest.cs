@@ -6,6 +6,10 @@ using Xunit;
 
 namespace X3Code.UnitTests.HTTP;
 
+// Diese Tests sprechen die oeffentliche API unter HttpConstValues.UnitTestBaseUrl an. Faellt
+// der Dienst aus oder aendert er sein Verhalten, wird die Suite aus fremden Gruenden rot -
+// deshalb laufen sie nicht in der CI. Lokal per --filter "Category=Integration" starten.
+[Trait("Category", "Integration")]
 public class HttpClientTest
 {
     private HttpClientConfiguration ClientConfiguration => new() { BaseUrl = HttpConstValues.UnitTestBaseUrl };
