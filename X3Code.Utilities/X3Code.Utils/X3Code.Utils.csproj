@@ -1,36 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>X3Code.Utilities</PackageId>
-    <Authors>X3-Code</Authors>
-    <Company>X3-Code</Company>
     <Product>X3Code.Utilities</Product>
-    <Description>Some little helpers for every project</Description>
-    <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
-    <RepositoryType>GIT</RepositoryType>
-    <AssemblyVersion>1.10.4</AssemblyVersion>
-    <FileVersion>1.10.4</FileVersion>
-    <Version>1.3.4</Version>
-    <PackageIcon>x3code_logo.png</PackageIcon>
-    <PackageReleaseNotes>Add IgnoreCertificateErrors option to HttpClientConfiguration/BasicHttpClient for dev/test environments with self-signed certificates</PackageReleaseNotes>
-    <PackageVersion>1.10.4</PackageVersion>
     <Title>X3-Code Utilities</Title>
-    <Nullable>enable</Nullable>
+    <Description>Some little helpers for every project</Description>
+    <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
+    <Version>1.10.4</Version>
+    <PackageReleaseNotes>Add IgnoreCertificateErrors option to HttpClientConfiguration/BasicHttpClient for dev/test environments with self-signed certificates</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\x3code_logo.png">
-      <Pack>True</Pack>
-      <PackagePath>.</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
   </ItemGroup>
 
 </Project>

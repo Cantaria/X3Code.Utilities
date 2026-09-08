@@ -1,7 +1,91 @@
 <Project>
 
+  <!--
+    Gemeinsame Metadaten und Packaging-Einstellungen für alle Projekte der Solution.
+    Pro Projekt bleibt nur noch stehen, was dort wirklich unterschiedlich ist:
+    PackageId, Title, Description, Version und PackageReleaseNotes.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <!--
+    IsPackable muss hier bereits feststehen: Directory.Build.props wird VOR dem Rumpf der
+    csproj ausgewertet, ein dort gesetztes IsPackable ist unten also noch nicht sichtbar.
+    Deshalb wird es aus dem Projektnamen abgeleitet - Testprojekte werden nicht gepackt.
+  -->
+  <PropertyGroup>
+    <IsPackable Condition="'$(IsPackable)' == '' And ($(MSBuildProjectName.EndsWith('Test')) Or $(MSBuildProjectName.EndsWith('Tests')))">false</IsPackable>
+    <IsPackable Condition="'$(IsPackable)' == ''">true</IsPackable>
+  </PropertyGroup>
+
+  <!-- Wohin die .nupkg/.snupkg aller packbaren Projekte gelegt werden -->
   <PropertyGroup>
     <PackageOutputPath>$(MSBuildThisFileDirectory)..\NuGet</PackageOutputPath>
   </PropertyGroup>
+
+  <!-- Herausgeber-Metadaten, für jedes Paket identisch -->
+  <PropertyGroup>
+    <Authors>X3-Code</Authors>
+    <Company>X3-Code</Company>
+    <Copyright>Copyright (c) X3-Code</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>x3code_logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <!--
+    Packaging-Qualität. GenerateDocumentationFile sorgt dafür, dass die XML-Kommentare
+    im Paket landen und Konsumenten IntelliSense bekommen; ohne das Flag werden sie
+    zwar geschrieben, aber nicht mitgeliefert.
+  -->
+  <PropertyGroup Condition="'$(IsPackable)' != 'false'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- SourceLink ist seit dem .NET-8-SDK eingebaut, es braucht kein eigenes Paket mehr. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!--
+      CS1591 ("XML-Kommentar fehlt") wuerde beim Einschalten der Doku-Generierung rund 340
+      Warnungen erzeugen und alles andere zudecken - auch NuGet-Sicherheitswarnungen.
+      Deshalb vorerst stumm. Kaputte Doku-Tags (CS1570/CS1584/CS1711) bleiben bewusst
+      sichtbar, das sind Defekte und keine Luecken.
+      TODO: wieder scharf stellen, sobald die oeffentliche API durchdokumentiert ist.
+    -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- Reproduzierbare Pfade in den Symbolen, sobald der Build in GitHub Actions läuft -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- Schwachstellen in direkten UND transitiven Abhängigkeiten melden -->
+  <PropertyGroup>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+  </PropertyGroup>
+
+  <!-- Logo für jedes packbare Projekt, statt in jeder csproj einzeln -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)x3code_logo.png" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <!-- README wird gepackt, sofern das Projekt eines hat -->
+  <PropertyGroup Condition="'$(IsPackable)' != 'false' And Exists('$(MSBuildProjectDirectory)\README.md')">
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsPackable)' != 'false' And Exists('$(MSBuildProjectDirectory)\README.md')">
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

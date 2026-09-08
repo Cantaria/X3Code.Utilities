@@ -1,0 +1,117 @@
+# X3Code.Repository
+
+> ⚠️ **Note**: This library is currently under development. Use with care and own risk!
+
+## Overview
+X3Code.Repository is a lightweight library that provides a flexible and easy-to-implement repository pattern for .NET applications. It's designed to work seamlessly with Entity Framework while remaining database provider-independent.
+
+## Features
+- 🎯 Generic repository pattern implementation
+- 🔌 Database provider agnostic
+- 🤝 Entity Framework integration
+- 🧱 Easy-to-use base repository classes
+- 📦 CRUD operations out of the box
+- 🔒 Unit of work: several repositories in one database transaction
+
+## Installation
+```shell
+dotnet add package X3Code.Repository
+```
+
+## Quick Start
+1. Define your entity by implementing `Entity<T>`. This class inherits from `IEntity<T>` and will implement your primary key with the type defined.
+```csharp
+public class Product : Entity<Guid>
+{
+    public string Name { get; set; } = string.Empty;
+}
+```
+The type defined in here will be used for the EntityId property. So, if you choose `Entity<Guid>` you will get
+```csharp
+public Guid EntityId { get; set; }
+```
+if you choose `Entity<int>` you will get
+```csharp
+public int EntityId { get; set; }
+```
+etc.
+
+2. Create an empty interface for your repository and inherit from `IBaseRepository<T>`.
+> This will make it much easier to handle the repositories and add them to the DI container.
+```csharp
+public interface ICustomRepository : IBaseRepository<Custom>
+{
+}
+```
+
+3. Then create the corresponding repository. You need to inherit `BaseRepository<T>` and your own `ICustomRepository`. With this trick your repository class stays clean and easy. You can add functionality if needed.
+```csharp
+public class CustomRepository : BaseRepository<Custom>, ICustomRepository
+{
+    public CustomRepository(DbContext context) : base(context)
+    {
+    }
+}
+```
+> If you need access to the DbContext or the entity, you can use the inherited properties
+> ```csharp
+> protected DbContext DataBase { get; }
+> protected DbSet<TEntity> Entities { get; }
+> ```
+
+## Prerequisites
+- .NET 10.0 or later
+- Entity Framework Core
+
+## Usage Examples
+```csharp
+// Register in your DI container
+services.AddScoped<ICustomRepository, CustomRepository>();
+```
+```csharp
+// Inject and use in your service
+public class ProductService
+{
+    private readonly ICustomRepository _repository;
+
+    public ProductService(ICustomRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<Product?> GetProductAsync(Guid id)
+    {
+        return await _repository.GetAsync(x => x.EntityId == id);
+    }
+}
+```
+
+## Unit of work
+`IUnitOfWork` groups the writes of several repositories into a single database transaction.
+Everything inside the scope is committed together, or not at all.
+
+```csharp
+await using var scope = await unitOfWork.BeginAsync();
+
+await personRepository.AddAsync(person);
+await orderRepository.AddAsync(order);
+
+await scope.CompleteAsync();
+```
+
+Scopes may be nested: only the outermost scope commits. If any scope is left without
+`CompleteAsync`, the whole transaction is rolled back.
+
+> The provider has to support transactions. The EF Core in-memory provider does not.
+
+## Contributing
+Contributions are welcome! As this project is in an experimental state, please feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+
+## License
+MIT
+
+## Disclaimer
+This library is currently in an experimental state. While it's functional, the API might change in future releases.

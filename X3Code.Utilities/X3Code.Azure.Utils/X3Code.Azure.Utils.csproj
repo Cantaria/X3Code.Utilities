@@ -1,34 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.10.2</PackageVersion>
+        <PackageId>X3Code.Azure.Utils</PackageId>
+        <Product>X3Code.Azure.Utils</Product>
         <Title>X3-Code Azure Utilities</Title>
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
-        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
-        <PackageIcon>x3code_logo.png</PackageIcon>
-        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
-        <RepositoryType>GIT</RepositoryType>
+        <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
+        <Version>1.10.2</Version>
         <PackageReleaseNotes>nuget updates, breaking changes from third party lib</PackageReleaseNotes>
-        <AssemblyVersion>1.10.2</AssemblyVersion>
-        <FileVersion>1.10.2</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="..\x3code_logo.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-        <Link>x3code_logo.png</Link>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Azure.Core" Version="1.51.1" />
-      <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
-      <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+      <PackageReference Include="Azure.Core" />
+      <PackageReference Include="Azure.Storage.Blobs" />
+      <PackageReference Include="Microsoft.Data.SqlClient" />
     </ItemGroup>
 
     <ItemGroup>

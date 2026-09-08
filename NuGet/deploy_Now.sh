@@ -1,50 +1,104 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Publiziert die gebauten NuGet-Pakete aus diesem Ordner.
+#
+# Frueher fragte das Skript EINE Version ab und setzte sie fuer alle Pakete ein.
+# Da die Pakete unterschiedliche Versionen haben, wurde damit faktisch nur ein
+# einziges Paket gepusht - der Rest meldete "does not exist" und der Release sah
+# trotzdem erfolgreich aus. Jetzt wird gepusht, was tatsaechlich da ist.
 
-echo "Deplyoing X3-Code NuGet packages"
-echo "Which version are we deploying? Please user format 1.2.3:"
-read version
+set -euo pipefail
 
-echo "Please enter the API-Key:"
-read apikey
-
-x3AzureUtils=X3Code.Azure.Utils.$version.nupkg
-x3Utils=X3Code.Utilities.$version.nupkg
-x3Infrastructure=X3Code.Infrastructure.$version.nupkg
-x3Wasm=X3Code.Wasm.Utils.$version.nupkg
-x3Repo=X3Code.Repository.$version.nupkg
 PACKAGE_SOURCE=github
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "Trying to push: $x3AzureUtils"
-if test -f "$x3AzureUtils"; then
-    dotnet nuget push $x3AzureUtils --source $PACKAGE_SOURCE -k $apikey
-else
-    echo "File $x3AzureUtils does not exist. Do nothing"
+# Pakete, die bewusst NICHT veroeffentlicht werden.
+# X3Code.Infrastructure.Mobile war noch nie im Deploy - siehe offene Entscheidung,
+# ob es publiziert oder auf IsPackable=false gesetzt wird.
+EXCLUDED_PACKAGE_IDS=(
+    "X3Code.Infrastructure.Mobile"
+)
+
+is_excluded() {
+    local file_name="$1"
+    for excluded in "${EXCLUDED_PACKAGE_IDS[@]}"; do
+        [[ "$file_name" == "$excluded".[0-9]*.nupkg ]] && return 0
+    done
+    return 1
+}
+
+cd "$SCRIPT_DIR"
+
+shopt -s nullglob
+all_packages=( *.nupkg )
+shopt -u nullglob
+
+if [ ${#all_packages[@]} -eq 0 ]; then
+    echo "Keine .nupkg in $SCRIPT_DIR gefunden. Zuerst 'dotnet build X3Code.Utilities.sln' ausfuehren."
+    exit 1
 fi
 
-echo "Trying to push: $x3Utils"
-if test -f "$x3Utils"; then
-    dotnet nuget push $x3Utils --source $PACKAGE_SOURCE -k $apikey
-else
-    echo "File $x3Utils does not exist. Do nothing"
+packages=()
+for package in "${all_packages[@]}"; do
+    if is_excluded "$package"; then
+        echo "Uebersprungen (ausgeschlossen): $package"
+    else
+        packages+=( "$package" )
+    fi
+done
+
+if [ ${#packages[@]} -eq 0 ]; then
+    echo "Nach dem Ausschluss bleibt nichts zu pushen."
+    exit 1
 fi
 
-echo "Trying to push: $x3Infrastructure"
-if test -f "$x3Infrastructure"; then
-    dotnet nuget push $x3Infrastructure --source $PACKAGE_SOURCE -k $apikey
-else
-    echo "File $x3Infrastructure does not exist. Do nothing"
+echo
+echo "Folgende Pakete werden nach '$PACKAGE_SOURCE' gepusht:"
+for package in "${packages[@]}"; do
+    echo "  - $package"
+done
+
+echo
+read -r -p "Fortfahren? [j/N] " confirm
+case "$confirm" in
+    j|J|y|Y) ;;
+    *) echo "Abgebrochen."; exit 0 ;;
+esac
+
+# -s: die Eingabe wird nicht im Terminal angezeigt
+read -r -s -p "API-Key: " apikey
+echo
+
+if [ -z "$apikey" ]; then
+    echo "Kein API-Key angegeben. Abbruch."
+    exit 1
 fi
 
-echo "Trying to push: $x3Wasm"
-if test -f "$x3Wasm"; then
-    dotnet nuget push $x3Wasm --source $PACKAGE_SOURCE -k $apikey
-else
-    echo "File $x3Wasm does not exist. Do nothing"
-fi
+failed=()
+for package in "${packages[@]}"; do
+    echo
+    echo "==> $package"
+    # --no-symbols: GitHub Packages nimmt keine .snupkg entgegen.
+    # --skip-duplicate: eine bereits veroeffentlichte Version ist kein Fehler.
+    if dotnet nuget push "$package" \
+        --source "$PACKAGE_SOURCE" \
+        --api-key "$apikey" \
+        --no-symbols \
+        --skip-duplicate; then
+        echo "    ok"
+    else
+        echo "    FEHLGESCHLAGEN"
+        failed+=( "$package" )
+    fi
+done
 
-echo "Trying to push: $x3Repo"
-if test -f "$x3Repo"; then
-    dotnet nuget push $x3Repo --source $PACKAGE_SOURCE -k $apikey
+echo
+if [ ${#failed[@]} -eq 0 ]; then
+    echo "Alle ${#packages[@]} Pakete verarbeitet."
 else
-    echo "File $x3Repo does not exist. Do nothing"
+    echo "${#failed[@]} von ${#packages[@]} Paketen fehlgeschlagen:"
+    for package in "${failed[@]}"; do
+        echo "  - $package"
+    done
+    exit 1
 fi

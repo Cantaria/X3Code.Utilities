@@ -1,36 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <PackageId>X3Code.Wasm.Utils</PackageId>
+        <Product>X3Code.Wasm.Utils</Product>
+        <Title>X3-Code WASM Utilities</Title>
+        <Description>Utilities and helpers for Blazor WASM</Description>
+        <!-- Einzige Versionsangabe; AssemblyVersion, FileVersion und PackageVersion leiten sich davon ab. -->
         <Version>1.9.0</Version>
         <PackageReleaseNotes>1.8.5: last version was missing nullables, nuget package updates
 1.8.2: NuGet package updates
 1.8.0: Update to .NET8</PackageReleaseNotes>
-        <AssemblyVersion>1.9.0</AssemblyVersion>
-        <FileVersion>1.9.0</FileVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Title>X3-Code WASM Utilities</Title>
-        <Authors>X3-Code</Authors>
-        <Description>Utilities and helpers for Blazor WASM</Description>
-        <PackageProjectUrl>https://github.com/Cantaria/X3Code.Utilities</PackageProjectUrl>
-        <PackageIcon>x3code_logo.png</PackageIcon>
-        <RepositoryUrl>https://github.com/Cantaria/X3Code.Utilities</RepositoryUrl>
-        <RepositoryType>GIT</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.JSInterop" Version="10.0.3" />
+      <PackageReference Include="Microsoft.JSInterop" />
     </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\x3code_logo.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-        <Link>x3code_logo.png</Link>
-      </None>
-    </ItemGroup>
-
 
 </Project>

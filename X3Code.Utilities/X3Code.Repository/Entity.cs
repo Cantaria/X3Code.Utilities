@@ -13,7 +13,6 @@ public class Entity<T> : IEntity<T> where T : notnull
     /// <summary>
     /// Represents the unique identifier for an entity.
     /// </summary>
-    /// <typeparam name="T">The data type of the entity identifier, which must be non-nullable.</typeparam>
     /// <remarks>
     /// This property is marked as a required key and is used as the primary identifier for instances of the entity.
     /// It adheres to constraints defined in the database schema and is integral for entity tracking and database operations.

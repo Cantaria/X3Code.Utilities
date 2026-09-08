@@ -12,7 +12,7 @@ public static class RegexUtilities
 {
     /// <summary>
     /// Checks via reges if the given email string is a valid email.
-    /// <see cref="https://docs.microsoft.com/de-de/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format"/>
+    /// <see href="https://docs.microsoft.com/de-de/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format"/>
     /// <remarks>
     /// RegexMatchTimeoutException and ArgumentException will be eaten. Instead of throwing, this method will return false!
     /// </remarks>

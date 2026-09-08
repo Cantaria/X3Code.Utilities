@@ -15,7 +15,6 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// <summary>
     /// Provides a base implementation for repository operations across entities of a specific type.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity that the repository will manage.</typeparam>
     public BaseRepository(DbContext context)
     {
         DataBase = context;

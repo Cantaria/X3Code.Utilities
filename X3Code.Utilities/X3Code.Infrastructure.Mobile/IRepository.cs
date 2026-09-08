@@ -15,7 +15,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Retrieves a single entity from the database based on the specified predicate.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <param name="predicate">The predicate used to filter the entities.</param>
 	/// <param name="asNoTracking">Determines whether to track changes for the retrieved entity. The default value is false.</param>
 	/// <returns>The retrieved entity that matches the given predicate.</returns>
@@ -34,14 +33,13 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <param name="predicate">The predicate that specifies the condition to match.</param>
 	/// <param name="asNoTracking">Determines whether to track changes for the returned entities. Default is false.</param>
 	/// <returns>
-	/// An IEnumerable<TEntity> that contains the entities satisfying the predicate.
+	/// An IEnumerable&lt;TEntity&gt; that contains the entities satisfying the predicate.
 	/// </returns>
 	IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 
 	/// <summary>
 	/// Executes a query on the specified entity using the given predicate.
 	/// </summary>
-	/// <typeparam name="TEntity">The entity type.</typeparam>
 	/// <param name="predicate">The predicate used to filter the entities.</param>
 	/// <param name="asNoTracking">Indicates whether the entities should be retrieved as non-tracking.</param>
 	/// <returns>An <see cref="IQueryable{TEntity}"/> representing the result of the query.</returns>
@@ -50,7 +48,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Performs a query on the database.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of entity to query.</typeparam>
 	/// <param name="asNoTracking">Specifies whether to track the query results or not. Default is false.</param>
 	/// <returns>The query results as an IQueryable collection of TEntity.</returns>
 	/// <remarks>
@@ -82,7 +79,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Adds the specified collection of entities to the current context.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entities.</typeparam>
 	/// <param name="entities">The collection of entities to be added.</param>
 	/// <param name="asNoTracking">Optional. Determines whether the added entities should be tracked by the context.</param>
 	/// <remarks>
@@ -95,7 +91,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Removes the specified entity from the database.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <param name="entity">The entity to remove.</param>
 	/// <param name="asNoTracking">Determines whether the entity should be tracked or not. Default is false.</param>
 	/// <remarks>
@@ -112,7 +107,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Removes all entities from the database that match the specified criteria.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of entities to be removed.</typeparam>
 	/// <param name="entities">The collection of entities to be removed.</param>
 	/// <param name="asNoTracking">Specifies whether the entities should be tracked by the context after removal.
 	/// By default, entities will be tracked.</param>
@@ -129,7 +123,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Updates an entity in the database.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of entity to be updated.</typeparam>
 	/// <param name="entity">The entity to be updated.</param>
 	/// <param name="asNoTracking">Indicates whether to track changes made to the entity or not. Default value is false.</param>
 	/// <remarks>
@@ -150,7 +143,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Updates all the entities in the provided enumerable collection.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entities.</typeparam>
 	/// <param name="entities">The enumerable collection of entities to update.</param>
 	/// <param name="asNoTracking">Optional. Specifies whether to disable change tracking for the entities being updated. Default is false.</param>
 	/// <remarks>
@@ -170,7 +162,7 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <example>
 	/// This example retrieves a user entity with the specified user ID.
 	/// <code>
-	/// Expression<Func<User, bool>> predicate = u => u.UserId == 100;
+	/// Expression&lt;Func&lt;User, bool&gt;&gt; predicate = u =&gt; u.UserId == 100;
 	/// User user = await userRepository.GetAsync(predicate);
 	/// </code>
 	/// </example>
@@ -183,7 +175,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Retrieves all entities asynchronously from the database.
 	/// </summary>
-	/// <typeparam name="TEntity">The entity type.</typeparam>
 	/// <param name="asNoTracking">
 	/// If set to <c>true</c>, the entities will not be tracked by the DbContext.
 	/// </param>
@@ -208,7 +199,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Adds a new entity to the database asynchronously.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <param name="entity">The entity to be added to the database.</param>
 	/// <param name="asNoTracking">Indicates whether to track the entity after adding it. Default is false.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the entity that was added to the database.</returns>
@@ -217,7 +207,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Adds multiple entities to the database asynchronously.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of entity.</typeparam>
 	/// <param name="entities">The collection of entities to add.</param>
 	/// <param name="asNoTracking">Indicates whether the entities should be added without tracking.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
@@ -243,7 +232,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Removes all entities asynchronously from the database that match the given collection of entities.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entities.</typeparam>
 	/// <param name="entities">A collection of entities to be removed.</param>
 	/// <param name="asNoTracking">A boolean indicating whether to disable change tracking for the removed entities. Default is false.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
@@ -260,7 +248,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <summary>
 	/// Updates multiple entities asynchronously in the database.
 	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <param name="entities">The collection of entities to be updated.</param>
 	/// <param name="asNoTracking">A boolean value indicating whether tracking should be enabled or disabled for the entities being updated. Default is false.</param>
 	/// <returns>A Task representing the asynchronous operation.</returns>

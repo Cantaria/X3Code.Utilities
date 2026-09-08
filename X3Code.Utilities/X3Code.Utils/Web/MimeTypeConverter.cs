@@ -5,13 +5,13 @@ namespace X3Code.Utils.Web;
 /// <summary>
 /// Mime Type Converter, helps converting file extension to their specific mime-type
 /// </summary>
-/// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
+/// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
 public static class MimeTypeConverter
 {
     /// <summary>
     /// Determines for a given filename with extension a fitting mime-type
     /// </summary>
-    /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
     /// <param name="fileName">The filename with extension</param>
     /// <returns>"application/octet-stream" if unknown, else the mime type</returns>
     public static string GetContentTypeForFileExtension(string? fileName)
@@ -95,7 +95,7 @@ public static class MimeTypeConverter
     /// <summary>
     /// Determines for a given contenttype a fitting file extension
     /// </summary>
-    /// <see cref="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"/>
     /// <param name="contentType">The content type</param>
     /// <returns>The file extension is known, else string.Empty</returns>
     public static string GetFileExtensionByContentType(string? contentType)

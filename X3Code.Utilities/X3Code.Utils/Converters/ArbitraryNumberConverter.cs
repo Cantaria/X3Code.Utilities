@@ -10,7 +10,7 @@ public static class ArbitraryNumberConverter
     /// <summary>
     /// Converts the given number from the numeral system with the specified
     /// radix (in the range [2, 36]) to decimal numeral system.
-    /// <see cref="https://www.pvladov.com/2012/07/arbitrary-to-decimal-numeral-system.html"/>
+    /// <see href="https://www.pvladov.com/2012/07/arbitrary-to-decimal-numeral-system.html"/>
     /// </summary>
     /// <param name="number">The arbitrary numeral system number to convert.</param>
     /// <param name="radix">The radix of the numeral system the given number is in (in the range [2, 36]).</param>
@@ -54,7 +54,7 @@ public static class ArbitraryNumberConverter
     /// <summary>
     /// Converts the given decimal number to the numeral system with the
     /// specified radix (in the range [2, 36]).
-    /// <see cref="https://www.pvladov.com/2012/05/decimal-to-arbitrary-numeral-system.html"/>
+    /// <see href="https://www.pvladov.com/2012/05/decimal-to-arbitrary-numeral-system.html"/>
     /// </summary>
     /// <param name="decimalNumber">The number to convert.</param>
     /// <param name="radix">The radix of the destination numeral system

@@ -18,7 +18,6 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// Initializes a new instance of the <see cref="GenericRepository{TEntity,TContext}"/> class.
     /// </summary>
     /// <param name="context">The context to use.</param>
-    /// <typeparam name="TContext">The type of the database context.</typeparam>
     protected GenericRepository(TContext context)
     {
         DataBase = context;
