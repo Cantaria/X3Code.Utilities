@@ -8,7 +8,8 @@
         <Description>Tools and accessibility stuff for Microsoft Azure Services</Description>
         <PackageReleaseNotes>10.0.0: New version scheme - the major now tracks the .NET generation the package is built for (net10.0), the minor carries features and breaking changes, the patch carries fixes. All X3Code packages move to 10.0.0 together.
 The package now ships its XML documentation, so consumers get IntelliSense. Added an MIT license expression, a README and a symbol package (snupkg) with SourceLink.
-Azure.Storage.Blobs 12.27.0 -> 12.29.2, Azure.Core 1.51.1 -> 1.55.0, Microsoft.Data.SqlClient 6.1.4 -> 6.1.6.
+Azure.Storage.Blobs 12.27.0 -> 12.29.2.
+Removed two package references that this library never used: Microsoft.Data.SqlClient, which dragged Azure.Identity, Microsoft.IdentityModel.* and the native SNI assets into every consumer, and Azure.Core, which Azure.Storage.Blobs already brings along.
 Exists, Delete, DownloadFile and UploadFile now take a CancellationToken, like ListFiles already did. The parameter is optional, so existing call sites keep compiling.
 Fixed: DownloadFile returned a MemoryStream positioned at the end, so a caller reading it directly got zero bytes.
 Fixed: UploadFile threw NotSupportedException on streams that cannot seek, such as network or compression streams. It now only checks the length and rewinds when the stream supports it.
@@ -17,10 +18,8 @@ New: optional logging of the blob operations through Microsoft.Extensions.Loggin
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Core" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="Azure.Storage.Blobs" />
-      <PackageReference Include="Microsoft.Data.SqlClient" />
     </ItemGroup>
 
     <ItemGroup>

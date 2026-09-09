@@ -82,29 +82,102 @@ public class BulkWriteMappingTest : IDisposable
             IF OBJECT_ID('Gadget', 'U') IS NOT NULL DROP TABLE Gadget;
             CREATE TABLE Gadget (
                 EntityId uniqueidentifier NOT NULL PRIMARY KEY,
-                gadget_label nvarchar(50) NOT NULL
+                gadget_label nvarchar(50) NOT NULL,
+                OwnerEntityId uniqueidentifier NULL
+            );
+            """);
+
+        var repository = new GadgetRepository(context);
+        var owner = new Person { EntityId = Guid.NewGuid(), Name = "Owner" };
+        var gadgets = new List<Gadget>
+        {
+            new() { EntityId = Guid.NewGuid(), Label = "first", Owner = owner },
+            new() { EntityId = Guid.NewGuid(), Label = "second", Owner = owner },
+        };
+
+        // Getrackt, damit EF die Shadow-FK setzt - ungetrackt ist sie schlicht nicht lesbar.
+        context.AttachRange(gadgets);
+
+        // Reflection haette hier eine Spalte "Label" und eine Spalte "Owner" erzeugt - die
+        // Tabelle hat aber "gadget_label", und "OwnerEntityId" haette komplett gefehlt.
+        var written = await repository.BulkWrite(gadgets);
+
+        Assert.Equal(2, written);
+
+        var stored = _verifier.GetFromDb("SELECT gadget_label, OwnerEntityId FROM Gadget ORDER BY gadget_label");
+        Assert.Equal(2, stored.Rows.Count);
+        Assert.Equal("first", stored.Rows[0][0]);
+        Assert.Equal("second", stored.Rows[1][0]);
+
+        // Der eigentliche Punkt: die Shadow-FK landet mit Wert in der Spalte, nicht als NULL.
+        Assert.Equal(owner.EntityId, stored.Rows[0][1]);
+        Assert.Equal(owner.EntityId, stored.Rows[1][1]);
+
+        await context.Database.ExecuteSqlRawAsync("DROP TABLE Gadget;");
+    }
+
+    [Fact]
+    public async Task An_untracked_shadow_property_is_refused_instead_of_written_as_null()
+    {
+        await using var context = new MappingContext(_database.ConnectionString);
+        await context.Database.ExecuteSqlRawAsync(
+            """
+            IF OBJECT_ID('Gadget', 'U') IS NOT NULL DROP TABLE Gadget;
+            CREATE TABLE Gadget (
+                EntityId uniqueidentifier NOT NULL PRIMARY KEY,
+                gadget_label nvarchar(50) NOT NULL,
+                OwnerEntityId uniqueidentifier NULL
             );
             """);
 
         var repository = new GadgetRepository(context);
         var gadgets = new List<Gadget>
         {
-            new() { EntityId = Guid.NewGuid(), Label = "first", Owner = new Person { Name = "ignored" } },
-            new() { EntityId = Guid.NewGuid(), Label = "second", Owner = new Person { Name = "ignored" } },
+            new() { EntityId = Guid.NewGuid(), Label = "untracked", Owner = new Person { EntityId = Guid.NewGuid(), Name = "Owner" } },
         };
 
-        // Reflection haette hier eine Spalte "Label" und eine Spalte "Owner" erzeugt -
-        // die Tabelle hat aber "gadget_label" und kein Owner.
-        var written = await repository.BulkWrite(gadgets);
+        // Kein Attach: die Shadow-FK ist nicht lesbar. Frueher lief das durch und schrieb NULL,
+        // BulkWrite meldete trotzdem Erfolg.
+        var exception = await Assert.ThrowsAsync<NotSupportedException>(() => repository.BulkWrite(gadgets));
 
-        Assert.Equal(2, written);
+        Assert.Contains("OwnerEntityId", exception.Message);
+        Assert.Contains("not tracked", exception.Message);
 
-        var stored = _verifier.GetFromDb("SELECT gadget_label FROM Gadget ORDER BY gadget_label");
-        Assert.Equal(2, stored.Rows.Count);
-        Assert.Equal("first", stored.Rows[0][0]);
-        Assert.Equal("second", stored.Rows[1][0]);
+        var stored = _verifier.GetFromDb("SELECT COUNT(1) FROM Gadget");
+        Assert.Equal(0, (int)stored.Rows[0][0]);
 
         await context.Database.ExecuteSqlRawAsync("DROP TABLE Gadget;");
+    }
+
+    [Fact]
+    public async Task A_computed_column_is_left_to_the_database()
+    {
+        await using var context = new ComputedContext(_database.ConnectionString);
+        await context.Database.ExecuteSqlRawAsync(
+            """
+            IF OBJECT_ID('Measurement', 'U') IS NOT NULL DROP TABLE Measurement;
+            CREATE TABLE Measurement (
+                EntityId uniqueidentifier NOT NULL PRIMARY KEY,
+                Width int NOT NULL,
+                Height int NOT NULL,
+                Area AS ([Width] * [Height])
+            );
+            """);
+
+        var repository = new MeasurementRepository(context);
+
+        // Vorher: "SqlException: The column Area cannot be modified because it is either a
+        // computed column or is the result of a UNION operator."
+        var written = await repository.BulkWrite([
+            new Measurement { EntityId = Guid.NewGuid(), Width = 3, Height = 4 },
+        ]);
+
+        Assert.Equal(1, written);
+
+        var stored = _verifier.GetFromDb("SELECT Area FROM Measurement");
+        Assert.Equal(12, stored.Rows[0][0]);
+
+        await context.Database.ExecuteSqlRawAsync("DROP TABLE Measurement;");
     }
 
     public void Dispose()
@@ -141,8 +214,46 @@ public class BulkWriteMappingTest : IDisposable
             gadget.ToTable("Gadget");
             gadget.HasKey(x => x.EntityId);
             gadget.Property(x => x.Label).HasMaxLength(50);
-            gadget.Ignore(x => x.Owner);
+            // Bewusst NICHT ignoriert: die Beziehung erzeugt die Shadow-FK "OwnerEntityId",
+            // und genau die wurde vom alten Mapping stillschweigend als NULL geschrieben.
+            gadget.HasOne(x => x.Owner).WithMany().HasForeignKey("OwnerEntityId");
+            modelBuilder.Entity<Person>().ToTable("Person");
         }
+    }
+
+    public class Measurement : Entity
+    {
+        public override Guid EntityId { get; set; }
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
+        // Von der Datenbank berechnet - darf nicht mitgeschickt werden.
+        public int Area { get; private set; }
+    }
+
+    private class ComputedContext : DbContext
+    {
+        private readonly string _connectionString;
+
+        public ComputedContext(string connectionString) => _connectionString = connectionString;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlServer(_connectionString);
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var measurement = modelBuilder.Entity<Measurement>();
+            measurement.ToTable("Measurement");
+            measurement.HasKey(x => x.EntityId);
+            measurement.Property(x => x.Area).HasComputedColumnSql("[Width] * [Height]");
+        }
+    }
+
+    private class MeasurementRepository : GenericRepository<Measurement, ComputedContext>
+    {
+        public MeasurementRepository(ComputedContext context) : base(context) { }
     }
 
     private class GadgetRepository : GenericRepository<Gadget, MappingContext>

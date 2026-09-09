@@ -38,6 +38,17 @@ public interface IUnitOfWork
     /// </summary>
     /// <param name="work">The writes that belong together. It may run more than once if the strategy retries, so keep it free of side effects outside the database.</param>
     /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <remarks>
+    /// Before a retry the change tracker is cleared: the failed attempt was rolled back, but its
+    /// entities would otherwise stay in the context - after a SaveChanges even as Unchanged, so the
+    /// context would claim rows exist that the rollback took away. Do not rely on entities you
+    /// tracked before the call still being tracked after it.
+    /// <para>
+    /// Do not call this inside an open scope. A retrying execution strategy refuses a transaction
+    /// the caller started, and that is exactly what the surrounding scope holds -
+    /// <see cref="BeginAsync"/> is the one that joins an open transaction.
+    /// </para>
+    /// </remarks>
     Task ExecuteAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken = default);
 
     /// <summary>

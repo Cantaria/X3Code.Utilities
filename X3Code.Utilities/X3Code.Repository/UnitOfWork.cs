@@ -100,7 +100,15 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
         return await strategy.ExecuteAsync(async token =>
         {
-            if (attempt++ > 0) UnitOfWorkLog.Retried(_logger);
+            if (attempt++ > 0)
+            {
+                // Der fehlgeschlagene Versuch wurde zurueckgerollt, seine Entitaeten haengen
+                // aber weiter im ChangeTracker - nach einem SaveChanges sogar als Unchanged.
+                // Der Context wuerde also behaupten, Zeilen existierten, die es nicht gibt.
+                _context.ChangeTracker.Clear();
+
+                UnitOfWorkLog.Retried(_logger);
+            }
 
             await using var scope = await BeginAsync(token);
 

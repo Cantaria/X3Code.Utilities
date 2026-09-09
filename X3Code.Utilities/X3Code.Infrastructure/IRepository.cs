@@ -244,5 +244,5 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	/// <param name="timeOutInSeconds">The timeout value in seconds for the bulk write operation.</param>
 	/// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
 	/// <returns>A task that represents the asynchronous bulk write operation. The task result represents the number of entities that were successfully inserted or updated.</returns>
-	Task<int> BulkWrite(IEnumerable<TEntity> entities, string tableName, int timeOutInSeconds, CancellationToken cancellationToken = default);
+	Task<int> BulkWrite(IEnumerable<TEntity> entities, string? tableName = null, int timeOutInSeconds = 0, CancellationToken cancellationToken = default);
 }

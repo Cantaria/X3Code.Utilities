@@ -457,30 +457,46 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
 
     /// <summary>
     /// The scalar columns of the entity, taken from the EF model rather than from reflection.
-    /// Reflection would also pick up navigation properties and would miss any column renamed
-    /// via HasColumnName or [Column]; both make SqlBulkCopy fail on a column the table has not got.
+    /// Reflection would also pick up navigation properties and would miss any column renamed via
+    /// HasColumnName or [Column]; both make SqlBulkCopy fail on a column the table has not got.
     /// </summary>
+    /// <remarks>
+    /// Columns the store fills itself are left out - a computed column rejects any value, and a
+    /// rowversion is maintained by the server. Everything else has to be supplied, including
+    /// shadow properties: leaving those out writes NULL into them without a word of warning.
+    /// </remarks>
     private static List<BulkColumn> GetBulkColumns(IEntityType entityType)
     {
         var storeObject = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
+        var discriminator = entityType.FindDiscriminatorProperty();
         var result = new List<BulkColumn>();
 
         foreach (var property in entityType.GetProperties())
         {
-            // Shadow properties have no CLR property to read the value from.
-            if (property.PropertyInfo == null) continue;
+            // Der Store erzeugt den Wert selbst - mitgeschickt laesst SqlBulkCopy die Spalte
+            // ablehnen ("cannot be modified because it is either a computed column ...").
+            if (property.GetComputedColumnSql() is not null) continue;
+            if (property.ValueGenerated == ValueGenerated.OnAddOrUpdate) continue;
 
             var columnName = storeObject.HasValue
                 ? property.GetColumnName(storeObject.Value) ?? property.Name
                 : property.Name;
 
-            result.Add(new BulkColumn(columnName, property.PropertyInfo, property.ClrType));
+            BulkColumnKind kind;
+            if (property.PropertyInfo != null) kind = BulkColumnKind.Clr;
+            else if (ReferenceEquals(property, discriminator)) kind = BulkColumnKind.Discriminator;
+            else kind = BulkColumnKind.Shadow;
+
+            // Eine Shadow-Property, die der Store fuellt, gehoert nicht in die DataTable.
+            if (kind == BulkColumnKind.Shadow && property.ValueGenerated != ValueGenerated.Never) continue;
+
+            result.Add(new BulkColumn(columnName, property.Name, property.PropertyInfo, property.ClrType, kind));
         }
 
         return result;
     }
 
-    private static DataTable BuildDataTable(List<TEntity> entities, List<BulkColumn> columns, string tableName)
+    private DataTable BuildDataTable(List<TEntity> entities, List<BulkColumn> columns, string tableName)
     {
         var table = new DataTable(tableName);
 
@@ -494,7 +510,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
             var row = table.NewRow();
             foreach (var column in columns)
             {
-                row[column.ColumnName] = column.Property.GetValue(entity) ?? DBNull.Value;
+                row[column.ColumnName] = ReadValue(entity, column) ?? DBNull.Value;
             }
             table.Rows.Add(row);
         }
@@ -502,7 +518,51 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
         return table;
     }
 
-    private sealed record BulkColumn(string ColumnName, PropertyInfo Property, Type ClrType);
+    /// <exception cref="NotSupportedException">
+    /// Thrown for a shadow property whose entity is not tracked - its value cannot be read, and
+    /// writing NULL instead would corrupt the row without any error.
+    /// </exception>
+    private object? ReadValue(TEntity entity, BulkColumn column)
+    {
+        switch (column.Kind)
+        {
+            case BulkColumnKind.Clr:
+                return column.Property!.GetValue(entity);
+
+            case BulkColumnKind.Discriminator:
+                // Steht im Modell, nicht an der Entitaet - der Laufzeittyp entscheidet, welcher
+                // Wert es ist.
+                return DataBase.Model.FindEntityType(entity.GetType())?.GetDiscriminatorValue();
+
+            default:
+                var entry = DataBase.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                {
+                    throw new NotSupportedException(
+                        $"[{column.PropertyName}] on [{typeof(TEntity).Name}] is a shadow property and this entity is not tracked by the context, so its value cannot be read. " +
+                        "BulkWrite would silently write NULL into that column. Add or Attach the entities to the context before the call, or map the value to a CLR property.");
+                }
+
+                return entry.Property(column.PropertyName).CurrentValue;
+        }
+    }
+
+    /// <summary>
+    /// Where the value of a bulk column comes from.
+    /// </summary>
+    private enum BulkColumnKind
+    {
+        /// <summary>A CLR property on the entity.</summary>
+        Clr,
+
+        /// <summary>A shadow property - only the change tracker knows the value.</summary>
+        Shadow,
+
+        /// <summary>The table-per-hierarchy discriminator - the model knows the value.</summary>
+        Discriminator,
+    }
+
+    private sealed record BulkColumn(string ColumnName, string PropertyName, PropertyInfo? Property, Type ClrType, BulkColumnKind Kind);
 
     #endregion
 

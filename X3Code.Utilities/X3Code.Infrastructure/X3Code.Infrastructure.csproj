@@ -13,7 +13,11 @@ All asynchronous methods on IRepository/GenericRepository now take a Cancellatio
 Fixed a name clash that hit every consumer referencing X3Code.Utilities and X3Code.Infrastructure together: DataTableExtensions was compiled into both assemblies as a public type, so calling ToDataTable failed with CS0121 (ambiguous call). This package no longer carries a copy at all - BulkWrite builds its table from the EF model now. Take ToDataTable from X3Code.Utilities.
 BulkWrite was reworked. It used to open a second connection of its own, so the copied rows took no part in a transaction that was open on the context and survived a rollback. It now runs on the context's connection and joins that transaction.
 BulkWrite also used to derive its columns by reflecting over the entity's properties. That picked up navigation properties and ignored column names set via HasColumnName or [Column], which made SqlBulkCopy fail on columns the target table does not have. Columns now come from the EF model.
-The tableName parameter of BulkWrite is optional now and falls back to the table the entity is mapped to.</PackageReleaseNotes>
+The tableName parameter of BulkWrite is optional now and falls back to the table the entity is mapped to.
+BREAKING: IRepository.BulkWrite is declared as (entities, string? tableName = null, int timeOutInSeconds = 0, CancellationToken) now, matching GenericRepository. On the interface both parameters were still required and tableName was non-nullable, so the previous note about the optional table name only held for the concrete class.
+Fixed: BulkWrite silently wrote NULL into shadow properties - a shadow foreign key of an untracked entity ended up as NULL while BulkWrite reported success. Shadow values are read from the change tracker now; when the entity is not tracked the call fails with a NotSupportedException naming the property instead of corrupting the row.
+Fixed: BulkWrite sent computed columns to the server, which rejects them ("The column cannot be modified because it is either a computed column..."). Computed and store-generated columns are left out now.
+The table-per-hierarchy discriminator is filled from the model, so TPH entities can be bulk written at all - it used to fail with "Cannot insert the value NULL into column 'Discriminator'".</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

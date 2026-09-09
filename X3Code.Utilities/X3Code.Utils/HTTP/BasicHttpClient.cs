@@ -329,8 +329,10 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <returns>A Task representing the asynchronous operation.</returns>
     public async Task UploadStreamAsync(string uri, Stream stream, CancellationToken cancellationToken = default)
     {
-        using var content = new StreamContent(stream);
-        var response = await Client.PostAsync(uri, content, cancellationToken);
+        // Kein using auf den StreamContent: dessen Dispose schliesst den umschlossenen Stream,
+        // also den des Aufrufers, der ihn nach dem Upload womoeglich noch braucht. Disposed
+        // wird stattdessen die Response, die HttpClient uns uebergibt.
+        using var response = await Client.PostAsync(uri, new StreamContent(stream), cancellationToken);
 
         await CheckSuccessCodeAsync(response, cancellationToken);
     }
