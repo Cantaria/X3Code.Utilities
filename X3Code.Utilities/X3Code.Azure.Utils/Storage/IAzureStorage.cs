@@ -14,7 +14,7 @@ public interface IAzureStorage
     /// <param name="path">Path to the folder the files should be listed, can be null</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IEnumerable<string>> ListFiles(string? path, CancellationToken cancellationToken = default);
+    Task<IEnumerable<string>> ListFiles(string? path = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks if the blob exists

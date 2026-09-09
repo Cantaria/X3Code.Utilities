@@ -11,7 +11,7 @@ namespace X3Code.Infrastructure;
 /// Represents a repository for accessing and managing entities of type <typeparamref name="TEntity"/>.
 /// </summary>
 /// <typeparam name="TEntity">The type of entity being managed by the repository.</typeparam>
-public interface IRepository<TEntity> where TEntity : IEntity
+public interface IRepository<TEntity> where TEntity : class, IEntity
 {
 	/// <summary>
 	/// Retrieves a single entity based on the specified predicate.

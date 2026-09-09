@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace X3Code.Repository;
 
-public interface IBaseRepository<TEntity>
+public interface IBaseRepository<TEntity> where TEntity : class
 {
 	TEntity? Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false);
 	IEnumerable<TEntity> GetAll(bool asNoTracking = false);

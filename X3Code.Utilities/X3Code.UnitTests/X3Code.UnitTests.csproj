@@ -29,4 +29,15 @@
     </None>
   </ItemGroup>
 
+  <!--
+    Geteilter Test-Helfer. Testprojekte sind IsPackable=false und werden von niemandem
+    referenziert, deshalb braucht dieser Link - anders als die geteilten Bibliotheksquellen -
+    keine Namespace- oder Sichtbarkeits-Sonderbehandlung.
+  -->
+  <ItemGroup>
+    <Compile Include="..\TestSupport\InterfaceContract.cs">
+      <Link>TestSupport\InterfaceContract.cs</Link>
+    </Compile>
+  </ItemGroup>
+
 </Project>

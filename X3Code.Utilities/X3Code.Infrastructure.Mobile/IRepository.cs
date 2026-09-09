@@ -11,7 +11,7 @@ namespace X3Code.Infrastructure.Mobile;
 /// Represents a repository for accessing and manipulating entities of type TEntity.
 /// </summary>
 /// <typeparam name="TEntity">The type of entities stored in the repository.</typeparam>
-public interface IRepository<TEntity> where TEntity : IEntity
+public interface IRepository<TEntity> where TEntity : class, IEntity
 {
 	/// <summary>
 	/// Retrieves a single entity from the database based on the specified predicate.
