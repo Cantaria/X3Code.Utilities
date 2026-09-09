@@ -2,8 +2,8 @@ namespace X3Code.Repository;
 
 /// <summary>
 /// Opens a unit of work over the <see cref="Microsoft.EntityFrameworkCore.DbContext"/> the repositories share.
-/// Every write the repositories do while a scope is open lands in one database transaction, so a sequence of
-/// writes either arrives whole or not at all - without it, each single write is committed on its own and a
+/// Every writing the repositories do while a scope is open lands in one database transaction, so a sequence of
+/// writes either arrives whole or not at all - without it, each single writing is committed on its own and a
 /// failure in the middle leaves the half of it that already went through.
 /// </summary>
 /// <remarks>
@@ -26,7 +26,7 @@ public interface IUnitOfWork
     /// <see cref="IUnitOfWorkScope.CompleteAsync"/> is called; disposing the scope without it discards everything.
     /// Opening one while another is still open joins the open one - only the outermost decides.
     /// </summary>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <exception cref="InvalidOperationException">The provider has no transactions.</exception>
     Task<IUnitOfWorkScope> BeginAsync(CancellationToken cancellationToken = default);
 
@@ -37,7 +37,7 @@ public interface IUnitOfWork
     /// itself, so the whole block has to be handed to the strategy, which is what happens here.
     /// </summary>
     /// <param name="work">The writes that belong together. It may run more than once if the strategy retries, so keep it free of side effects outside the database.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <remarks>
     /// Before a retry the change tracker is cleared: the failed attempt was rolled back, but its
     /// entities would otherwise stay in the context - after a SaveChanges even as Unchanged, so the
@@ -57,7 +57,7 @@ public interface IUnitOfWork
     /// </summary>
     /// <typeparam name="TResult">The type the work returns.</typeparam>
     /// <param name="work">The writes that belong together. It may run more than once if the strategy retries, so keep it free of side effects outside the database.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>Whatever <paramref name="work"/> returned on the attempt that succeeded.</returns>
     Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> work, CancellationToken cancellationToken = default);
 }

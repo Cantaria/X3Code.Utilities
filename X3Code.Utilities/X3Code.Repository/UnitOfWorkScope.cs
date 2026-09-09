@@ -29,7 +29,7 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
     public bool IsAbandoned { get; private set; }
 
     /// <summary>
-    /// True while this scope still holds the given transaction. The unit of work uses it to tell its own
+    /// True, while this scope still holds the given transaction. The unit of work uses it to tell its own
     /// transaction from one somebody else started on the context in the meantime.
     /// </summary>
     internal bool Owns(IDbContextTransaction transaction) => ReferenceEquals(_transaction, transaction);
@@ -78,7 +78,7 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
 
         _isDisposed = true;
 
-        // Vor dem Dispose loggen: danach ist nicht mehr erkennbar, ob hier committet oder
+        // Vor dem Dispose loggen: Danach ist nicht mehr erkennbar, ob hier committet oder
         // verworfen wurde.
         if (!IsCompleted) UnitOfWorkLog.Discarded(_logger);
 

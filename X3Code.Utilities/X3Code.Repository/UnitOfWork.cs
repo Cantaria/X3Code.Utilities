@@ -6,8 +6,8 @@ namespace X3Code.Repository;
 
 /// <inheritdoc cref="IUnitOfWork"/>
 /// <typeparam name="TContext">
-/// The context the transaction is opened on. Naming it makes this resolvable from a container with
-/// several contexts registered, and ties the unit of work to the same one the repositories use.
+/// The context of the transaction is opened on. Naming it makes this resolvable from a container with
+/// several contexts registered and ties the unit of work to the same one the repositories use.
 /// </typeparam>
 public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
@@ -22,7 +22,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <param name="logger">
     /// Optional. Without it nothing is logged and nothing is allocated for it. Pass one - or let the
     /// container hand one in - to see the transaction boundaries. Which logger sits behind the
-    /// abstraction is the application's decision, this library brings none.
+    /// abstraction is the application's decision; this library brings none.
     /// </param>
     public UnitOfWork(TContext context, ILogger<UnitOfWork<TContext>>? logger = null)
     {
@@ -102,9 +102,9 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         {
             if (attempt++ > 0)
             {
-                // Der fehlgeschlagene Versuch wurde zurueckgerollt, seine Entitaeten haengen
+                // Der fehlgeschlagene Versuch wurde zurückgerollt, seine Entitäten hängen
                 // aber weiter im ChangeTracker - nach einem SaveChanges sogar als Unchanged.
-                // Der Context wuerde also behaupten, Zeilen existierten, die es nicht gibt.
+                // Der Context würde also behaupten, Zeilen existierten, die es nicht gibt.
                 _context.ChangeTracker.Clear();
 
                 UnitOfWorkLog.Retried(_logger);
@@ -134,7 +134,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 }
 
 /// <summary>
-/// The unit of work without naming its context. Same behaviour as
+/// The unit of work without naming its context. Same behavior as
 /// <see cref="UnitOfWork{TContext}"/>, it just asks for the base <see cref="DbContext"/>.
 /// </summary>
 /// <remarks>

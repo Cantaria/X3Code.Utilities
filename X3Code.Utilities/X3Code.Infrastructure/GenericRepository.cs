@@ -32,7 +32,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Direct access on the context
+    /// Direct access to the context
     /// </summary>
     protected TContext DataBase { get; }
 
@@ -44,9 +44,9 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     #region Entity Framework database operations
 
     /// <summary>
-    /// Search an return the entity
+    /// Search and return the entity
     /// </summary>
-    /// <param name="predicate">The expression which should be used to search for an entity</param>
+    /// <param name="predicate">The expression that should be used to search for an entity</param>
     /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
     /// <returns>The searched Entity, if found</returns>
     public TEntity? Get(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = false)
@@ -124,7 +124,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <summary>
     /// Adds the entity to the database
     /// </summary>
-    /// <param name="entity">The entity that should be saved in database</param>
+    /// <param name="entity">The entity that should be saved in a database</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
     public void Add(TEntity entity, bool asNoTracking = false)
     {
@@ -140,7 +140,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <summary>
     /// Adds all entities to the database
     /// </summary>
-    /// <param name="entities">Entities that should be saved into database</param>
+    /// <param name="entities">Entities that should be saved into a database</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
     public void AddAll(IEnumerable<TEntity> entities, bool asNoTracking = false)
     {
@@ -156,7 +156,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Removes the given entity from database
+    /// Removes the given entity from the database
     /// </summary>
     /// <param name="entity">The entity to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
@@ -172,7 +172,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Removes all given entities from database
+    /// Removes all given entities from the database
     /// </summary>
     /// <param name="entities">The entities to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
@@ -190,7 +190,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Updates the given entity from database
+    /// Updates the given entity from a database
     /// </summary>
     /// <param name="entity">The entity to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
@@ -206,7 +206,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Updates all given entities from database
+    /// Updates all given entities from the database
     /// </summary>
     /// <param name="entities">The entities to update</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
@@ -224,9 +224,9 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Search an return the entity
+    /// Search and return the entity
     /// </summary>
-    /// <param name="predicate">The expression which should be used to search for an entity</param>
+    /// <param name="predicate">The expression that should be used to search for an entity</param>
     /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
     /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
     /// <returns>The searched Entity, if found</returns>
@@ -244,7 +244,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// Returns all entities for TEntity
     /// </summary>
     /// <param name="asNoTracking">Optional: Do not track the entity with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>The searched Entity, if found</returns>
     public async Task<IEnumerable<TEntity>> GetAllAsync(bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
@@ -261,7 +261,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// </summary>
     /// <param name="predicate">The predicate for selecting entities</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate,
         bool asNoTracking = false, CancellationToken cancellationToken = default)
@@ -277,9 +277,9 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <summary>
     /// Adds the entity to the database
     /// </summary>
-    /// <param name="entity">The entity that should be saved in database</param>
+    /// <param name="entity">The entity that should be saved in a database</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task AddAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         await Entities.AddAsync(entity, cancellationToken);
@@ -294,9 +294,9 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// <summary>
     /// Adds all entities to the database
     /// </summary>
-    /// <param name="entities">Entities that should be saved into database</param>
+    /// <param name="entities">Entities that should be saved into a database</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task AddAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
@@ -311,11 +311,11 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Removes the given entity from database
+    /// Removes the given entity from the database
     /// </summary>
     /// <param name="entity">The entity to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task RemoveAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         Entities.Remove(entity);
@@ -328,11 +328,11 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Removes all given entities from database
+    /// Removes all given entities from the database
     /// </summary>
     /// <param name="entities">The entities to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task RemoveAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
@@ -347,11 +347,11 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Updates the given entity from database
+    /// Updates the given entity from a database
     /// </summary>
     /// <param name="entity">The entity to remove</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task UpdateAsync(TEntity entity, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         Entities.Update(entity);
@@ -364,11 +364,11 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     }
 
     /// <summary>
-    /// Updates all given entities from database
+    /// Updates all given entities from the database
     /// </summary>
     /// <param name="entities">The entities to update</param>
     /// <param name="asNoTracking">Optional: Do not track the entities with DbContext. Default = false</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public async Task UpdateAllAsync(IEnumerable<TEntity> entities, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var asList = entities.ToList();
@@ -390,14 +390,14 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// Performs a bulk write operation for the provided entities into the specified table.
     /// </summary>
     /// <param name="entities">Collection of entities to be written in the database table.</param>
-    /// <param name="tableName">Name of the target table. If omitted, the table the entity is mapped to is used.</param>
+    /// <param name="tableName">Name of the target table. If omitted, the table the entity is mapped to be used.</param>
     /// <param name="timeOutInSeconds">Optional: Number of seconds for the operations to complete. If not set, default is used.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>Returns the number of rows copied.</returns>
     /// <remarks>
     /// The copy runs on the context's own connection and joins a transaction that is already
     /// open on it, so a rollback takes the copied rows with it. Columns come from the EF model,
-    /// which means mapped column names are honoured and navigation properties stay out.
+    /// which means mapped column names are honored and navigation properties stay out.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown if the entity is not part of the context's model, or the provider is not SQL Server.</exception>
     public async Task<int> BulkWrite(IEnumerable<TEntity> entities, string? tableName = null, int timeOutInSeconds = 0, CancellationToken cancellationToken = default)
@@ -423,8 +423,8 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
             throw new InvalidOperationException("BulkWrite needs a SQL Server connection.");
         }
 
-        // Eine offene Transaktion des Contexts muss mitgegeben werden, sonst laeuft der
-        // Bulk-Insert daneben und ein Rollback holt die Zeilen nicht zurueck.
+        // Eine offene Transaktion des Contexts muss mitgegeben werden, sonst läuft der
+        // Bulk-Insert daneben und ein Rollback holt die Zeilen nicht zurück.
         var transaction = DataBase.Database.CurrentTransaction?.GetDbTransaction() as SqlTransaction;
 
         var wasClosed = connection.State != ConnectionState.Open;
@@ -462,7 +462,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
     /// </summary>
     /// <remarks>
     /// Columns the store fills itself are left out - a computed column rejects any value, and a
-    /// rowversion is maintained by the server. Everything else has to be supplied, including
+    /// row version is maintained by the server. Everything else has to be supplied, including
     /// shadow properties: leaving those out writes NULL into them without a word of warning.
     /// </remarks>
     private static List<BulkColumn> GetBulkColumns(IEntityType entityType)
@@ -473,7 +473,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
 
         foreach (var property in entityType.GetProperties())
         {
-            // Der Store erzeugt den Wert selbst - mitgeschickt laesst SqlBulkCopy die Spalte
+            // Der Store erzeugt den Wert selbst - mitgeschickt lässt SqlBulkCopy die Spalte
             // ablehnen ("cannot be modified because it is either a computed column ...").
             if (property.GetComputedColumnSql() is not null) continue;
             if (property.ValueGenerated == ValueGenerated.OnAddOrUpdate) continue;
@@ -487,7 +487,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
             else if (ReferenceEquals(property, discriminator)) kind = BulkColumnKind.Discriminator;
             else kind = BulkColumnKind.Shadow;
 
-            // Eine Shadow-Property, die der Store fuellt, gehoert nicht in die DataTable.
+            // Eine Shadow-Property, die der Store füllt, gehört nicht in die DataTable.
             if (kind == BulkColumnKind.Shadow && property.ValueGenerated != ValueGenerated.Never) continue;
 
             result.Add(new BulkColumn(columnName, property.Name, property.PropertyInfo, property.ClrType, kind));
@@ -530,7 +530,7 @@ public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity
                 return column.Property!.GetValue(entity);
 
             case BulkColumnKind.Discriminator:
-                // Steht im Modell, nicht an der Entitaet - der Laufzeittyp entscheidet, welcher
+                // Steht im Modell, nicht an der Entität - der Laufzeittyp entscheidet, welcher
                 // Wert es ist.
                 return DataBase.Model.FindEntityType(entity.GetType())?.GetDiscriminatorValue();
 

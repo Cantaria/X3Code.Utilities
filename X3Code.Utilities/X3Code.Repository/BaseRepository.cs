@@ -14,7 +14,7 @@ namespace X3Code.Repository;
 /// The context this repository works on. Naming it makes the repository resolvable from a DI
 /// container that has more than one context registered - a constructor asking for the base type
 /// <see cref="DbContext"/> cannot be satisfied unless the application registers that separately,
-/// and doing so is what quietly lets a repository end up on a different context than the unit of
+/// and doing so is what quietly lets a repository end up in a different context than the unit of
 /// work it is supposed to take part in.
 /// </typeparam>
 public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity>
@@ -549,7 +549,7 @@ public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity>
 }
 
 /// <summary>
-/// The repository without naming its context. Same behaviour as
+/// The repository without naming its context. Same behavior as
 /// <see cref="BaseRepository{TEntity, TContext}"/>, it just asks for the base
 /// <see cref="DbContext"/>.
 /// </summary>

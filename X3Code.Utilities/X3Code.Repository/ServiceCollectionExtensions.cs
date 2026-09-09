@@ -33,9 +33,9 @@ public static class ServiceCollectionExtensions
     /// </code>
     /// where the repository names the context:
     /// <code>
-    /// public class PersonRepository : BaseRepository&lt;Person, AppContext&gt;, IPersonRepository
+    /// public class PersonRepository: BaseRepository&lt;Person, AppContext&gt; IPersonRepository
     /// {
-    ///     public PersonRepository(AppContext context) : base(context) { }
+    ///     public PersonRepository(AppContext context): base(context) { }
     /// }
     /// </code>
     /// </example>
@@ -51,8 +51,8 @@ public static class ServiceCollectionExtensions
 
         if (registerUntyped)
         {
-            // Auf dieselbe Instanz zeigen, nicht eine zweite bauen: zwei Units of Work auf
-            // demselben Context wuerden sich um dieselbe Transaktion streiten.
+            // Auf dieselbe Instanz zeigen, nicht eine zweite bauen: Zwei Units of Work auf
+            // demselben Context würden sich um dieselbe Transaktion streiten.
             services.Add(new ServiceDescriptor(
                 typeof(IUnitOfWork),
                 provider => provider.GetRequiredService<IUnitOfWork<TContext>>(),
