@@ -23,6 +23,9 @@ internal sealed class NestedUnitOfWorkScope : IUnitOfWorkScope
     public bool IsCompleted { get; private set; }
 
     /// <inheritdoc/>
+    public bool IsAbandoned => _outermost?.IsAbandoned ?? false;
+
+    /// <inheritdoc/>
     public Task CompleteAsync(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
@@ -30,6 +33,15 @@ internal sealed class NestedUnitOfWorkScope : IUnitOfWorkScope
         if (IsCompleted)
         {
             throw new InvalidOperationException("This unit of work was already completed.");
+        }
+
+        // A sibling scope was already left without completing, so the outer scope will never commit.
+        // Reporting success here would promise something that cannot happen any more - the caller would
+        // only find out at the outer CompleteAsync, far away from the code that is affected.
+        if (IsAbandoned)
+        {
+            throw new UnitOfWorkAbandonedException(
+                "The surrounding unit of work was already abandoned by another inner scope, so this one cannot be completed.");
         }
 
         IsCompleted = true;

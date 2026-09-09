@@ -13,7 +13,13 @@ Entity Framework Core 10.0.3 -> 10.0.11.
 
 1.10.3: Adds IUnitOfWork: a scope that puts the writes of several repositories into one database transaction
 All asynchronous methods on IBaseRepository/BaseRepository now take a CancellationToken and pass it down into Entity Framework, matching what IUnitOfWork.BeginAsync already did. The parameter is optional, so existing call sites keep compiling.
-BREAKING: DecimalExtension now lives in the X3Code.Repository.Extensions namespace instead of X3Code.Infrastructure.Extensions. Change the using in your DbContext. The type was previously compiled into both packages under the same name, which produced a CS0121 for anyone referencing X3Code.Repository and X3Code.Infrastructure together - and a consumer of this package should not have to write a using for a foreign package anyway.</PackageReleaseNotes>
+BREAKING: DecimalExtension now lives in the X3Code.Repository.Extensions namespace instead of X3Code.Infrastructure.Extensions. Change the using in your DbContext. The type was previously compiled into both packages under the same name, which produced a CS0121 for anyone referencing X3Code.Repository and X3Code.Infrastructure together - and a consumer of this package should not have to write a using for a foreign package anyway.
+Fixed: the unit of work kept pointing at its outermost scope after that scope was disposed. If a transaction was then started on the context from somewhere else, the scope handed out for it inherited the state of the discarded one and could report itself as abandoned when it was not. The reference is released on dispose now, and a nested scope is only tied to the outer one when that one really owns the running transaction.
+Fixed: a scope opened next to one that was already left without completing used to report success from CompleteAsync, although nothing in that unit of work could ever be committed. It fails right away now.
+BeginAsync checks that the provider actually has transactions instead of only promising it in the documentation. The in-memory provider is refused with a message naming it.
+New: IUnitOfWorkScope.IsAbandoned tells a caller that the work is already lost, so it can leave early instead of doing more that cannot be committed.
+New: UnitOfWorkAbandonedException replaces the plain InvalidOperationException for that case. It derives from InvalidOperationException, so existing catch blocks keep working - an exact type assertion in a test does not.
+New: IUnitOfWork.ExecuteAsync runs a block inside a unit of work and commits it when the block returns. Use it on a context configured with EnableRetryOnFailure - a retrying execution strategy refuses a transaction the caller opened itself, so the whole block has to be handed to the strategy.</PackageReleaseNotes>
     </PropertyGroup>
 
   <PropertyGroup>

@@ -10,16 +10,26 @@ namespace X3Code.Repository;
 internal sealed class UnitOfWorkScope : IUnitOfWorkScope
 {
     private readonly IDbContextTransaction _transaction;
+    private readonly Action<UnitOfWorkScope>? _onDisposed;
     private bool _isDisposed;
-    private bool _isAbandoned;
 
-    internal UnitOfWorkScope(IDbContextTransaction transaction)
+    internal UnitOfWorkScope(IDbContextTransaction transaction, Action<UnitOfWorkScope>? onDisposed = null)
     {
         _transaction = transaction;
+        _onDisposed = onDisposed;
     }
 
     /// <inheritdoc/>
     public bool IsCompleted { get; private set; }
+
+    /// <inheritdoc/>
+    public bool IsAbandoned { get; private set; }
+
+    /// <summary>
+    /// True while this scope still holds the given transaction. The unit of work uses it to tell its own
+    /// transaction from one somebody else started on the context in the meantime.
+    /// </summary>
+    internal bool Owns(IDbContextTransaction transaction) => ReferenceEquals(_transaction, transaction);
 
     /// <summary>
     /// Marks the unit of work as no longer committable. A nested scope calls this when it is left without being
@@ -28,7 +38,7 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
     /// </summary>
     internal void Abandon()
     {
-        _isAbandoned = true;
+        IsAbandoned = true;
     }
 
     /// <inheritdoc/>
@@ -41,9 +51,9 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
             throw new InvalidOperationException("This unit of work was already completed.");
         }
 
-        if (_isAbandoned)
+        if (IsAbandoned)
         {
-            throw new InvalidOperationException("An inner unit of work was left without completing it, so this one cannot be committed.");
+            throw new UnitOfWorkAbandonedException();
         }
 
         await _transaction.CommitAsync(cancellationToken);
@@ -62,5 +72,9 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
 
         _isDisposed = true;
         await _transaction.DisposeAsync();
+
+        // Tells the unit of work that it no longer holds an open transaction. Without this it would keep
+        // pointing at this disposed scope, and a later BeginAsync would hand a nested scope a dead outer one.
+        _onDisposed?.Invoke(this);
     }
 }

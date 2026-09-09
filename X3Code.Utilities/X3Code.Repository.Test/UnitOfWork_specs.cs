@@ -123,7 +123,7 @@ public class UnitOfWork_specs
                 await persons.AddAsync(NewPerson("Kirk"));
             }
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => outer.CompleteAsync());
+            await Assert.ThrowsAsync<UnitOfWorkAbandonedException>(() => outer.CompleteAsync());
         }
 
         Assert.Equal(0, await CountPersonsIn(database));

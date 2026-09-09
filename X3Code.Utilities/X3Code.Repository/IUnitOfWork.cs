@@ -10,8 +10,14 @@ namespace X3Code.Repository;
 /// Register this with the same lifetime as the context (scoped in a web application). All repositories that are
 /// meant to take part have to be built on that one context instance - a repository holding its own context
 /// writes outside the transaction and is not covered.
-/// A provider that has no transactions - the in-memory one, for instance - cannot serve this, and
-/// <see cref="BeginAsync"/> will say so rather than pretend the guarantee is there.
+/// <para>
+/// A provider that has no transactions - the in-memory one, for instance - cannot serve this. <see cref="BeginAsync"/>
+/// checks for that and throws rather than pretend the guarantee is there.
+/// </para>
+/// <para>
+/// This is not thread-safe, and neither is the context it works on. One unit of work belongs to one logical
+/// flow; do not open scopes from several threads over the same instance.
+/// </para>
 /// </remarks>
 public interface IUnitOfWork
 {
@@ -20,5 +26,27 @@ public interface IUnitOfWork
     /// <see cref="IUnitOfWorkScope.CompleteAsync"/> is called; disposing the scope without it discards everything.
     /// Opening one while another is still open joins the open one - only the outermost decides.
     /// </summary>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <exception cref="InvalidOperationException">The provider has no transactions.</exception>
     Task<IUnitOfWorkScope> BeginAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Runs <paramref name="work"/> inside a unit of work and commits it when the delegate returns without
+    /// throwing. Use this instead of <see cref="BeginAsync"/> whenever the context may be configured with
+    /// <c>EnableRetryOnFailure</c>: a retrying execution strategy refuses a transaction the caller started
+    /// itself, so the whole block has to be handed to the strategy, which is what happens here.
+    /// </summary>
+    /// <param name="work">The writes that belong together. It may run more than once if the strategy retries, so keep it free of side effects outside the database.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    Task ExecuteAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Same as <see cref="ExecuteAsync(Func{CancellationToken, Task}, CancellationToken)"/>, for work that
+    /// produces a result.
+    /// </summary>
+    /// <typeparam name="TResult">The type the work returns.</typeparam>
+    /// <param name="work">The writes that belong together. It may run more than once if the strategy retries, so keep it free of side effects outside the database.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <returns>Whatever <paramref name="work"/> returned on the attempt that succeeded.</returns>
+    Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> work, CancellationToken cancellationToken = default);
 }

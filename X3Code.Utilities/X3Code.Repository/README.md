@@ -100,9 +100,26 @@ await scope.CompleteAsync();
 ```
 
 Scopes may be nested: only the outermost scope commits. If any scope is left without
-`CompleteAsync`, the whole transaction is rolled back.
+`CompleteAsync`, the whole transaction is rolled back — from then on `IsAbandoned` is `true`
+on every scope of that unit of work, and `CompleteAsync` throws `UnitOfWorkAbandonedException`.
 
-> The provider has to support transactions. The EF Core in-memory provider does not.
+> The provider has to support transactions. `BeginAsync` refuses the EF Core in-memory
+> provider instead of handing out a scope that guarantees nothing.
+
+If the context is configured with `EnableRetryOnFailure`, use `ExecuteAsync` instead. A
+retrying execution strategy refuses a transaction the caller opened itself, so the whole
+block has to be handed to the strategy:
+
+```csharp
+await unitOfWork.ExecuteAsync(async token =>
+{
+    await personRepository.AddAsync(person, cancellationToken: token);
+    await orderRepository.AddAsync(order, cancellationToken: token);
+});
+```
+
+It commits when the block returns and rolls back when it throws. The block may run more than
+once if the strategy retries, so keep side effects outside the database out of it.
 
 ## Contributing
 Contributions are welcome! As this project is in an experimental state, please feel free to:

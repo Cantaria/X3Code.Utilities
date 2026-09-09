@@ -21,11 +21,18 @@ public interface IUnitOfWorkScope : IAsyncDisposable
     bool IsCompleted { get; }
 
     /// <summary>
+    /// True once an inner scope was left without completing it. From that point on the unit of work can only
+    /// be rolled back, and <see cref="CompleteAsync"/> throws a <see cref="UnitOfWorkAbandonedException"/>.
+    /// Check it to leave early instead of doing more work that cannot be committed anyway.
+    /// </summary>
+    bool IsAbandoned { get; }
+
+    /// <summary>
     /// Commits everything that was written since the scope was opened.
     /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// The scope was already completed, or an inner scope was left without completing it.
-    /// </exception>
+    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <exception cref="InvalidOperationException">The scope was already completed.</exception>
+    /// <exception cref="UnitOfWorkAbandonedException">An inner scope was left without completing it.</exception>
     /// <exception cref="ObjectDisposedException">The scope was already disposed.</exception>
     Task CompleteAsync(CancellationToken cancellationToken = default);
 }
