@@ -10,7 +10,16 @@ namespace X3Code.Repository;
 /// <typeparam name="TEntity">
 /// The type of the entity to be managed by the repository. Must be a class.
 /// </typeparam>
-public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+/// <typeparam name="TContext">
+/// The context this repository works on. Naming it makes the repository resolvable from a DI
+/// container that has more than one context registered - a constructor asking for the base type
+/// <see cref="DbContext"/> cannot be satisfied unless the application registers that separately,
+/// and doing so is what quietly lets a repository end up on a different context than the unit of
+/// work it is supposed to take part in.
+/// </typeparam>
+public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity>
+    where TEntity : class
+    where TContext : DbContext
 {
     /// <summary>
     /// Entities per SaveChanges when no batch size is given.
@@ -20,8 +29,10 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// <summary>
     /// Provides a base implementation for repository operations across entities of a specific type.
     /// </summary>
-    public BaseRepository(DbContext context)
+    public BaseRepository(TContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         DataBase = context;
         Entities = context.Set<TEntity>();
     }
@@ -30,10 +41,10 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     /// Represents the database context associated with the repository.
     /// </summary>
     /// <remarks>
-    /// This property provides access to the underlying <see cref="DbContext"/> used by the repository.
+    /// This property provides access to the underlying context used by the repository.
     /// It is intended for internal use within the repository to manage database operations.
     /// </remarks>
-    protected DbContext DataBase { get; }
+    protected TContext DataBase { get; }
 
     /// <summary>
     /// Represents a DbSet instance for the specified entity type in the context.
@@ -534,5 +545,29 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         {
             DataBase.Entry(entity).State = EntityState.Detached;
         }
+    }
+}
+
+/// <summary>
+/// The repository without naming its context. Same behaviour as
+/// <see cref="BaseRepository{TEntity, TContext}"/>, it just asks for the base
+/// <see cref="DbContext"/>.
+/// </summary>
+/// <typeparam name="TEntity">
+/// The type of the entity to be managed by the repository. Must be a class.
+/// </typeparam>
+/// <remarks>
+/// Kept for existing code. A container can only satisfy this when <see cref="DbContext"/> itself
+/// is registered, which is ambiguous as soon as there is more than one context - name the context
+/// via <see cref="BaseRepository{TEntity, TContext}"/> instead.
+/// </remarks>
+public class BaseRepository<TEntity> : BaseRepository<TEntity, DbContext> where TEntity : class
+{
+    /// <summary>
+    /// Takes the context the repository works on.
+    /// </summary>
+    /// <param name="context">The context. Has to be the same instance the unit of work got.</param>
+    public BaseRepository(DbContext context) : base(context)
+    {
     }
 }

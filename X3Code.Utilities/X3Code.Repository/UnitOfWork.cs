@@ -3,16 +3,23 @@ using Microsoft.EntityFrameworkCore;
 namespace X3Code.Repository;
 
 /// <inheritdoc cref="IUnitOfWork"/>
-public class UnitOfWork : IUnitOfWork
+/// <typeparam name="TContext">
+/// The context the transaction is opened on. Naming it makes this resolvable from a container with
+/// several contexts registered, and ties the unit of work to the same one the repositories use.
+/// </typeparam>
+public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
-    private readonly DbContext _context;
+    private readonly TContext _context;
 
     /// <summary>
     /// Takes the context the repositories are built on. It has to be the same instance they got, otherwise their
     /// writes go past the transaction this opens.
     /// </summary>
-    public UnitOfWork(DbContext context)
+    /// <param name="context">The shared context.</param>
+    public UnitOfWork(TContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         _context = context;
     }
 
@@ -98,5 +105,25 @@ public class UnitOfWork : IUnitOfWork
         {
             _outermost = null;
         }
+    }
+}
+
+/// <summary>
+/// The unit of work without naming its context. Same behaviour as
+/// <see cref="UnitOfWork{TContext}"/>, it just asks for the base <see cref="DbContext"/>.
+/// </summary>
+/// <remarks>
+/// Kept for existing code. A container can only satisfy this when <see cref="DbContext"/> itself is
+/// registered, which is ambiguous as soon as there is more than one context - name the context via
+/// <see cref="UnitOfWork{TContext}"/> instead.
+/// </remarks>
+public class UnitOfWork : UnitOfWork<DbContext>
+{
+    /// <summary>
+    /// Takes the context the repositories are built on.
+    /// </summary>
+    /// <param name="context">The shared context.</param>
+    public UnitOfWork(DbContext context) : base(context)
+    {
     }
 }

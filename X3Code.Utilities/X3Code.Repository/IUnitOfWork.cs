@@ -50,3 +50,12 @@ public interface IUnitOfWork
     /// <returns>Whatever <paramref name="work"/> returned on the attempt that succeeded.</returns>
     Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> work, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// A unit of work over a named context. Resolve this instead of <see cref="IUnitOfWork"/> when the
+/// application has more than one context - the untyped registration can only point at one of them.
+/// </summary>
+/// <typeparam name="TContext">The context this unit of work opens its transaction on.</typeparam>
+public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : Microsoft.EntityFrameworkCore.DbContext
+{
+}

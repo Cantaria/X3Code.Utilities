@@ -44,15 +44,19 @@ public interface ICustomRepository : IBaseRepository<Custom>
 }
 ```
 
-3. Then create the corresponding repository. You need to inherit `BaseRepository<T>` and your own `ICustomRepository`. With this trick your repository class stays clean and easy. You can add functionality if needed.
+3. Then create the corresponding repository. You need to inherit `BaseRepository<TEntity, TContext>` and your own `ICustomRepository`. With this trick your repository class stays clean and easy. You can add functionality if needed.
 ```csharp
-public class CustomRepository : BaseRepository<Custom>, ICustomRepository
+public class CustomRepository : BaseRepository<Custom, AppContext>, ICustomRepository
 {
-    public CustomRepository(DbContext context) : base(context)
+    public CustomRepository(AppContext context) : base(context)
     {
     }
 }
 ```
+> Name your context in the type parameter. There is a one-parameter `BaseRepository<TEntity>` that
+> asks for the base `DbContext`, but a DI container can only satisfy that if you register
+> `DbContext` yourself — and as soon as you have a second context, that registration silently
+> decides which one every repository gets.
 > If you need access to the DbContext or the entity, you can use the inherited properties
 > ```csharp
 > protected DbContext DataBase { get; }
@@ -63,11 +67,32 @@ public class CustomRepository : BaseRepository<Custom>, ICustomRepository
 - .NET 10.0 or later
 - Entity Framework Core
 
-## Usage Examples
+## Registration
 ```csharp
-// Register in your DI container
+services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
+
+// Registers IUnitOfWork<AppContext> and, unless you say otherwise, IUnitOfWork
+services.AddX3CodeRepository<AppContext>();
+
 services.AddScoped<ICustomRepository, CustomRepository>();
 ```
+
+With more than one context, register each and resolve the typed interface:
+
+```csharp
+services.AddX3CodeRepository<AppContext>(registerUntyped: false);
+services.AddX3CodeRepository<ReportingContext>(registerUntyped: false);
+```
+
+```csharp
+public ReportService(IUnitOfWork<ReportingContext> unitOfWork) { ... }
+```
+
+If you have exactly one context and existing repositories built on the one-parameter
+`BaseRepository<TEntity>`, `services.AddDbContextAlias<AppContext>()` registers `DbContext` as an
+alias so they keep resolving.
+
+## Usage Examples
 ```csharp
 // Inject and use in your service
 public class ProductService
