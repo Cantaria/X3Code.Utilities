@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace X3Code.Repository;
 
@@ -10,12 +11,14 @@ namespace X3Code.Repository;
 internal sealed class UnitOfWorkScope : IUnitOfWorkScope
 {
     private readonly IDbContextTransaction _transaction;
+    private readonly ILogger _logger;
     private readonly Action<UnitOfWorkScope>? _onDisposed;
     private bool _isDisposed;
 
-    internal UnitOfWorkScope(IDbContextTransaction transaction, Action<UnitOfWorkScope>? onDisposed = null)
+    internal UnitOfWorkScope(IDbContextTransaction transaction, ILogger logger, Action<UnitOfWorkScope>? onDisposed = null)
     {
         _transaction = transaction;
+        _logger = logger;
         _onDisposed = onDisposed;
     }
 
@@ -39,6 +42,7 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
     internal void Abandon()
     {
         IsAbandoned = true;
+        UnitOfWorkLog.AbandonedByInnerScope(_logger);
     }
 
     /// <inheritdoc/>
@@ -58,6 +62,8 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
 
         await _transaction.CommitAsync(cancellationToken);
         IsCompleted = true;
+
+        UnitOfWorkLog.Committed(_logger);
     }
 
     /// <summary>
@@ -71,6 +77,11 @@ internal sealed class UnitOfWorkScope : IUnitOfWorkScope
         if (_isDisposed) return;
 
         _isDisposed = true;
+
+        // Vor dem Dispose loggen: danach ist nicht mehr erkennbar, ob hier committet oder
+        // verworfen wurde.
+        if (!IsCompleted) UnitOfWorkLog.Discarded(_logger);
+
         await _transaction.DisposeAsync();
 
         // Tells the unit of work that it no longer holds an open transaction. Without this it would keep

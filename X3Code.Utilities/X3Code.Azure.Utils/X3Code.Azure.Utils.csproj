@@ -12,11 +12,13 @@ Azure.Storage.Blobs 12.27.0 -> 12.29.2, Azure.Core 1.51.1 -> 1.55.0, Microsoft.D
 Exists, Delete, DownloadFile and UploadFile now take a CancellationToken, like ListFiles already did. The parameter is optional, so existing call sites keep compiling.
 Fixed: DownloadFile returned a MemoryStream positioned at the end, so a caller reading it directly got zero bytes.
 Fixed: UploadFile threw NotSupportedException on streams that cannot seek, such as network or compression streams. It now only checks the length and rewinds when the stream supports it.
-DownloadFile raises FileNotFoundException naming the path instead of a bare Exception when the blob is not there.</PackageReleaseNotes>
+DownloadFile raises FileNotFoundException naming the path instead of a bare Exception when the blob is not there.
+New: optional logging of the blob operations through Microsoft.Extensions.Logging.Abstractions - download with byte count, upload, delete, and a warning for a blob that was not found. AzureBlobStorage takes an optional ILogger that defaults to NullLogger, so nothing changes for existing code.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Azure.Core" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="Azure.Storage.Blobs" />
       <PackageReference Include="Microsoft.Data.SqlClient" />
     </ItemGroup>

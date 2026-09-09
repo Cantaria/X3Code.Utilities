@@ -23,7 +23,8 @@ New: IUnitOfWork.ExecuteAsync runs a block inside a unit of work and commits it 
 New: BaseRepository takes the context type as a second type parameter, and UnitOfWork takes it as its only one. Both used to ask for the base DbContext, which a container with more than one context cannot satisfy at all - it answers "Unable to resolve service for type DbContext". Registering DbContext by hand to get around that is the very thing that lets a repository end up on a different context than the unit of work that opened the transaction. The one-parameter forms are still there and behave exactly as before.
 New: IUnitOfWork of TContext, so several units of work can live side by side in one container.
 New: services.AddX3CodeRepository of TContext registers the unit of work for that context. The untyped IUnitOfWork is registered alongside by default and points at the same instance; switch it off when the application has several contexts. services.AddDbContextAlias of TContext registers DbContext as an alias for applications with a single context that still use the one-parameter repository.
-This adds a reference to Microsoft.Extensions.DependencyInjection.Abstractions, which Entity Framework Core already brings along - the dependency graph does not grow.</PackageReleaseNotes>
+This adds a reference to Microsoft.Extensions.DependencyInjection.Abstractions, which Entity Framework Core already brings along - the dependency graph does not grow.
+New: optional logging of the transaction boundaries through Microsoft.Extensions.Logging.Abstractions - opened, joined an already open transaction, committed, discarded without completing, abandoned by an inner scope, and retried by the execution strategy. UnitOfWork takes an optional ILogger that defaults to NullLogger, so nothing changes for existing code. The events are written with the LoggerMessage source generator, so a call costs nothing while the level is switched off. Which logger sits behind the abstraction is the application's decision, this package brings none.</PackageReleaseNotes>
     </PropertyGroup>
 
   <PropertyGroup>
@@ -34,6 +35,7 @@ This adds a reference to Microsoft.Extensions.DependencyInjection.Abstractions, 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     </ItemGroup>
 

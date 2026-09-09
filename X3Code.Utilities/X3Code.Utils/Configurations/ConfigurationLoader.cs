@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using X3Code.Utils.Serializing;
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace X3Code.Utils.Configurations;
 
 /// <summary>
@@ -13,6 +16,8 @@ namespace X3Code.Utils.Configurations;
 /// </summary>
 public class ConfigurationLoader : IConfigurationLoader
 {
+    private readonly ILogger _logger;
+
     private readonly SoftwareEnvironment _environmentByEnum = SoftwareEnvironment.Unknown;
 
     /// <summary>
@@ -41,10 +46,15 @@ public class ConfigurationLoader : IConfigurationLoader
     /// Initializes a new instance of ConfigurationLoader with X3-Code default environment.
     /// </summary>
     /// <param name="environmentByEnum">The environment to set. Can be used for selection configuration files.</param>
-    public ConfigurationLoader(SoftwareEnvironment environmentByEnum)
+    /// <param name="logger">
+    /// Optional. Without it nothing is logged and nothing is allocated for it. Pass one to see
+    /// which path a configuration file was actually resolved to.
+    /// </param>
+    public ConfigurationLoader(SoftwareEnvironment environmentByEnum, ILogger<ConfigurationLoader>? logger = null)
     {
         if (environmentByEnum == SoftwareEnvironment.Unknown) throw new ArgumentException("Environment cannot be Unknown and should be known!");
         _environmentByEnum = environmentByEnum;
+        _logger = logger ?? NullLogger<ConfigurationLoader>.Instance;
     }
 
     /// <summary>
@@ -56,8 +66,11 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </remarks>
     /// </summary>
     /// <param name="environment"></param>
-    public ConfigurationLoader(string environment)
+    /// <param name="logger">Optional logger. See the other constructor.</param>
+    public ConfigurationLoader(string environment, ILogger<ConfigurationLoader>? logger = null)
     {
+        _logger = logger ?? NullLogger<ConfigurationLoader>.Instance;
+
         if (string.IsNullOrWhiteSpace(environment)) throw new ArgumentNullException(nameof(environment));
         if (environment.Length > 20) throw new ArgumentException("Environment name cannot be longer than 20 characters.");
         if (environment.Contains(' ')) throw new ArgumentException("Environment name cannot contain whitespaces.");
@@ -118,7 +131,9 @@ public class ConfigurationLoader : IConfigurationLoader
         var result = JsonSerializer.Deserialize<T>(json);
         if (result == null) 
             throw new InvalidDataException($"Failed to deserialize configuration file at [{fullPath}].");
-        
+
+        ConfigurationLoaderLog.ConfigurationLoaded(_logger, typeof(T).Name, fullPath);
+
         return result;
     }
     
@@ -129,7 +144,9 @@ public class ConfigurationLoader : IConfigurationLoader
         var result = GenericXmlSerializer.LoadXml<T>(fullPath);
         if (result == null) 
             throw new InvalidDataException($"Failed to deserialize configuration file at [{fullPath}].");
-        
+
+        ConfigurationLoaderLog.ConfigurationLoaded(_logger, typeof(T).Name, fullPath);
+
         return result;
     }
 
@@ -145,6 +162,9 @@ public class ConfigurationLoader : IConfigurationLoader
         }
 
         string fullPath = Path.Combine(configPath, filename);
+
+        ConfigurationLoaderLog.PathResolved(_logger, filename, fullPath, Environment);
+
         return fullPath;
     }
 }

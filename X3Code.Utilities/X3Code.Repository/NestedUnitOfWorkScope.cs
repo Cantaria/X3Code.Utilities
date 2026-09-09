@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace X3Code.Repository;
 
 /// <summary>
@@ -8,15 +10,18 @@ namespace X3Code.Repository;
 internal sealed class NestedUnitOfWorkScope : IUnitOfWorkScope
 {
     private readonly UnitOfWorkScope? _outermost;
+    private readonly ILogger _logger;
     private bool _isDisposed;
 
     /// <param name="outermost">
     /// The scope holding the transaction, or null when it was started outside this unit of work and there is
     /// nobody to report to.
     /// </param>
-    internal NestedUnitOfWorkScope(UnitOfWorkScope? outermost)
+    /// <param name="logger">The logger of the unit of work this scope belongs to.</param>
+    internal NestedUnitOfWorkScope(UnitOfWorkScope? outermost, ILogger logger)
     {
         _outermost = outermost;
+        _logger = logger;
     }
 
     /// <inheritdoc/>
@@ -54,7 +59,14 @@ internal sealed class NestedUnitOfWorkScope : IUnitOfWorkScope
         if (_isDisposed) return ValueTask.CompletedTask;
 
         _isDisposed = true;
-        if (!IsCompleted) _outermost?.Abandon();
+
+        if (!IsCompleted)
+        {
+            // Ohne aeussere Scope gibt es niemanden zu benachrichtigen - dann wenigstens
+            // festhalten, dass hier etwas unvollendet verlassen wurde.
+            if (_outermost is null) UnitOfWorkLog.Discarded(_logger);
+            else _outermost.Abandon();
+        }
 
         return ValueTask.CompletedTask;
     }

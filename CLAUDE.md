@@ -45,7 +45,7 @@ All three projects are green.
 
 | Project | PackageId | Purpose |
 |---|---|---|
-| `X3Code.Utils` | `X3Code.Utilities` | General-purpose helpers: config/env loading, converters, extension methods (Collection/DataRow/DataTable/DateTime/Dictionary/EntityProperty), a basic HTTP client, XML serialization, GUID tools, MIME helpers. **Has no package dependencies** — keep it that way; anything needing a third-party package belongs in its own library |
+| `X3Code.Utils` | `X3Code.Utilities` | General-purpose helpers: config/env loading, converters, extension methods (Collection/DataRow/DataTable/DateTime/Dictionary/EntityProperty), a basic HTTP client, XML serialization, GUID tools, MIME helpers. Its only dependency is `Microsoft.Extensions.Logging.Abstractions` — see the logging section; keep it that way, anything needing a third-party package belongs in its own library |
 | `X3Code.Sql.Utils` | `X3Code.Sql.Utils` | `DatabaseConnector` — lightweight ADO.NET access to SQL Server, no ORM. Split out of `X3Code.Utilities` because it was the only type there pulling in `Microsoft.Data.SqlClient` |
 | `X3Code.Infrastructure` | `X3Code.Infrastructure` | Generic repository / unit-of-work pattern (`Entity`, `IEntity`, `IRepository`, `GenericRepository`) for EF Core against SQL Server |
 | `X3Code.Repository` | `X3Code.Repository` | Newer take on the same repository pattern (`Entity`, `IEntity`, `IBaseRepository`, `BaseRepository`) plus `IUnitOfWork`. `BaseRepository<TEntity, TContext>` and `UnitOfWork<TContext>` name their context so a container with several contexts can resolve them; `AddX3CodeRepository<TContext>()` does the registration. The one-parameter forms taking a bare `DbContext` are kept for existing code |
@@ -88,6 +88,20 @@ NuGet versions are centrally managed in `X3Code.Utilities/Directory.Packages.pro
 `X3Code.Utilities/NuGet.config` pins the package sources and maps them (`*` → nuget.org, `X3Code.*` → github); central package management warns (`NU1507`) without it.
 
 `CS1591` ("missing XML comment") is suppressed centrally — roughly 340 public members are undocumented and the noise would bury everything else, including NuGet security warnings. Malformed doc tags (`CS1570`/`CS1584`/`CS1711`) are deliberately left visible.
+
+### Logging
+
+The libraries log through `Microsoft.Extensions.Logging.Abstractions` and nothing else. That package carries no sink and no configuration, so **where** anything is written stays entirely with the consuming application — Serilog (`services.AddSerilog()`), NLog (`builder.Logging.AddNLog()`), OpenTelemetry, or nothing at all. Never take a reference on a concrete logging framework here; that would force it on every consumer.
+
+Every logging component follows the same shape:
+
+- The constructor takes an **optional** `ILogger` / `ILogger<T>` that defaults to `NullLogger.Instance`. Nothing breaks and no container is needed when it is left out.
+- The events live in an `internal static partial class …Log` next to the component and are written with `[LoggerMessage]`, so the source generator checks `IsEnabled` before building anything — a call costs nothing while the level is off.
+- Event IDs are grouped per area: 1000 unit of work, 2000 HTTP client, 3000 configuration loader, 4000 blob storage.
+
+Message templates use named placeholders (`{Context}`, `{StatusCode}`), which arrive as structured properties in Serilog rather than a flattened string.
+
+What is covered: the unit-of-work transaction boundaries (opened, joined, committed, discarded, abandoned, retried), the HTTP error path with status and response body, the path a configuration file was resolved to, and the blob storage operations.
 
 ### Release/publish flow
 

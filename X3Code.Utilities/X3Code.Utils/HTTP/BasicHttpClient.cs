@@ -5,6 +5,8 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using X3Code.Utils.Exceptions;
 
 namespace X3Code.Utils.HTTP;
@@ -14,10 +16,17 @@ namespace X3Code.Utils.HTTP;
 /// </summary>
 public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 {
-    protected BasicHttpClient(HttpClientConfiguration configuration)
+    /// <param name="configuration">The client configuration. BaseUrl has to be set.</param>
+    /// <param name="logger">
+    /// Optional. Without it nothing is logged and nothing is allocated for it. Pass one - or let the
+    /// container hand one in - to see failed requests with their status and response body. Which
+    /// logger sits behind the abstraction is the application's decision, this library brings none.
+    /// </param>
+    protected BasicHttpClient(HttpClientConfiguration configuration, ILogger? logger = null)
     {
         if (string.IsNullOrWhiteSpace(configuration.BaseUrl)) throw new ArgumentException("No Base-URL set in HTTP client configuration. Set BaseUrl first.", nameof(configuration));
 
+        Logger = logger ?? NullLogger.Instance;
         Configuration = configuration;
         Client = CreateHttpClient(configuration);
         Client.BaseAddress = new Uri(configuration.BaseUrl);
@@ -27,6 +36,11 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
             Client.DefaultRequestHeaders.Add(header.Key, header.Value);   
         }
     }
+
+    /// <summary>
+    /// The logger of this client. Never null - it is the no-op logger when none was handed in.
+    /// </summary>
+    protected ILogger Logger { get; }
 
     /// <summary>
     /// The configuration which is used for the client
@@ -328,9 +342,11 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         Client.Dispose();
     }
 
-    private static async Task CheckSuccessCodeAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task CheckSuccessCodeAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.IsSuccessStatusCode) return;
+
+        var uri = response.RequestMessage?.RequestUri?.ToString();
 
         // Den Body jetzt lesen, solange die Response noch lebt. Die Exception wird oft weit
         // entfernt ausgewertet, wo die Response laengst verworfen ist.
@@ -342,7 +358,10 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
             // Body nicht lesbar - Statuscode und Meldung muessen dann reichen.
+            HttpClientLog.ResponseBodyUnreadable(Logger, uri, exception);
         }
+
+        HttpClientLog.RequestFailed(Logger, uri, response.StatusCode, content);
 
         try
         {

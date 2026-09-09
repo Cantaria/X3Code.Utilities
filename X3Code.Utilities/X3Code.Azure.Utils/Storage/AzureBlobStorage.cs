@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Logging;
 
 namespace X3Code.Azure.Utils.Storage;
 
@@ -16,7 +17,7 @@ public class AzureBlobStorage : StorageBase
     private readonly BlobContainerClient _containerClient;
 
     /// <inheritdoc/>>
-    public AzureBlobStorage(string connectionString, string containerName) : base(connectionString, containerName)
+    public AzureBlobStorage(string connectionString, string containerName, ILogger? logger = null) : base(connectionString, containerName, logger)
     {
         _containerClient = new BlobContainerClient(connectionString, containerName);
     }
@@ -62,6 +63,8 @@ public class AzureBlobStorage : StorageBase
     {
         var blob = GetBlob(path);
         await blob.DeleteAsync(cancellationToken: cancellationToken);
+
+        StorageLog.Deleted(Logger, path, ContainerName);
     }
 
     /// <summary>
@@ -74,11 +77,18 @@ public class AzureBlobStorage : StorageBase
     public override async Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default)
     {
         var blob = GetBlob(path);
-        if (!await ExistsBlob(blob, cancellationToken)) throw new FileNotFoundException($"The blob on path [{path}] could not be found.", path);
+        if (!await ExistsBlob(blob, cancellationToken))
+        {
+            StorageLog.NotFound(Logger, path, ContainerName);
+
+            throw new FileNotFoundException($"The blob on path [{path}] could not be found.", path);
+        }
 
         var stream = new MemoryStream();
         await blob.DownloadToAsync(stream, cancellationToken);
         stream.Position = 0; // sonst steht der Stream am Ende und der Aufrufer liest 0 Bytes
+
+        StorageLog.Downloaded(Logger, path, ContainerName, stream.Length);
 
         return stream;
     }
@@ -101,6 +111,8 @@ public class AzureBlobStorage : StorageBase
         }
 
         await destinationBlob.UploadAsync(stream, cancellationToken);
+
+        StorageLog.Uploaded(Logger, destinationPath, ContainerName);
     }
 
     #region Private Helpers

@@ -146,6 +146,30 @@ await unitOfWork.ExecuteAsync(async token =>
 It commits when the block returns and rolls back when it throws. The block may run more than
 once if the strategy retries, so keep side effects outside the database out of it.
 
+## Logging
+
+Optional. `UnitOfWork` takes an `ILogger` and logs its transaction boundaries — opened, joined,
+committed, discarded, abandoned, retried. Leave it out and nothing is written; nothing is
+allocated for it either.
+
+This package depends on `Microsoft.Extensions.Logging.Abstractions` only, which carries no sink
+and no configuration. Where the events go is entirely your decision:
+
+```csharp
+// Serilog
+Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
+```
+
+```csharp
+// NLog
+builder.Logging.AddNLog();
+```
+
+Either way, `AddX3CodeRepository<AppContext>()` gives the unit of work the logger the container
+holds. Message templates use named placeholders, so `{Context}` arrives in Serilog as a
+structured property rather than a flattened string.
+
 ## Contributing
 Contributions are welcome! As this project is in an experimental state, please feel free to:
 - Report bugs

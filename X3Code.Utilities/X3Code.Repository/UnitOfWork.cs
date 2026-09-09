@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace X3Code.Repository;
 
@@ -10,17 +12,24 @@ namespace X3Code.Repository;
 public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
     private readonly TContext _context;
+    private readonly ILogger _logger;
 
     /// <summary>
     /// Takes the context the repositories are built on. It has to be the same instance they got, otherwise their
     /// writes go past the transaction this opens.
     /// </summary>
     /// <param name="context">The shared context.</param>
-    public UnitOfWork(TContext context)
+    /// <param name="logger">
+    /// Optional. Without it nothing is logged and nothing is allocated for it. Pass one - or let the
+    /// container hand one in - to see the transaction boundaries. Which logger sits behind the
+    /// abstraction is the application's decision, this library brings none.
+    /// </param>
+    public UnitOfWork(TContext context, ILogger<UnitOfWork<TContext>>? logger = null)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         _context = context;
+        _logger = logger ?? NullLogger<UnitOfWork<TContext>>.Instance;
     }
 
     /// <summary>
@@ -52,11 +61,15 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
             // else started it, there is nobody of ours to tell.
             var owner = _outermost is not null && _outermost.Owns(running) ? _outermost : null;
 
-            return new NestedUnitOfWorkScope(owner);
+            UnitOfWorkLog.JoinedOpenTransaction(_logger, typeof(TContext).Name);
+
+            return new NestedUnitOfWorkScope(owner, _logger);
         }
 
         var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-        _outermost = new UnitOfWorkScope(transaction, Release);
+        _outermost = new UnitOfWorkScope(transaction, _logger, Release);
+
+        UnitOfWorkLog.TransactionOpened(_logger, typeof(TContext).Name);
 
         return _outermost;
     }
@@ -83,8 +96,12 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         // and why EF refuses BeginTransaction under EnableRetryOnFailure.
         var strategy = _context.Database.CreateExecutionStrategy();
 
+        var attempt = 0;
+
         return await strategy.ExecuteAsync(async token =>
         {
+            if (attempt++ > 0) UnitOfWorkLog.Retried(_logger);
+
             await using var scope = await BeginAsync(token);
 
             var result = await work(token);
@@ -123,7 +140,8 @@ public class UnitOfWork : UnitOfWork<DbContext>
     /// Takes the context the repositories are built on.
     /// </summary>
     /// <param name="context">The shared context.</param>
-    public UnitOfWork(DbContext context) : base(context)
+    /// <param name="logger">Optional logger. See <see cref="UnitOfWork{TContext}"/>.</param>
+    public UnitOfWork(DbContext context, ILogger<UnitOfWork<DbContext>>? logger = null) : base(context, logger)
     {
     }
 }
