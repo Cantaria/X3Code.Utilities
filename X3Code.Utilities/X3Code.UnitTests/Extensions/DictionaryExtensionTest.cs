@@ -131,8 +131,8 @@ public class DictionaryExtensionsTest
         var values = new List<Person> { PersonMockups.Michael, PersonMockups.Clemens, PersonMockups.Michael, PersonMockups.John, PersonMockups.Viktoria };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => values.ConvertToDictionary(person => person.Name!, out var duplicates, false));
-        Assert.Equal($"Duplicate key [{PersonMockups.Michael.Name!}] found.", exception.Message);
+        var exception = Assert.Throws<ArgumentException>(() => values.ConvertToDictionary(person => person.Name!, out var duplicates, false));
+        Assert.Contains($"Duplicate key [{PersonMockups.Michael.Name!}] found.", exception.Message);
     }
 
     #endregion

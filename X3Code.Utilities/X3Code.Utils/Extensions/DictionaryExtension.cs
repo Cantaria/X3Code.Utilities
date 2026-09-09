@@ -68,7 +68,7 @@ public static class DictionaryExtension
                 }
                 else
                 {
-                    throw new Exception($"Duplicate key [{key}] found.");
+                    throw new ArgumentException($"Duplicate key [{key}] found. Pass ignoreDuplicates: true to collect them instead.", nameof(keySelector));
                 }
             }
         }

@@ -74,7 +74,7 @@ public class AzureBlobStorage : StorageBase
     public override async Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default)
     {
         var blob = GetBlob(path);
-        if (!await ExistsBlob(blob, cancellationToken)) throw new Exception($"The blob on path [{path}] could not be found.");
+        if (!await ExistsBlob(blob, cancellationToken)) throw new FileNotFoundException($"The blob on path [{path}] could not be found.", path);
 
         var stream = new MemoryStream();
         await blob.DownloadToAsync(stream, cancellationToken);

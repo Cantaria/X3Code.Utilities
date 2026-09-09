@@ -79,7 +79,7 @@ public static class GuidTools
         var blocks = source.ToString().Split('-');
         if (blockIndex >= blocks.Length || blockIndex < 0) throw new ArgumentOutOfRangeException(nameof(blockIndex));
 
-        if (replacement.Length != blocks[blockIndex].Length) throw new Exception("The replacement text must have the same length as the original");
+        if (replacement.Length != blocks[blockIndex].Length) throw new ArgumentException($"The replacement must have the same length as block [{blockIndex}], which is {blocks[blockIndex].Length} characters.", nameof(replacement));
         blocks[blockIndex] = replacement;
         return new Guid(string.Join("-", blocks));
     }

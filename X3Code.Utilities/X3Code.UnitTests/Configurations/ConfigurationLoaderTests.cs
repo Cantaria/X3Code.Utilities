@@ -153,7 +153,7 @@ public class ConfigurationLoaderTests : IDisposable
         var fullPath = Path.Combine(_testPath, fileName);
         File.WriteAllText(fullPath, "some content");
 
-        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
+        var exception = Assert.Throws<NotSupportedException>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
         Assert.Contains("Unsupported file extension", exception.Message);
     }
 
@@ -165,7 +165,7 @@ public class ConfigurationLoaderTests : IDisposable
         var fullPath = Path.Combine(_testPath, fileName);
         File.WriteAllText(fullPath, "");
 
-        var exception = Assert.Throws<Exception>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
+        var exception = Assert.Throws<InvalidDataException>(() => loader.Load<TestConfig>(fileName, _testPath, useEnvironment: false));
         Assert.Contains("is empty", exception.Message);
     }
 

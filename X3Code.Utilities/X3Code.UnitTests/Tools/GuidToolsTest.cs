@@ -80,7 +80,7 @@ public class GuidToolsTest
     [InlineData("1234567", 0)] // Too short for block 0
     public void ReplaceGuidBlockWith_ShouldThrowIfLengthMismatch(string replacement, int blockIndex)
     {
-        Assert.Throws<Exception>(() => Guid.Empty.ReplaceGuidBlockWith(replacement, blockIndex));
+        Assert.Throws<ArgumentException>(() => Guid.Empty.ReplaceGuidBlockWith(replacement, blockIndex));
     }
 
     [Fact]

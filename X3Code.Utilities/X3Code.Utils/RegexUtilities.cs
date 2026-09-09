@@ -79,7 +79,11 @@ public static class RegexUtilities
         var result = PlaceholderRegex.Replace(input, matches => {
 
             var name = matches.Groups["name"].Value;
-            return dataEntity.TryReadPropertyAsString(name, numberFormat, dateTimeFormat) ?? input;
+
+            // Frueher stand hier "?? input": liess sich die Property nicht lesen, wurde der
+            // gesamte Eingabestring an die Platzhalterstelle kopiert. Aus "Hallo %Foo% Welt"
+            // wurde "Hallo Hallo %Foo% Welt Welt". Jetzt bleibt der Platzhalter stehen.
+            return dataEntity.TryReadPropertyAsString(name, numberFormat, dateTimeFormat) ?? matches.Value;
         });
 
         return result;

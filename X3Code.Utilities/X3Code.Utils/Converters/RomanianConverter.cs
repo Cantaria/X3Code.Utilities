@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections.Generic;
 
 namespace X3Code.Utils.Converters;
@@ -32,10 +33,14 @@ public static class RomanianConverter
     /// </summary>
     /// <param name="romanInput">The romanian number</param>
     /// <returns>The converted number</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="romanInput"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if the input contains a character that is not a roman numeral.</exception>
     public static int RomanToArabic(string romanInput)
     {
+        ArgumentNullException.ThrowIfNull(romanInput);
+
         if (romanInput.Length == 0) return 0;
-        romanInput = romanInput.ToUpper();
+        romanInput = romanInput.ToUpperInvariant();
 
         if (romanInput[0] == '(')
         {
@@ -50,7 +55,13 @@ public static class RomanianConverter
         var lastValue = 0;
         for (var i = romanInput.Length - 1; i >= 0; i--)
         {
-            int newValue = CharValues[romanInput[i]];
+            // Ohne diese Pruefung kam hier eine nackte KeyNotFoundException heraus, die weder
+            // das Zeichen noch die Stelle nennt.
+            if (!CharValues.TryGetValue(romanInput[i], out var newValue))
+            {
+                throw new ArgumentException($"[{romanInput[i]}] at position {i} is not a roman numeral.", nameof(romanInput));
+            }
+
 
             if (newValue < lastValue)
                 total -= newValue;
@@ -70,8 +81,12 @@ public static class RomanianConverter
     /// </summary>
     /// <param name="arabicInput">The arabic number</param>
     /// <returns>The converted romanian number</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="arabicInput"/> is negative.</exception>
     public static string ArabicToRoman(int arabicInput)
     {
+        // Ein negativer Wert lief bis in einen negativen Indexzugriff auf OnesLetters.
+        ArgumentOutOfRangeException.ThrowIfNegative(arabicInput);
+
         if (arabicInput >= 4000)
         {
             var thou = arabicInput / 1000;

@@ -16,7 +16,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 {
     protected BasicHttpClient(HttpClientConfiguration configuration)
     {
-        if (string.IsNullOrWhiteSpace(configuration.BaseUrl)) throw new Exception("No Base-URL set in HTTP Client configuration. Please set Base-URL first.");
+        if (string.IsNullOrWhiteSpace(configuration.BaseUrl)) throw new ArgumentException("No Base-URL set in HTTP client configuration. Set BaseUrl first.", nameof(configuration));
 
         Configuration = configuration;
         Client = CreateHttpClient(configuration);
@@ -58,8 +58,8 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <param name="value">The value of the header.</param>
     public void AddHeader(string header, string value)
     {
-        if (string.IsNullOrWhiteSpace(header)) throw new Exception("Empty header is not allowed.");
-        if (string.IsNullOrWhiteSpace(value)) throw new Exception("Empty value is not allowed.");
+        if (string.IsNullOrWhiteSpace(header)) throw new ArgumentException("Empty header is not allowed.", nameof(header));
+        if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Empty value is not allowed.", nameof(value));
 
         if (Client.DefaultRequestHeaders.Contains(header))
         {
@@ -75,7 +75,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <param name="header">The name of the header to remove.</param>
     public void RemoveHeader(string header)
     {
-        if (string.IsNullOrWhiteSpace(header)) throw new Exception("Empty header is not allowed.");
+        if (string.IsNullOrWhiteSpace(header)) throw new ArgumentException("Empty header is not allowed.", nameof(header));
         if (Client.DefaultRequestHeaders.Contains(header))
         {
             Client.DefaultRequestHeaders.Remove(header);
@@ -95,8 +95,8 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <param name="password">User's password.</param>
     public void AddBasicAuthentication(string username, string password)
     {
-        if (string.IsNullOrWhiteSpace(username)) throw new Exception("Username is null or empty.");
-        if (string.IsNullOrEmpty(password)) throw new Exception("Password is null or empty.");
+        if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Username is null or empty.", nameof(username));
+        if (string.IsNullOrEmpty(password)) throw new ArgumentException("Password is null or empty.", nameof(password));
 
         var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
 
@@ -130,7 +130,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <param name="token">The bearer token.</param>
     public void AddBearerToken(string token)
     {
-        if (string.IsNullOrWhiteSpace(token)) throw new Exception("Token is null or empty.");
+        if (string.IsNullOrWhiteSpace(token)) throw new ArgumentException("Token is null or empty.", nameof(token));
         var bearerToken = token.StartsWith("Bearer ") ? token : $"Bearer {token}";
 
         // Remove the bearer token header if it exists
@@ -181,7 +181,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<string> GetAsync(string uri, CancellationToken cancellationToken = default)
     {
         var response = await Client.GetAsync(uri, cancellationToken);
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
         return await response.Content.ReadAsStringAsync(cancellationToken);
     }
 
@@ -195,7 +195,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> GetAsync<TResponse>(string uri, CancellationToken cancellationToken = default) where TResponse : class
     {
         var response = await Client.GetAsync(uri, cancellationToken);
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
 
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
     }
@@ -213,7 +213,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 
         var response = await Client.PutAsync(uri, data, cancellationToken);
 
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
 
         return await response.Content.ReadAsStringAsync(cancellationToken);
     }
@@ -229,7 +229,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     {
         var response = await Client.PutAsJsonAsync(uri, content, cancellationToken);
 
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
 
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
     }
@@ -247,7 +247,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
 
         var response = await Client.PostAsync(uri, data, cancellationToken);
 
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
 
         return await response.Content.ReadAsStringAsync(cancellationToken);
     }
@@ -262,7 +262,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content, CancellationToken cancellationToken = default) where TMessage : class where TResponse : class
     {
         var response = await Client.PostAsJsonAsync(uri, content, cancellationToken);
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
 
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
     }
@@ -276,7 +276,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<string> DeleteAsync(string uri, CancellationToken cancellationToken = default)
     {
         var response = await Client.DeleteAsync(uri, cancellationToken);
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
         return await response.Content.ReadAsStringAsync(cancellationToken);
     }
 
@@ -290,7 +290,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     public async Task<TResponse?> DeleteAsync<TResponse>(string uri, CancellationToken cancellationToken = default) where TResponse : class
     {
         var response = await Client.DeleteAsync(uri, cancellationToken);
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
         return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
     }
     
@@ -318,7 +318,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         using var content = new StreamContent(stream);
         var response = await Client.PostAsync(uri, content, cancellationToken);
 
-        CheckSuccessCode(response);
+        await CheckSuccessCodeAsync(response, cancellationToken);
     }
 
     #endregion
@@ -328,9 +328,21 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         Client.Dispose();
     }
 
-    private void CheckSuccessCode(HttpResponseMessage response)
+    private static async Task CheckSuccessCodeAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.IsSuccessStatusCode) return;
+
+        // Den Body jetzt lesen, solange die Response noch lebt. Die Exception wird oft weit
+        // entfernt ausgewertet, wo die Response laengst verworfen ist.
+        string? content = null;
+        try
+        {
+            content = await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            // Body nicht lesbar - Statuscode und Meldung muessen dann reichen.
+        }
 
         try
         {
@@ -338,7 +350,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         }
         catch (HttpRequestException ex)
         {
-            throw new X3HttpRequestException(ex.Message, ex, response);
+            throw new X3HttpRequestException(ex.Message, ex, response.StatusCode, content);
         }
     }
 }

@@ -10,7 +10,8 @@ Security: the native SQLite bundle is now pinned to SQLitePCLRaw.bundle_e_sqlite
 The package now ships its XML documentation, and carries package metadata for the first time (id, title, description, license, icon, README).
 Fixed malformed documentation tags on IRepository and GenericRepository.
 Entity Framework Core 10.0.3 -> 10.0.11.
-All asynchronous methods on IRepository/GenericRepository now take a CancellationToken and pass it down into Entity Framework, matching X3Code.Infrastructure. The parameter is optional, so existing call sites keep compiling.</PackageReleaseNotes>
+All asynchronous methods on IRepository/GenericRepository now take a CancellationToken and pass it down into Entity Framework, matching X3Code.Infrastructure. The parameter is optional, so existing call sites keep compiling.
+Get and GetAsync take a predicate over TEntity instead of over a nullable TEntity, matching X3Code.Infrastructure. Since TEntity is constrained to a class and is never null here, the old annotation produced a nullable warning at every normal call site for consumers with nullable reference types enabled.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

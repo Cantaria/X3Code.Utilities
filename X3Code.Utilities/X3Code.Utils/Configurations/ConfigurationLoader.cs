@@ -99,8 +99,8 @@ public class ConfigurationLoader : IConfigurationLoader
         if (fileExtension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
             return LoadConfigurationFromXml<T>(fullPath);
 
-        throw new Exception(
-            $"Unsupported file extension [{fileExtension}] for configuration file [{fileName}]. This Loader only supports .json and .xml files.");
+        throw new NotSupportedException(
+            $"Unsupported file extension [{fileExtension}] for configuration file [{fileName}]. This loader only supports .json and .xml files.");
     }
 
     private string DetermineHomePath()
@@ -113,11 +113,11 @@ public class ConfigurationLoader : IConfigurationLoader
         if (!File.Exists(fullPath)) throw new FileNotFoundException($"Configuration file [{fullPath}] not found.");
         
         var json = File.ReadAllText(fullPath);
-        if (string.IsNullOrWhiteSpace(json)) throw new Exception($"Configuration file  [{fullPath}] is empty.");
+        if (string.IsNullOrWhiteSpace(json)) throw new InvalidDataException($"Configuration file [{fullPath}] is empty.");
         
         var result = JsonSerializer.Deserialize<T>(json);
         if (result == null) 
-            throw new Exception($"Failed to deserialize configuration file at [{fullPath}].");
+            throw new InvalidDataException($"Failed to deserialize configuration file at [{fullPath}].");
         
         return result;
     }
@@ -128,7 +128,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         var result = GenericXmlSerializer.LoadXml<T>(fullPath);
         if (result == null) 
-            throw new Exception($"Failed to deserialize configuration file at [{fullPath}].");
+            throw new InvalidDataException($"Failed to deserialize configuration file at [{fullPath}].");
         
         return result;
     }
