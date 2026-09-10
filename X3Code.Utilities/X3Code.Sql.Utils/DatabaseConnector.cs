@@ -117,7 +117,7 @@ public static class DatabaseConnector
     /// <returns>The number of rows affected by the SQL command.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the query is null or whitespace.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the transaction has no connection left, which means it was already committed, rolled back or disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the transaction has no connection left, which means it was already committed, rolled back, or disposed.</exception>
     public static int ExecuteSqlCommandOn(SqlTransaction transaction, string query, params SqlParameter[] parameters)
     {
         var connection = GetTransactionConnection(transaction, query);
@@ -138,7 +138,7 @@ public static class DatabaseConnector
     /// <returns>The number of rows affected by the SQL command.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the query is null or whitespace.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the transaction has no connection left, which means it was already committed, rolled back or disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the transaction has no connection left, which means it was already committed, rolled back, or disposed.</exception>
     public static async Task<int> ExecuteSqlCommandOnAsync(SqlTransaction transaction, string query, SqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
         var connection = GetTransactionConnection(transaction, query);
