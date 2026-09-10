@@ -20,7 +20,7 @@ public static class DatabaseConnector
     /// </summary>
     /// <param name="connectionString">The full connection string for the target database.</param>
     /// <param name="query">The full SELECT statement.</param>
-    /// <param name="datatable">An empty DataTable which will be filled with data from the database.</param>
+    /// <param name="datatable">An empty DataTable that will be filled with data from the database.</param>
     /// <param name="parameters">Parameters referenced by the query, for example <c>new SqlParameter("@name", name)</c>.</param>
     /// <returns>The filled DataTable.</returns>
     /// <exception cref="ArgumentException">Thrown if the connection string or the query is null or whitespace.</exception>
@@ -44,7 +44,7 @@ public static class DatabaseConnector
     /// </summary>
     /// <param name="connectionString">The full connection string for the target database.</param>
     /// <param name="query">The full SELECT statement.</param>
-    /// <param name="datatable">An empty DataTable which will be filled with data from the database.</param>
+    /// <param name="datatable">An empty DataTable that will be filled with data from the database.</param>
     /// <param name="parameters">Parameters referenced by the query.</param>
     /// <param name="cancellationToken">Cancels the query.</param>
     /// <returns>The filled DataTable.</returns>
