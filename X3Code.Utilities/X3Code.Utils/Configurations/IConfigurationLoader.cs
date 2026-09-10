@@ -7,7 +7,7 @@ namespace X3Code.Utils.Configurations;
 public interface IConfigurationLoader
 {
     /// <summary>
-    /// The environment the loader was built for. Used to pick an environment specific file.
+    /// The environment the loader was built for. Used to pick an environment-specific file.
     /// </summary>
     string Environment { get; }
 

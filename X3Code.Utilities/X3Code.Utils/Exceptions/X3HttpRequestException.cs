@@ -31,7 +31,7 @@ public class X3HttpRequestException : HttpRequestException
     }
 
     /// <summary>
-    /// The response body as it came from the server, or null if there was none or it could not be read.
+    /// The response body as it came from the server, or null if there was none, or it could not be read.
     /// The status code is on <see cref="HttpRequestException.StatusCode"/>.
     /// </summary>
     public string? ResponseContent { get; }

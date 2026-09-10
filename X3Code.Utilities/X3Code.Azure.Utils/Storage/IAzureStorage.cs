@@ -20,7 +20,7 @@ public interface IAzureStorage
     /// Checks if the blob exists
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     Task<bool> Exists(string path, CancellationToken cancellationToken = default);
 
@@ -28,14 +28,14 @@ public interface IAzureStorage
     /// Deletes the given file from the storage
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     Task Delete(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Downloads a specific file from blob
+    /// Downloads a specific file from Blob
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default);
@@ -45,7 +45,7 @@ public interface IAzureStorage
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="destinationPath"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     Task UploadFile(Stream stream, string destinationPath, CancellationToken cancellationToken = default);
 }

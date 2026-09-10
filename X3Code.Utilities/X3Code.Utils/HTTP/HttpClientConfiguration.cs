@@ -10,24 +10,24 @@ namespace X3Code.Utils.HTTP;
 public class HttpClientConfiguration
 {
     /// <summary>
-    /// Sets the default headers the HTTP client should use oin any request.
+    /// Sets the default headers the HTTP client should use on any request.
     /// </summary>
     public Dictionary<string, string> Header { get; } = new();
 
     /// <summary>
-    /// The base url the HTTP client should use. for example https://www.google.com/api
+    /// The base url the HTTP client should use. For example, https://www.google.com/api
     /// This is the base url all requests should have in common. The API paths after the base url are set in the specific HTTP-Methods.
     /// </summary>
     public string? BaseUrl { get; set; }
 
     /// <summary>
-    /// The media type which should be used by default.
+    /// The media type that should be used by default.
     /// <remarks>Default: application/json</remarks>
     /// </summary>
     public string MediaType { get; set; } = "application/json";
 
     /// <summary>
-    /// The default encoding which should be used.
+    /// The default encoding that should be used.
     /// <remarks>Default: UTF8</remarks>
     /// </summary>
     public Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
@@ -42,7 +42,7 @@ public class HttpClientConfiguration
     public TimeSpan TimeOut { get; set; } = TimeSpan.FromSeconds(100);
 
     /// <summary>
-    /// When set to true, TLS/SSL certificate validation errors (e.g. self-signed or untrusted-root certificates) are ignored for this client.
+    /// When set to true, TLS/SSL certificate validation errors (e.g., self-signed or untrusted-root certificates) are ignored for this client.
     /// <remarks>Only intended for local/dev/test environments. Never enable this for production - it removes protection against man-in-the-middle attacks.</remarks>
     /// </summary>
     public bool IgnoreCertificateErrors { get; set; } = false;

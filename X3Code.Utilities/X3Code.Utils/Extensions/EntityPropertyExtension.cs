@@ -9,9 +9,9 @@ public static class EntityPropertyExtension
     /// Get the value for a specific property from an entity as string. If the property is not found or can't read, this method will return string.Empty.
     /// </summary>
     /// <param name="source">The source entity, the property is needed from</param>
-    /// <param name="propertyName">The name for the property which needs to be read</param>
+    /// <param name="propertyName">The name for the property that needs to be read</param>
     /// <param name="numberFormat">If the property is a number (float, double, decimal), it's possible to provide an own format.</param>
-    /// <param name="dateTimeFormat">Optional datetime format for output. If missing 'yyyy.MM.dd HH:mm' will be used.</param>
+    /// <param name="dateTimeFormat">Optional datetime format for output. If missing, 'yyyy.MM.dd HH:mm' will be used.</param>
     /// <typeparam name="TEntity"></typeparam>
     /// <returns></returns>
     /// <remarks>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 ﻿using System.Collections.Generic;
 
 namespace X3Code.Utils.Converters;
@@ -76,7 +76,7 @@ public static class RomanianConverter
     }
 
     /// <summary>
-    /// Converts the given arabic number into romanian system
+    /// Converts the given arabic number into romanian system.
     /// For numbers bigger than 1000 the thousands will be written in () like: (V)CVI
     /// </summary>
     /// <param name="arabicInput">The arabic number</param>

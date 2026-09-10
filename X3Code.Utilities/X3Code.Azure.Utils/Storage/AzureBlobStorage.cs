@@ -44,7 +44,7 @@ public class AzureBlobStorage : StorageBase
     /// Checks if the blob exists
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     public override async Task<bool> Exists(string path, CancellationToken cancellationToken = default)
     {
@@ -58,7 +58,7 @@ public class AzureBlobStorage : StorageBase
     /// Deletes the given file from the blob storage
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     public override async Task Delete(string path, CancellationToken cancellationToken = default)
     {
         var blob = GetBlob(path);
@@ -71,7 +71,7 @@ public class AzureBlobStorage : StorageBase
     /// Downloads a specific blob
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public override async Task<Stream> DownloadFile(string path, CancellationToken cancellationToken = default)
@@ -98,12 +98,12 @@ public class AzureBlobStorage : StorageBase
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="destinationPath"></param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns></returns>
     public override async Task UploadFile(Stream stream, string destinationPath, CancellationToken cancellationToken = default)
     {
         var destinationBlob = GetBlob(destinationPath);
-        // Netzwerk- und Kompressions-Streams koennen weder ihre Laenge nennen noch zurueckspulen.
+        // Netzwerk- und Kompressionsstreams können weder ihre Länge nennen noch zurückspulen.
         if (stream.CanSeek)
         {
             if (stream.Length == 0) throw new ArgumentException("Stream is empty.", nameof(stream));

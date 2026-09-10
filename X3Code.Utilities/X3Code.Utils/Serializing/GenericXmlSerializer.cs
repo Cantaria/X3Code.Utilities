@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace X3Code.Utils.Serializing;
 
 /// <summary>
-/// Generic encapsulation of .Net XML serializer
+/// Generic encapsulation of .NET XML serializer
 /// </summary>
 public static class GenericXmlSerializer
 {
@@ -12,7 +12,7 @@ public static class GenericXmlSerializer
     /// Generic XML-Loader. Loads and serialize any xml-file if the type is known.
     /// </summary>
     /// <typeparam name="T">Type of the serialized object (XML-File)</typeparam>
-    /// <param name="file">The full filepath to the xml file</param>
+    /// <param name="file">The full filepath to the XML file</param>
     /// <returns>The deserialized object of type T</returns>
     public static T LoadXml<T>(string file) where T : class
     {
@@ -24,12 +24,12 @@ public static class GenericXmlSerializer
     }
 
     /// <summary>
-    /// Serializes every type into a xml file. The file will be overwritten if existing.
+    /// Serializes every type into an XML file. The file will be overwritten if existing.
     /// If the file extension is missing, it will not be added.
     /// </summary>
     /// <typeparam name="T">Type of the object to save</typeparam>
-    /// <param name="file">Full file path with extension(!) where the xml file should be created.</param>
-    /// <param name="dataToSave">The object to serialize into a xml file</param>
+    /// <param name="file">Full file path with extension(!) where the XML file should be created.</param>
+    /// <param name="dataToSave">The object to serialize into an XML file</param>
     public static void SaveXml<T>(string file, T dataToSave)
     {
         var serializer = new XmlSerializer(typeof(T));
@@ -40,10 +40,10 @@ public static class GenericXmlSerializer
     }
 
     /// <summary>
-    /// Serializes every type into a xml string.
+    /// Serializes every type into an XML string.
     /// </summary>
-    /// <typeparam name="T">The object to serialize into a xml string.</typeparam>
-    /// <param name="toSerialize">The serialized xml string.</param>
+    /// <typeparam name="T">The object to serialize into an XML string.</typeparam>
+    /// <param name="toSerialize">The serialized XML string.</param>
     /// <returns></returns>
     public static string SerializeObjectToXmlString<T>(T toSerialize)
     {
@@ -57,7 +57,7 @@ public static class GenericXmlSerializer
     }
 
     /// <summary>
-    /// Deserializes a xml string back to an object
+    /// Deserializes an XML string back to an object
     /// </summary>
     /// <typeparam name="T">The object type, the string should be deserialized</typeparam>
     /// <param name="xmlString">The XML string to deserialize</param>
@@ -77,7 +77,7 @@ public static class GenericXmlSerializer
     /// </summary>
     /// <typeparam name="T">The type to serialize</typeparam>
     /// <param name="toSerialize">The object to serialize</param>
-    /// <returns>The serialized xml memory stream</returns>
+    /// <returns>The serialized XML memory stream</returns>
     public static byte[] SerializeToXmlInMemory<T>(T toSerialize) where T : class
     {
         var xmlSerializer = new XmlSerializer(typeof(T));
@@ -94,7 +94,7 @@ public static class GenericXmlSerializer
     /// </summary>
     /// <typeparam name="T">The type of the object</typeparam>
     /// <param name="toDeserialize">The inMemory-stream to deserialize as byte[]</param>
-    /// <returns>The deserialized xml object</returns>
+    /// <returns>The deserialized XML object</returns>
     public static T DeserializeXmlMemoryStreamTo<T>(byte[] toDeserialize) where T : class
     {
         var xmlSerializer = new XmlSerializer(typeof(T));

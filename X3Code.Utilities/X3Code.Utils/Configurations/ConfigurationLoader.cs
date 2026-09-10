@@ -95,7 +95,7 @@ public class ConfigurationLoader : IConfigurationLoader
         if (string.IsNullOrWhiteSpace(pathToConfigFile)) throw new ArgumentNullException(nameof(pathToConfigFile));
         if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
-        if (pathToConfigFile.StartsWith("~")) pathToConfigFile = pathToConfigFile.Replace("~", DetermineHomePath());
+        if (pathToConfigFile.StartsWith('~')) pathToConfigFile = pathToConfigFile.Replace("~", DetermineHomePath());
 
         var fileExtension = Path.GetExtension(fileName);
 
@@ -152,16 +152,16 @@ public class ConfigurationLoader : IConfigurationLoader
 
     private string GetFullPath(string pathToConfigFile, string filename)
     {
-        string configPath = pathToConfigFile;
+        var configPath = pathToConfigFile;
 
         // On Linux/macOS, if the path starts with ".", resolve it relative to the user home directory
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && configPath.StartsWith("."))
         {
-            string homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+            var homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
             configPath = Path.Combine(homeDirectory, configPath);
         }
 
-        string fullPath = Path.Combine(configPath, filename);
+        var fullPath = Path.Combine(configPath, filename);
 
         ConfigurationLoaderLog.PathResolved(_logger, filename, fullPath, Environment);
 

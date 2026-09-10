@@ -3,13 +3,13 @@
 namespace X3Code.Utils.Converters;
 
 /// <summary>
-/// A converter which converts the decimal system into any (up to base 36) number system and back
+/// A converter that converts the decimal system into any (until base 36) number system and back
 /// </summary>
 public static class ArbitraryNumberConverter
 {
     /// <summary>
     /// Converts the given number from the numeral system with the specified
-    /// radix (in the range [2, 36]) to decimal numeral system.
+    /// radix (in the range [2, 36]) to the decimal numeral system.
     /// <see href="https://www.pvladov.com/2012/07/arbitrary-to-decimal-numeral-system.html"/>
     /// </summary>
     /// <param name="number">The arbitrary numeral system number to convert.</param>
@@ -71,18 +71,18 @@ public static class ArbitraryNumberConverter
         if (decimalNumber == 0)
             return "0";
 
-        int index = bitsInLong - 1;
-        long currentNumber = Math.Abs(decimalNumber);
-        char[] charArray = new char[bitsInLong];
+        var index = bitsInLong - 1;
+        var currentNumber = Math.Abs(decimalNumber);
+        var charArray = new char[bitsInLong];
 
         while (currentNumber != 0)
         {
-            int remainder = (int)(currentNumber % radix);
+            var remainder = (int)(currentNumber % radix);
             charArray[index--] = digits[remainder];
             currentNumber = currentNumber / radix;
         }
 
-        string result = new String(charArray, index + 1, bitsInLong - index - 1);
+        var result = new string(charArray, index + 1, bitsInLong - index - 1);
         if (decimalNumber < 0)
         {
             result = "-" + result;

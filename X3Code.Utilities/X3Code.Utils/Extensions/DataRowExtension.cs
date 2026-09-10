@@ -21,8 +21,7 @@ public static class DataRowExtension
 
         foreach (var property in genericType.GetProperties())
         {
-            var propertyType = property;
-            var valueFromRow = Convert.ChangeType(source[property.Name], propertyType.PropertyType);
+            var valueFromRow = Convert.ChangeType(source[property.Name], property.PropertyType);
             genericType.GetProperty(property.Name)?.SetValue(result, valueFromRow);
         }
             
@@ -36,7 +35,7 @@ public static class DataRowExtension
     /// <param name="columnName">The name of the column that contains the date string.</param>
     /// <param name="datePattern">The pattern used for date parsing.</param>
     /// <returns>A Nullable DateTime populated with the date value from the DataRow's specific column. If the conversion fails or the value is null or empty, returns null.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName or datePattern is null, empty or consists only of white-space characters.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when columnName or datePattern is null, empty, or consists only of white-space characters.</exception>
     public static DateTime? ToDateTime(this DataRow source, string columnName, string datePattern)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -60,8 +59,8 @@ public static class DataRowExtension
     /// </summary>
     /// <param name="row">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the string.</param>
-    /// <returns>A string populated with the value from the DataRow's specific column. If the conversion fails or the value is null or empty, returns null.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <returns>A string populated with the value from the DataRow's specific column. If the conversion fails or the value is null or empty, it returns null.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static string? ToStringOrNull(this DataRow row, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -69,9 +68,9 @@ public static class DataRowExtension
         var value = row[columnName];
         if (value == DBNull.Value) return null;
 
-        // Frueher stand hier ein (string)-Cast. Bei einer typisierten DataTable - also genau
+        // Früher stand hier ein (string)-Cast. Bei einer typisierten DataTable - also genau
         // dem, was DatabaseConnector.SelectAsDataTable liefert - warf der eine
-        // InvalidCastException, und zwar fuer die ganze To*-Familie darunter.
+        // InvalidCastException, und zwar für die ganze To*-Familie darunter.
         return Convert.ToString(value, CultureInfo.InvariantCulture)?.Trim();
     }
 
@@ -81,7 +80,7 @@ public static class DataRowExtension
     /// <param name="source">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the integer value.</param>
     /// <returns>An integer representation of the data in the specified DataRow column. If the conversion fails, returns 0.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static int ToInteger(this DataRow source, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -104,13 +103,13 @@ public static class DataRowExtension
     /// <param name="columnName">The name of the column that contains the decimal value.</param>
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
     /// <returns>A decimal representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static decimal ToDecimal(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
-        if (culture == null) culture = new CultureInfo("EN");
+        culture ??= new CultureInfo("EN");
         if (source[columnName] == DBNull.Value) return 0;
-        // Eine typisierte Zahlenspalte braucht keinen Umweg ueber die Zeichenkette.
+        // Eine typisierte Zahlenspalte braucht keinen Umweg über die Zeichenkette.
         if (source[columnName] is decimal or double or float or int or long) return Convert.ToDecimal(source[columnName], CultureInfo.InvariantCulture);
 
         var content = source.ToStringOrNull(columnName);
@@ -130,8 +129,8 @@ public static class DataRowExtension
     /// <param name="source">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the float value.</param>
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
-    /// <returns>A float representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <returns>A float representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, it returns 0.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static float ToFloat(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -156,14 +155,14 @@ public static class DataRowExtension
     /// <param name="source">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the double value.</param>
     /// <param name="culture">An optional IFormatProvider that supplies culture-specific formatting information. Defaults to English culture if not provided.</param>
-    /// <returns>A double representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns 0.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <returns>A double representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, it returns 0.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static double ToDouble(this DataRow source, string columnName, IFormatProvider? culture = null)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
-        if (culture == null) culture = new CultureInfo("EN");
+        culture ??= new CultureInfo("EN");
         if (source[columnName] == DBNull.Value) return 0;
-        // Eine typisierte Zahlenspalte braucht keinen Umweg ueber die Zeichenkette.
+        // Eine typisierte Zahlenspalte braucht keinen Umweg über die Zeichenkette.
         if (source[columnName] is decimal or double or float or int or long) return Convert.ToDouble(source[columnName], CultureInfo.InvariantCulture);
             
         var content = source.ToStringOrNull(columnName);
@@ -181,8 +180,8 @@ public static class DataRowExtension
     /// </summary>
     /// <param name="source">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the boolean value.</param>
-    /// <returns>A boolean representation of the DataRow's specific column's value. If the value is "1", "yes", or "true" (case-insensitive), returns true. Otherwise, returns false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <returns>A boolean representation of the DataRow's specific column's value. If the value is "1", "yes", or "true" (case-insensitive), it returns true. Otherwise, returns false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     public static bool ToBoolean(this DataRow source, string columnName)
     {
         if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException(nameof(columnName));
@@ -210,7 +209,7 @@ public static class DataRowExtension
     /// <param name="row">The DataRow that contains the data.</param>
     /// <param name="columnName">The name of the column that contains the character value.</param>
     /// <returns>A char representation of the DataRow's specific column's value. If the conversion fails or the value is null or DBNull, returns '\0'</returns>
-    /// <exception cref="ArgumentNullException">Thrown when columnName is null, empty or consists only of white-space characters.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the columnName is null, empty, or consists only of white-space characters.</exception>
     /// <exception cref="Exception">Thrown when the string contains more than one character.</exception>
     public static char ToChar(this DataRow row, string columnName)
     {
@@ -220,7 +219,7 @@ public static class DataRowExtension
         if (row[columnName] is char nativeChar) return nativeChar;
 
         var result = row.ToStringOrNull(columnName);
-        // Dokumentiert ist '\0' fuer "nichts drin" - vorher flog hier eine NullReferenceException,
+        // Dokumentiert ist '\0' für "nichts drin" - vorher flog hier eine NullReferenceException,
         // und ein Leerstring lief in eine InvalidOperationException aus First().
         if (string.IsNullOrEmpty(result)) return '\0';
         if (result.Length > 1) throw new ArgumentException($"Column [{columnName}] contains more than one character.", nameof(columnName));

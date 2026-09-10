@@ -9,11 +9,11 @@ namespace X3Code.Utils.Extensions;
 public static class DateTimeExtension
 {
     /// <summary>
-    /// Get's the SQM Min Date
+    /// Gets the SQM Min Date
     /// </summary>
     public static DateTime SqlMinDate => SqlDateTime.MinValue.Value;
     /// <summary>
-    /// Get's the SQM Max Date
+    /// Gets the SQM Max Date
     /// </summary>
     public static DateTime SqlMaxDate => SqlDateTime.MaxValue.Value;
 
@@ -33,7 +33,7 @@ public static class DateTimeExtension
     }
 
     /// <summary>
-    /// Returns true, if the given DateTime is within the SQL Timerange
+    /// Returns true if the given DateTime is within the SQL Time range
     /// </summary>
     /// <param name="source"></param>
     /// <returns></returns>
@@ -43,7 +43,7 @@ public static class DateTimeExtension
     }
 
     /// <summary>
-    /// Return true, if the given date is smaller (more in the past) than SQL.MinDate
+    /// Return true if the given date is smaller (more in the past) than SQL.MinDate
     /// </summary>
     /// <param name="source"></param>
     /// <returns></returns>
@@ -53,7 +53,7 @@ public static class DateTimeExtension
     }
 
     /// <summary>
-    /// Return false, if the given date is bigger (more in the future) than SQL.MaxDate
+    /// Return false if the given date is bigger (more in the future) than SQL.MaxDate
     /// </summary>
     /// <param name="source"></param>
     /// <returns></returns>

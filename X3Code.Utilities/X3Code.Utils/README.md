@@ -12,7 +12,6 @@ dotnet add package X3Code.Utilities
 |---|---|
 | Konfiguration | `ConfigurationLoader`, `IConfigurationLoader`, `SoftwareEnvironment` — umgebungsabhängiges Laden von JSON/XML-Konfigurationen |
 | Konverter | `ArbitraryNumberConverter`, `RomanianConverter` |
-| Datenbank | `DatabaseConnector` — schlanker ADO.NET-Zugriff |
 | Extensions | `CollectionExtension`, `DataRowExtension`, `DataTableExtension`, `DateTimeExtension`, `DictionaryExtension`, `EntityPropertyExtension` |
 | HTTP | `BasicHttpClient`, `IBasicHttpClient`, `HttpClientConfiguration`, `X3HttpRequestException` |
 | Serialisierung | `GenericXmlSerializer` |

@@ -17,7 +17,7 @@ public static class DictionaryExtension
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     /// <param name="source">The dictionary to add the key/value pair to.</param>
     /// <param name="keyValuePair">The KeyValuePair containing the key/value pair to add.</param>
-    /// <returns>True if the add is successful, false if the key already exists in the dictionary.</returns>
+    /// <returns>True if the adding is successful, false if the key already exists in the dictionary.</returns>
     public static bool Add<TKey, TValue>(this Dictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> keyValuePair) where TKey : notnull
     {
         return source.TryAdd(keyValuePair.Key, keyValuePair.Value);
@@ -30,7 +30,7 @@ public static class DictionaryExtension
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     /// <param name="source">The dictionary to add the key/value pair to.</param>
     /// <param name="keyValueTuple">The tuple containing the key/value pair to add.</param>
-    /// <returns>True if the add is successful, false if the key already exists in the dictionary.</returns>
+    /// <returns>True if the adding is successful, false if the key already exists in the dictionary.</returns>
     public static bool Add<TKey, TValue>(this Dictionary<TKey, TValue> source, (TKey, TValue) keyValueTuple) where TKey : notnull
     {
         return source.TryAdd(keyValueTuple.Item1, keyValueTuple.Item2);

@@ -7,7 +7,7 @@ namespace X3Code.Utils.Extensions;
 //Source of Code:
 //https://blogs.msdn.microsoft.com/dal/2009/04/08/how-to-convert-an-ienumerable-to-a-datatable-in-the-same-way-as-we-use-tolist-or-toarray/
 /// <summary>
-/// Convert Ienumerable to a Datatable
+/// Convert IEnumerable to a Datatable
 /// </summary>
 public static class DataTableExtensions
 {
@@ -15,7 +15,7 @@ public static class DataTableExtensions
     /// Converts an IEnumerable into a DataTable. It creates a column for every writeable Property.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="collection">The colletion that needs to be converted</param>
+    /// <param name="collection">The collection that needs to be converted</param>
     /// <param name="tableName">The name of the table</param>
     /// <returns></returns>
     public static DataTable ToDataTable<T>(this IEnumerable<T> collection, string tableName)
@@ -29,7 +29,7 @@ public static class DataTableExtensions
     /// Converts an IEnumerable into a DataTable. It creates a column for every writeable Property.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="collection">The colletion that needs to be converted</param>>
+    /// <param name="collection">The collection that needs to be converted</param>>
     /// <returns></returns>
     public static DataTable ToDataTable<T>(this IEnumerable<T> collection)
     {

@@ -20,7 +20,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// <param name="logger">
     /// Optional. Without it nothing is logged and nothing is allocated for it. Pass one - or let the
     /// container hand one in - to see failed requests with their status and response body. Which
-    /// logger sits behind the abstraction is the application's decision, this library brings none.
+    /// logger sits behind the abstraction is the application's decision; this library brings none.
     /// </param>
     protected BasicHttpClient(HttpClientConfiguration configuration, ILogger? logger = null)
     {
@@ -219,7 +219,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="json">The JSON data to send in the request body.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>The response content as a string.</returns>
     public async Task<string> PutAsync(string uri, string json, CancellationToken cancellationToken = default)
     {
@@ -237,7 +237,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="content">The object data to send in the request body.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>On success the cast object</returns>
     public async Task<TResponse?> PutAsync<TMessage, TResponse>(string uri, TMessage content, CancellationToken cancellationToken = default) where TMessage : class where TResponse : class
     {
@@ -253,7 +253,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="json">The JSON payload to include in the request body.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>A Task representing the asynchronous operation. The task result contains the response content as a string.</returns>
     public async Task<string> PostAsync(string uri, string json, CancellationToken cancellationToken = default)
     {
@@ -271,7 +271,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
     /// <param name="content">The data payload to include in the request body.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>A Task representing the asynchronous operation. The task result contains the response content as a string.</returns>
     public async Task<TResponse?> PostAsync<TMessage, TResponse>(string uri, TMessage content, CancellationToken cancellationToken = default) where TMessage : class where TResponse : class
     {
@@ -285,7 +285,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// Sends a DELETE request to the specified URI and returns the response content as a string.
     /// </summary>
     /// <param name="uri">The URI to send the request to.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>The response content as a string.</returns>
     public async Task<string> DeleteAsync(string uri, CancellationToken cancellationToken = default)
     {
@@ -299,7 +299,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <typeparam name="TResponse">The type of the response object.</typeparam>
     /// <param name="uri">The URI to send the DELETE request to.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>The deserialized response object of type TResponse.</returns>
     public async Task<TResponse?> DeleteAsync<TResponse>(string uri, CancellationToken cancellationToken = default) where TResponse : class
     {
@@ -312,7 +312,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// Downloads a stream from the specified URI.
     /// </summary>
     /// <param name="uri">The URI to download the stream from.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>A Task that represents the asynchronous operation. The Task result contains the stream that was downloaded.</returns>
     public async Task<Stream> DownloadStreamAsync(string uri, CancellationToken cancellationToken = default)
     {
@@ -325,13 +325,13 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
     /// </summary>
     /// <param name="uri">The URI to upload the stream to.</param>
     /// <param name="stream">The Stream to be uploaded.</param>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
+    /// <param name="cancellationToken">Propagates notification that the operation should be canceled.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
     public async Task UploadStreamAsync(string uri, Stream stream, CancellationToken cancellationToken = default)
     {
-        // Kein using auf den StreamContent: dessen Dispose schliesst den umschlossenen Stream,
-        // also den des Aufrufers, der ihn nach dem Upload womoeglich noch braucht. Disposed
-        // wird stattdessen die Response, die HttpClient uns uebergibt.
+        // Kein using auf den StreamContent: Dessen Dispose schließt den umschlossenen Stream,
+        // also den des Aufrufers, der ihn nach dem Upload womöglich noch braucht. Disposed
+        // wird stattdessen die Response, die HttpClient uns übergibt.
         using var response = await Client.PostAsync(uri, new StreamContent(stream), cancellationToken);
 
         await CheckSuccessCodeAsync(response, cancellationToken);
@@ -351,7 +351,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         var uri = response.RequestMessage?.RequestUri?.ToString();
 
         // Den Body jetzt lesen, solange die Response noch lebt. Die Exception wird oft weit
-        // entfernt ausgewertet, wo die Response laengst verworfen ist.
+        // entfernt ausgewertet, wo die Response längst verworfen ist.
         string? content = null;
         try
         {
@@ -359,7 +359,7 @@ public abstract class BasicHttpClient : IDisposable, IBasicHttpClient
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            // Body nicht lesbar - Statuscode und Meldung muessen dann reichen.
+            // Body nicht lesbar - Statuscode und Meldung müssen dann reichen.
             HttpClientLog.ResponseBodyUnreadable(Logger, uri, exception);
         }
 

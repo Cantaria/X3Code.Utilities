@@ -66,8 +66,8 @@ public static class RegexUtilities
     /// <summary>
     /// Tries to replace the placeholder in the input string with data from the entity
     /// </summary>
-    /// <param name="dataEntity">Source entity which contains the data for the placeholder</param>
-    /// <param name="input">Input string with containing placeholder. Valid placeholder is: %property% </param>
+    /// <param name="dataEntity">Source entity that contains the data for the placeholder</param>
+    /// <param name="input">Input string with a containing placeholder. Valid placeholder is: %property% </param>
     /// <param name="numberFormat">If the property is a number (decimal, float, double), it's possible to provide a format string</param>
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>
@@ -80,7 +80,7 @@ public static class RegexUtilities
 
             var name = matches.Groups["name"].Value;
 
-            // Frueher stand hier "?? input": liess sich die Property nicht lesen, wurde der
+            // Früher stand hier "?? input": Ließ sich die Property nicht lesen, wurde der
             // gesamte Eingabestring an die Platzhalterstelle kopiert. Aus "Hallo %Foo% Welt"
             // wurde "Hallo Hallo %Foo% Welt Welt". Jetzt bleibt der Platzhalter stehen.
             return dataEntity.TryReadPropertyAsString(name, numberFormat, dateTimeFormat) ?? matches.Value;
@@ -92,8 +92,8 @@ public static class RegexUtilities
     /// <summary>
     /// Tries to replace the placeholder in the input string with data from the entity. Same as FillPlaceholderFromEntity
     /// </summary>
-    /// <param name="dataEntity">Source entity which contains the data for the placeholder</param>
-    /// <param name="input">Input string with containing placeholder. Valid placeholder is: %property% </param>
+    /// <param name="dataEntity">Source entity that contains the data for the placeholder</param>
+    /// <param name="input">Input string with a containing placeholder. Valid placeholder is: %property% </param>
     /// <param name="numberFormat">If the property is a number (decimal, float, double), it's possible to provide a format string</param>
     /// <param name="dateTimeFormat">If the property is a date, it's possible to provide a format string</param>
     /// <typeparam name="T"></typeparam>

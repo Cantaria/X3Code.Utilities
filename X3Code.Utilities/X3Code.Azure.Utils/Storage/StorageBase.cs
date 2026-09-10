@@ -24,7 +24,7 @@ public abstract class StorageBase : IAzureStorage
     /// <param name="containerName">The container to work in.</param>
     /// <param name="logger">
     /// Optional. Without it nothing is logged and nothing is allocated for it. Which logger sits
-    /// behind the abstraction is the application's decision, this library brings none.
+    /// behind the abstraction is the application's decision; this library brings none.
     /// </param>
     protected StorageBase(string connectionString, string containerName, ILogger? logger = null)
     {
