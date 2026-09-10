@@ -6,8 +6,8 @@ using Xunit;
 
 namespace X3Code.UnitTests.HTTP;
 
-// Diese Tests sprechen die oeffentliche API unter HttpConstValues.UnitTestBaseUrl an. Faellt
-// der Dienst aus oder aendert er sein Verhalten, wird die Suite aus fremden Gruenden rot -
+// Diese Tests sprechen die öffentliche API unter HttpConstValues. UnitTestBaseUrl an. Fällt
+// der Dienst aus oder ändert er sein Verhalten, wird die Suite aus fremden Gründen rot -
 // deshalb laufen sie nicht in der CI. Lokal per --filter "Category=Integration" starten.
 [Trait("Category", "Integration")]
 public class HttpClientTest

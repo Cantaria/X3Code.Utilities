@@ -34,8 +34,8 @@ public class Contract_specs
     {
         var drift = InterfaceContract.FindDrift(typeof(IDeliberatelyDrifted), typeof(DeliberatelyDrifted));
 
-        // Ohne diesen Test koennten die Vertragstests unten stumm gruen sein, weil der Detektor
-        // gar nichts prueft.
+        // Ohne diesen Test könnten die Vertragstests unten stumm grün sein, weil der Detektor
+        // gar nichts prüft.
         Assert.Contains(drift, d => d.Contains("'first'") && d.Contains("'second'"));
         Assert.Contains(drift, d => d.Contains("defaults to"));
     }

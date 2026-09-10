@@ -10,6 +10,7 @@ namespace X3Code.UnitTests.HTTP;
 /// that could already be gone by the time somebody inspected the exception. It carries the body
 /// as a string now, captured while the response was still alive.
 /// </summary>
+// ReSharper disable once InconsistentNaming
 public class X3HttpRequestException_specs
 {
     private class Problem
@@ -45,7 +46,7 @@ public class X3HttpRequestException_specs
     [InlineData("this is not json")]
     public void Returns_the_default_instead_of_throwing(string? content)
     {
-        // "Try" im Namen heisst jetzt auch "wirft nicht".
+        // "Try" im Namen heißt jetzt auch "wirft nicht".
         Assert.Null(Create(content).TryParseResponseContent<Problem>());
     }
 }

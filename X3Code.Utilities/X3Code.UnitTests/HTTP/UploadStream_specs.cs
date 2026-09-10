@@ -10,7 +10,7 @@ using Xunit;
 namespace X3Code.UnitTests.HTTP;
 
 /// <summary>
-/// UploadStreamAsync wrapped the caller's stream in a StreamContent and disposed that content.
+/// UploadStreamAsync wrapped the caller's stream in a StreamContent and disposed of that content.
 /// StreamContent.Dispose disposes the stream it wraps, so the caller got its own stream closed
 /// underneath it - a fix that was worse than the leak it was meant to repair.
 /// </summary>
